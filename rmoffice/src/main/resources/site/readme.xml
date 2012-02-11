@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY product "Rolemaster Office">
+<!ENTITY version "4.2.4">
+<!ENTITY usrprops "user.properties">
+]>
+
+<article  lang="en">    
+	<articleinfo>
+		<title>&product; readme</title>
+		<author>
+			<firstname>Daniel</firstname>
+			<surname>Golesny</surname>
+		</author>
+	</articleinfo>	
+	
+	<section>
+		<title>1 Installation</title>
+		<section>
+			<title>Download</title>
+			<para>
+				Download the latest version of &product;
+				from sourceforge:
+				<ulink url="http://sourceforge.net/projects/rmoffice/">http://sourceforge.net/projects/rmoffice/</ulink>.
+			</para>
+		</section>
+		<section>
+			<title>Installation</title>
+			<para>
+				Just unzip to downloaded file to a new folder. You don't have to install &product;.
+			</para>
+		</section>
+		<section>
+			<title>Launch</title>
+			<para>
+				To launch &product; double-click the file rmoffice-&version;.jar.
+				It is an executable java archive.
+				If you don't have Java installed on you computer, download it from
+				<ulink
+					url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html
+				</ulink>
+			</para>
+			<para>
+				If you have Java installed, but not configured properly you can type
+				in your shell
+
+				<code>start javaw -jar rmoffice-&version;.jar
+				</code>
+			</para>
+			<para>
+				or if javaw.exe is not in your Path modify the path in
+				<code>start-rmoffice.bat</code>
+				(for Windows)
+			</para>
+			<para>
+				Example (for Windows):
+				<code>start "C:\Programme (x64)\Java\jre\1.6\bin\javaw.exe" -jar rmoffice-&version;.jar</code>
+			</para>
+			<para>
+				or
+				<code>start-rmoffice.sh</code>
+				(for Linux)
+			</para>
+		</section>
+	</section>
+	<section>
+		<title>2 Configuration</title>
+		<section>
+		  <title>Where is my user.preferences file? </title>
+		  <para>
+		     By default there is no &usrprops; file in your home directory (directory .rmoffice).
+		     You have to copy the &usrprops; file from distribution to you &lt;home directory&gt;/.rmoffice/&usrprops;.
+		   </para>
+		   <para>
+		     If you aren't sure where your home directory is, check the About dialog:
+		     Start &product; and go to the main menu &quot;Help &gt; About &product;&quot;. In the About
+		     dialog you can find the path to the &usrprops; file.		     
+		  </para>
+		</section>
+		<section>
+			<title>Sourcebook exclusion</title>
+			<para>
+				You can exclude professions, races, training packages, skills, spell
+				lists from displaying, e.g. if you don't own all source books and you
+				just want to see the professions and races from some source books.
+			</para>
+			<para>
+			  Default is no exclusion, but if you want to exclude some source books
+			  you have to put the entry &quot;excludes=&quot; to the &usrprops; file.
+			  Put one or more of the following values as comma separated list:
+			  <itemizedlist>
+		         <listitem><para>RMFRP including the three spell laws</para></listitem>
+                 <listitem><para>CHARL Character Law (profs and races)</para></listitem>
+                 <listitem><para>SOHK School of Hard Knock</para></listitem>
+                 <listitem><para>ARCC Arcane Companion</para></listitem>
+                 <listitem><para>ALCC alchemie Companion</para></listitem>
+                 <listitem><para>ELEMC Fire &amp; Ice</para></listitem>
+                 <listitem><para>MENTC Mentalismn Companion</para></listitem>
+                 <listitem><para>CHANC Channling Companion</para></listitem>
+                 <listitem><para>ESSC Essence Comnpanion</para></listitem>
+                 <listitem><para>MAC Martial Arts Companion</para></listitem>
+                 <listitem><para>RMC Rolemaster Companions</para></listitem>
+                 <listitem><para>R&amp;C Races and Cultures (for races)</para></listitem>
+                 <listitem><para>CONSC Construction Companion</para></listitem>
+                 <listitem><para>C&amp;R Castle &amp; Ruins</para></listitem>
+		      </itemizedlist>
+		      You can exclude following scopes for races and languages:
+              <itemizedlist>
+		         <listitem><para>MIDDLEEARTH Races with MiddleEarth-Scope</para></listitem>
+		         <listitem><para>BASE Races with BASE-Scope</para></listitem>
+		         <listitem><para>SHADOWWORLD Races with Shadowworld-Scope (not available now)</para></listitem>
+		      </itemizedlist>
+		      Example for german publications: 
+			  &quot;excludes=RMC,ARCC,ALCC,ELEMC,MENTC,ESSC,MAC,R&amp;C,CONSC,C&amp;R,MIDDLEEARTH,SHADOWWORLD&quot;
+			</para>
+		</section>
+		<section>
+			<title>DP costs of spell list ranks increases every 5 ranks</title>
+			<para>In the level up mode the costs of the spell lists DP costs will be increased every 5 ranks by default.
+			  For spell list rank 1-5 you have to pay 1 time cost, for 6-10 it will be 2 time costs, and so on.			  
+			</para>
+			<para>You can adjust or turn this feature off in the &usrprops; file. There is an property entry &quot;spelllist-dp-increasing=5&quot; which is the default value.
+			If you want to turn this of, use &quot;spelllist-dp-increasing=0&quot;. If you like to modify the interval just enter another number.
+			</para>
+	     </section>
+		<section>
+			<title>Outline image on combat status (PDF page 6)</title>
+			<para>
+			Since version 4.2.2 by default the outline images for most races are printed on the combat status page in the PDF.
+			If you don't like this, you can hide this outline image by configuration in the preferences file. Add the entry &quot;outline-image=0&quot; to you &usrprops; file.
+			</para>
+		</section>
+	</section>
+	<section>
+		<title>3 Features</title>
+		<section>
+			<title>NPC character generation</title>
+			<orderedlist>
+				<listitem>
+					<para>Create a new character File > New character.</para>
+				</listitem>
+				<listitem>
+					<para>Select race, culture, profession</para>
+				</listitem>
+				<listitem>
+					<para>Choose armor and level</para>
+				</listitem>
+				<listitem>
+					<para>Optional: Put your minimal stats into the temp stats fields</para>
+				</listitem>
+				<listitem>
+					<para>Optional: Put your maximal stats into the pot stats fields</para>
+				</listitem>
+				<listitem>
+					<para>Optional: Mark favorite skills (you may add any new skill)</para>
+				</listitem>
+				<listitem>
+					<para>Generator > Generate character (NPC)</para>
+				</listitem>
+			</orderedlist>
+		</section>
+	     <section>
+			<title>Magical items</title>
+			<para>Magical items have a name and features (powers, aibilities, ..). These features can be a resistance bonus, 
+			 stat bonus, skill bonus or a description like &quot;against orcs +20&quot;. All magical items are generated on the PDF
+			 on page 4.
+			</para>
+			<para>Marking the magical item as favorite has following effects:
+			  <orderedlist>
+				<listitem>
+					<para>
+					   Stat bonus will be calculated as special bonus for the stat					
+					</para>
+			    </listitem>
+			    <listitem>
+					<para>
+					  Resistance bonus is not calculated into the total resistance bonus. But the item 
+					  will be shown under your resistance on PDF page 1
+					</para>
+				</listitem>
+			    <listitem>
+					<para>
+					Skill bonus won't be calculated into the total skill/weapon bonus. But the item
+					will be shown under you skill or weapon on PDF page 1
+					</para>
+				</listitem>
+			  </orderedlist>
+			</para>
+			<para>Each magical item has a number which is printed on page 1 of the PDF and page 4, too.
+			</para>
+	    </section>
+	</section>
+	<section>
+	  <title>4 FAQ</title>
+	  <para>
+	    <itemizedlist>
+          <listitem>
+             <para>Q: What is the goal of &product;?</para>
+             <para>A: The goal of &product; is the creation of a nice character sheet.</para>
+          </listitem>
+          <listitem>
+             <para>Q: What isn't &product;?</para>
+             <para>A: &product; will not provide during game features.</para>
+          </listitem>
+          <listitem>
+             <para>Q: How do you change a spell list from being an open list to an additional base list? Thus changing the cost.</para>
+             <para>A: Select any base spell list and click &quot;Add modified&quot;. Edit the name and add the custom spell list</para>
+          </listitem>
+        </itemizedlist>
+	  </para>
+	 </section>
+	<section>
+	  <title>5 Known Issues</title>
+	  <para>	  
+         <itemizedlist>
+          <listitem><para>Only Linux &amp; Adobe Acrobat: The images in the PDF are much too dark, use the default document viewer shipped with linux. Windows has no problems.</para></listitem>
+         </itemizedlist>
+	  </para>
+	</section>
+</article>

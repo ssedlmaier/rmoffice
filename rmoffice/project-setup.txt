@@ -1,0 +1,30 @@
+
+To setup the project with maven/m2e:
+(you need the runtime of maven 3, just the plugin is not enough)
+
+1. Jide Common Layer (Maven-Repo is not uptodate)
+Download jar from http://java.net/projects/jide-oss/
+mvn install:install-file -Dfile=jide-oss-3.3.2.jar -DgroupId=com.jidesoft -DartifactId=jide-oss -Dversion=3.3.2 -Dpackaging=jar
+
+2. JGoodies Common, Looks, Forms from <basedir>/lib (Maven-Repo is not uptodate)
+Or download jars from http://www.jgoodies.com
+
+mvn install:install-file -Dfile=jgoodies-common-1.2.1.jar -DgroupId=com.jgoodies -DartifactId=common -Dversion=1.2.1 -Dpackaging=jar
+mvn install:install-file -Dfile=jgoodies-binding-2.5.0.jar -DgroupId=com.jgoodies -DartifactId=binding -Dversion=2.5.0 -Dpackaging=jar
+mvn install:install-file -Dfile=jgoodies-forms-1.4.2.jar -DgroupId=com.jgoodies -DartifactId=forms -Dversion=1.4.2 -Dpackaging=jar
+mvn install:install-file -Dfile=jgoodies-looks-2.4.2.jar -DgroupId=com.jgoodies -DartifactId=looks -Dversion=2.4.2 -Dpackaging=jar
+
+Launch-Setup:
+In the basedir there are two launch configurations for development. Both skipping the latest version check.
+RMOffice(offline).launch uses the os language.
+RMOffice US_en (offline).launch uses US_en locale.
+
+Logging:
+Put a log4j.xml to directory /src/main/resources with you development logging configuration. It will be ignored on packaging.
+
+Source-Code:
+Source code has no warnings with the eclipse compiler settings you can find in the file eclipse-compiler-prefs.epf
+
+Docbook generator:
+Download the rmoffice-docbook.zip from sf.net and import it as a new eclipse project.
+Run the default target from build.xml to generate the html sites. (check the console output)

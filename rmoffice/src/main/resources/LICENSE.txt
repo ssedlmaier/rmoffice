@@ -1,0 +1,10 @@
+************************************************************************************
+* Rolemaster -and all products related thereto- are all trademark and copyright of *
+* Aurigas Aldbaron LLC and are used with permission. All rights reserved.          *
+* No reproductions without permission.                                             *
+************************************************************************************
+License:
+http://www.apache.org/licenses/LICENSE-2.0
+
+License libraries:
+see each library 
