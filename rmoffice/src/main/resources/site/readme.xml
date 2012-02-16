@@ -224,7 +224,7 @@
 	     <para>
 	       <orderedlist>
 	         <listitem>
-	           <para>Download latest race.ods from <ulink url="http://rmoffice.git.sourceforge.net/git/gitweb.cgi?p=rmoffice/rmoffice;a=tree;f=rmoffice/src/main/resources/conf-src;h=bc1e480e6737b7e5cf69baefd32ffc1bf36af600;hb=HEAD">Git</ulink></para>
+	           <para>Download latest race.ods from <ulink url="http://rmoffice.git.sourceforge.net/git/gitweb.cgi?p=rmoffice/rmoffice;a=tree;f=rmoffice/src/main/resources/conf-src;hb=HEAD">Git</ulink></para>
 	         </listitem>
 	         <listitem>
 	           <para>Open race.ods with OpenOffice or LibreOffice and add your races. In column A you have to use a unique race ID (Example: start at 100). In column B use a resource key like &quot;customized.race.myname&quot;</para>
