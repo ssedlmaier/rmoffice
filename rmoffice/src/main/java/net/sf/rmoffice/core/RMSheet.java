@@ -1789,6 +1789,9 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			}
 		}
 		int fac = (int) Math.ceil(weightCustUnit / getEncumbranceBase());
+		if (fac < 1) {
+			fac = 1;
+		}
 		return -8 * (fac - 1);
 	}
 	

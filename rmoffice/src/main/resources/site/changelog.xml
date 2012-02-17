@@ -37,7 +37,27 @@
 	</section>
 	
 	 -->
+	 <section>
+		<title>Version 4.2.5 (2012-)</title>
 		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		     <listitem><para></para></listitem>
+		    </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>PDF: Weight penalty can't be lower than 0 anymore</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	  </section>
+	 
+	   <section>
 		<title>Version 4.2.4 (2012-02-11)</title>
 		<section>
 		  <title>&features;</title>
