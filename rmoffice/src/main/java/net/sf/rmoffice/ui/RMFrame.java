@@ -365,7 +365,9 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 					if (lastPathComponent != null && lastPathComponent instanceof SkillTreeNode) {
 						SkillTreeNode node = (SkillTreeNode)lastPathComponent;
 						if (node.getUserObject() instanceof ISkill) {
-							taSkillDescription.setText(((ISkill)node.getUserObject()).getDescription());
+							ISkill skill = (ISkill)node.getUserObject();
+							String descr = skill.getDescription(sheet.getLengthUnit());
+							taSkillDescription.setText(descr);
 						}
 					}
 				}

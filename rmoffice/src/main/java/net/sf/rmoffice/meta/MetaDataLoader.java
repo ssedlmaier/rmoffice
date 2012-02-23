@@ -32,6 +32,7 @@ import java.util.ResourceBundle;
 
 import net.sf.rmoffice.generator.Name.Style;
 import net.sf.rmoffice.meta.TrainPack.Type;
+import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.RaceScope;
 import net.sf.rmoffice.meta.enums.RankSubType;
 import net.sf.rmoffice.meta.enums.RankType;
@@ -663,11 +664,7 @@ public class MetaDataLoader {
 					} catch (MissingResourceException e1) {
 						if (log.isWarnEnabled()) log.warn("missing resource key 'skill."+s.getId()+"'");
 					}
-					try {
-						s.setDescription(RESOURCE.getString("skill."+s.getId()+".descr"));
-					} catch (MissingResourceException e) {
-						// ignore, description is not mandatory
-					}
+					loadSkillDescriptions(s);
 					if (id.contains(s.getId())) {
 						log.warn("Duplicate skill id "+s.getId()+". Ignoring line "+lineNo); 
 					} else {
@@ -681,6 +678,21 @@ public class MetaDataLoader {
 		}
 		loadSpelllists(skills);
 		return skills;
+	}
+
+	private void loadSkillDescriptions(Skill s) {
+		try {
+			s.setDescription(null, RESOURCE.getString("skill."+s.getId()+".descr"));
+		} catch (MissingResourceException e) {
+			// ignore, description is not mandatory
+		}
+		for (LengthUnit lu : LengthUnit.values()) {
+			try {
+				s.setDescription(lu, RESOURCE.getString("skill."+s.getId()+".descr."+lu.name()));
+			} catch (MissingResourceException e) {
+				// ignore, description is not mandatory
+			}
+		}
 	}
 
 	private List<Race> loadRaces() throws IOException {

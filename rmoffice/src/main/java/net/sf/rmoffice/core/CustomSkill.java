@@ -17,6 +17,7 @@
 package net.sf.rmoffice.core;
 
 import net.sf.rmoffice.meta.ISkill;
+import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.RaceScope;
 import net.sf.rmoffice.meta.enums.SkillType;
 
@@ -75,7 +76,7 @@ import net.sf.rmoffice.meta.enums.SkillType;
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription(LengthUnit lengthUnit) {
 		return "";
 	}
 

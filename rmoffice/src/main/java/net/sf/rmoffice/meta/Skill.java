@@ -16,6 +16,10 @@
  */
 package net.sf.rmoffice.meta;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.RaceScope;
 
 
@@ -27,7 +31,7 @@ public class Skill implements ISkill {
 	private Integer id;
 	private String name;
 	private SkillCategory category;
-	private String description;
+	private Map<LengthUnit, String> descriptions;
 	private RaceScope scope;
 	private String source;
 	
@@ -64,12 +68,28 @@ public class Skill implements ISkill {
 	
 	/** {@inheritDoc} */
 	@Override
-	public String getDescription() {
-		return description;
+	public String getDescription(LengthUnit lengthUnit) {
+		String descr = null;
+		if (descriptions != null) {
+			if (descriptions.containsKey(lengthUnit)) {
+				descr = descriptions.get(lengthUnit);
+			} else {
+				descr = descriptions.get(null);
+			}
+		}
+		return descr;
 	}
 	
-	/* package */void setDescription(String description) {
-		this.description = description;
+	/**
+	 * 
+	 * @param lengthUnit may be {@code null}
+	 * @param description the description
+	 */
+	/* package */void setDescription(LengthUnit lengthUnit, String description) {
+		if (descriptions == null) {
+			descriptions = new HashMap<LengthUnit, String>();
+		}
+		this.descriptions.put(lengthUnit, description);
 	}
 	
 	/** {@inheritDoc} */

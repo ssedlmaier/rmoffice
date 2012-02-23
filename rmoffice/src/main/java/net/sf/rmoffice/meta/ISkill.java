@@ -16,6 +16,7 @@
  */
 package net.sf.rmoffice.meta;
 
+import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.RaceScope;
 
 
@@ -28,8 +29,20 @@ public interface ISkill {
 
 	public String getName();
 
-	public String getDescription();
+	/**
+	 * Returns the description with the given length unit. Returns the general description
+	 * if no description for length unit is available. 
+	 * 
+	 * @param lengthUnit the length unit, may be {@code null} 
+	 * @return description
+	 */
+	public String getDescription(LengthUnit lengthUnit);
 	
+	/**
+	 * Returns whether the skill is a spell list or not.
+	 * 
+	 * @return whether the skill is a spell list or not
+	 */
 	public boolean isSpelllist();
 	
 	public RaceScope getScope();

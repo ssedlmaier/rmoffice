@@ -317,7 +317,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 					line.add( ""+rank.getRank() );
 					line.add(  format(sheet.getSkillTotalBonus(skill), false) );
 					if (sheet.getSkillcategory(skill).getRankType().isWeapon()) {
-						String[] split = StringUtils.split(skill.getDescription(), ',');
+						String[] split = StringUtils.split(skill.getDescription(sheet.getLengthUnit()), ',');
 						if (split != null) {
 							if (split.length > 0) {
 								line.add( StringUtils.trimToEmpty(split[0]) );
