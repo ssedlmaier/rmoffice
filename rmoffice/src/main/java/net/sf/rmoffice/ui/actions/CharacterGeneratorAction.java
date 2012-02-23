@@ -89,13 +89,13 @@ public class CharacterGeneratorAction implements ActionListener {
 						if (StringUtils.isEmpty(adapter.getBean().getCharacterName())) {
 							gen.generateName();
 						}
-						stepDone("ui.tab.characteristics");
-						gen.generateCharacteristics();
 						stepDone("ui.tab.stats");
 						/* stats */
 						gen.distributeStats();
 						stepDone("ui.tab.stats");
 						gen.generatePotStats();
+						stepDone("ui.tab.characteristics");
+						gen.generateCharacteristics();
 						stepDone("ui.generatecharacter.generate.prepare");
 						/* level ups */
 						gen.levelUpPrepare();

@@ -40,6 +40,7 @@ import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.Spelllist;
 import net.sf.rmoffice.meta.WeightHeight;
+import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.enums.StatEnum;
 
 import org.slf4j.Logger;
@@ -53,7 +54,17 @@ import com.jgoodies.binding.beans.BeanAdapter;
  */
 public class CharacterGenerator {
 	private final static Logger log = LoggerFactory.getLogger(CharacterGenerator.class);
-    private final static int[] DEFAULT_SKILLS = {5, 14, 64, 91, 93, 98, 100, 104, 110, 160, 168, 202, 204 };
+	/* special: Magic Development=202 */
+	/* Swimming=5, Climbing=14, Body Dev=64, */
+    private final static int[] BASE_SKILLS = {5, 14, 64, 98, 100, 110, 160, 168, 204 };
+    /* Schleichen=91, Verstecken=93, Gassenwissen=104,  Entesslung=10, Überreden=33, Seilkunst=48,
+     * Lautloser Angriff=79, Fallen entschärfen=81, Lock pick=87, Tarnung=88, Fingerfertigkeit=90, Taschendiebstahl=92, 
+     * Verstecken=93, Runen lesen=101, Gassenwissen=104, Kräuter vorbereiten=123, Fallen entdecken=162,
+     * Lügen entlarven=164, Spuren=165/166, Hinterhalt entdecken=343, Pflanzenkunde=180, Tierkunde=184, 185-189 kunden
+     * Nahrungssuche=212, Sprinten=6,    */
+    private final static int[] SECONDARY_SKILLS = {6, 10, 33, 48, 79, 81, 87, 88, 90, 91, 92, 93,
+    	                             101, 104, 123, 162, 164, 165, 166, 180, 184, 185, 186, 187,
+    	                             188, 189, 212, 343, };
     /* Individual random skill from cats: 10=Kunst-Aktiv 11=Kunst-Passiv 38=Wissen-Magisch, 39=Wissen-Obskur */
     private final static List<Integer> FLAVOR_SKILL_CATS = new ArrayList<Integer>();
 
@@ -184,8 +195,16 @@ public class CharacterGenerator {
 	 * Generates some values of the characteristics.
 	 */
 	public void generateCharacteristics() {
-		/* appearance 1-100 */
-		characteristics.getBean().setAppearance(DiceUtils.roll(2, 50));
+		/* appearance potential presence - 25 + 5W10 */
+		int app = sheetAdapter.getBean().getStatPot(StatEnum.PRESENCE) - 25 + DiceUtils.roll(5, 10);
+		if (app < 1) {
+			app = 1;
+		} else if (app > 100) {
+			app = 100;
+		}
+		characteristics.getBean().setAppearance(app);
+		/* age */
+		characteristics.getBean().setAge(16 + DiceUtils.roll(3, 2 + (int)sheetAdapter.getBean().getLevel()));
 		/* weight and height */
 		if (sheetAdapter.getBean().getCulture() != null) {
 			WeightHeight wh = sheetAdapter.getBean().getCulture().getWeightHeight();
@@ -206,6 +225,7 @@ public class CharacterGenerator {
 	
 	public void levelUpPrepare() {
 		RMSheet sheet = sheetAdapter.getBean();
+		skills = new ArrayList<ISkill>();
 		/* set magic realm */
 		if (sheet.isMagicRealmEditable()) {
 			int maxBonus = 0;
@@ -222,9 +242,11 @@ public class CharacterGenerator {
 			if (maxStat != null) {
 				sheet.setMagicRealm(maxStat);
 			}
+		} else {
+			/* add power development for magic users */
+			skills.add(data.getSkill(Integer.valueOf(202)));
 		}
 		/* get the favorite marked skills */
-		skills = new ArrayList<ISkill>();
 		List<ISkill> weaponsAll = new ArrayList<ISkill>();
 		List<ISkill> weaponsFav = new ArrayList<ISkill>();
 		for (Rank rank : sheet.getSkillRanks()) {
@@ -252,8 +274,8 @@ public class CharacterGenerator {
 			/* we have no favorite weapon, we use the youth weapons */
 			skills.addAll(weaponsToAdd);
 		}
-		/* default skills */
-		for (int skillId : DEFAULT_SKILLS) {
+		/* base skills */
+		for (int skillId : BASE_SKILLS) {
 			ISkill skill = data.getSkill(Integer.valueOf(skillId));
 			if (skill != null) {
 				if (!skills.contains(skill)) {
@@ -263,17 +285,10 @@ public class CharacterGenerator {
 				if (log.isWarnEnabled()) log.warn("Skill ID "+skillId+" is not available");
 			}
 		}
+		/* secondary skills */
+		skills.addAll(collectSecondarySkills());
 		/* individual flavored skills */
-		List<ISkill> flavored = new ArrayList<ISkill>();
-		List<SkillCategory> foundCats = new ArrayList<SkillCategory>();
-		for (ISkill skill : data.getSkills()) {
-			SkillCategory cat = sheet.getSkillcategory(skill);
-			if (FLAVOR_SKILL_CATS.contains(cat.getId()) && ! foundCats.contains(cat) && DiceUtils.roll(1, 100) < 20) {
-				foundCats.add(cat);
-				flavored.add(skill);
-			}
-		}
-		skills.addAll(flavored);
+		skills.addAll(collectFlavorSkills(sheet));
 		/* spell lists */
 		int chanceToIgnore = 0;
 		List<ISkill> openOwnRealmList = new ArrayList<ISkill>(); /* for youth open spell ranks */
@@ -323,7 +338,73 @@ public class CharacterGenerator {
 		/* order by favorite, development costs */
 		Collections.sort(skills, new SkillComparator(sheetAdapter.getBean()));
 	}
+
+	private List<ISkill> collectFlavorSkills(RMSheet sheet) {
+		List<ISkill> flavored = new ArrayList<ISkill>();
+		List<SkillCategory> foundCats = new ArrayList<SkillCategory>();
+		for (ISkill skill : data.getSkills()) {
+			if (!RMPreferences.getInstance().isExcluded(skill.getSource())) {
+				SkillCategory cat = sheet.getSkillcategory(skill);
+				if (FLAVOR_SKILL_CATS.contains(cat.getId()) && ! foundCats.contains(cat) && DiceUtils.roll(1, 100) < 20) {
+					foundCats.add(cat);
+					flavored.add(skill);
+				}
+			}
+		}
+		return flavored;
+	}
 	
+	/**
+	 * Returns a list of {@link ISkill}s which is a subset of the secondary skills.
+	 * As lower the development costs are as higher is the chance to be part of the subset.
+	 * If the skill is an everyman, vocational or restricted this will modify the chance to add.
+	 */
+	private List<ISkill> collectSecondarySkills() {
+		List<ISkill> subset = new ArrayList<ISkill>();
+		for (int id : SECONDARY_SKILLS) {
+			int chance = 100;
+			ISkill skill = data.getSkill(Integer.valueOf(id));
+			Skillcost costs = sheetAdapter.getBean().getSkillcost(skill);
+			/* Example base chance:
+			 * Cost 1/3 --> 90%
+			 * Cost 2/7 --> 80%
+			 * Cost 6   --> 40%
+			 * */
+			chance -= costs.getCost(0) * 10;
+			/* second value:
+			 * 1/2 => base 90 - 4 = 86
+			 * 1/5 => base 90 - 10 = 80
+			 * 2/7 => base 80 - 14 = 66
+			 * */
+			if (costs.size() > 1) {
+				chance -= costs.getCost(1) * 2;
+			} else {
+				chance -= 35;
+			}
+			/* check if everyman, restricted, vocational */
+			SkillType skillType = sheetAdapter.getBean().getSkillType(skill);
+			switch (skillType) {
+			case DEFAULT:
+				chance -= 10;
+				break;
+			case EVERYMAN:
+				chance += 25;
+				break;
+			case OCCUPATIONAL:
+				chance += 50;
+				break;
+			default:
+				/* exclude restricted */
+				chance -= 100;
+				break;
+			}
+			if (DiceUtils.roll(1, 100) < chance) {
+				subset.add(skill);
+			}
+		}
+		return subset;
+	}
+
 	/**
 	 * 
 	 * @param sheet the sheet
