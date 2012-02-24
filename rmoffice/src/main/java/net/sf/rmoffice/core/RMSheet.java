@@ -333,10 +333,12 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			characteristics.weight = null; 
 		}
 		/* Bug: Skill 103 was duplicate --> must be 242 */
-		/*      Skill 246 was duplicate --> must be 299 (Long bow) */
+		/*      Skill 246 was duplicate --> must be 299 (Long bow) 
+		 *      Skill 354/355 were duplicate --> must be 348/349 (Kynac)
+		 *      */
 		if (skillRanks != null) {
-			int toReplace[]   = new int[] {103, 246};
-			int replacement[] = new int[] {242,299};
+			int toReplace[]   = new int[] {103, 246, 354, 355};
+			int replacement[] = new int[] {242, 299, 348, 349};
 			for (int i=0; i<toReplace.length; i++) {
 				Rank rankToReplace = skillRanks.remove(Integer.valueOf(toReplace[i]));
 				Rank rankReplacement = skillRanks.get(Integer.valueOf(replacement[i]));

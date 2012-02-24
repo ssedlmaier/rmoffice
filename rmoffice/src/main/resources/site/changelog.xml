@@ -44,6 +44,7 @@
 		  <para>
 		    <itemizedlist>
 		     <listitem><para>NPC: generator creates more different characters with typical skills for the profession</para></listitem>
+		     <listitem><para>BASIC: range description for weapons depends on length unit now</para></listitem>
 		    </itemizedlist>
 		 </para>
 	    </section>
