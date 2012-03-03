@@ -21,6 +21,7 @@ import java.io.Writer;
 
 import net.sf.rmoffice.core.items.MagicalFeature;
 import net.sf.rmoffice.core.items.MagicalItem;
+import net.sf.rmoffice.meta.enums.CharImagePos;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.MagicalItemFeatureType;
 import net.sf.rmoffice.meta.enums.ResistanceEnum;
@@ -92,6 +93,7 @@ public class ExportImport {
 		xStream.addImmutableType(ResistanceEnum.class);
 		xStream.addImmutableType(LengthUnit.class);
 		xStream.addImmutableType(WeightUnit.class);
+		xStream.addImmutableType(CharImagePos.class);
 		/* StatEnum converter */
 		SingleValueConverter converter = new SingleValueConverter() {
 			

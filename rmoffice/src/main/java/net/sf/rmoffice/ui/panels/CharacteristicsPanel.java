@@ -56,7 +56,7 @@ import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
 
 
@@ -77,15 +77,14 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 				+ HEADLINE_SEPARATOR +
 				StringUtils.repeat(ROW_WITH_GAP, 8) 
 				+ HEADLINE_SEPARATOR +
-				" 150dlu:g");
+				ROW_WITH_GAP + ROW_WITH_GAP +
+				" 160dlu");
 		layout.setColumnGroups(new int[][]{{1, 7}});
 
 		// PanelBuilder just for the border
 		PanelBuilder builder = new PanelBuilder(layout, this);
 		builder.setDefaultDialogBorder();
 
-		CellConstraints cc = new CellConstraints(); 
-		
 		/* Characteristics */
 		int row = 1;
 		
@@ -100,7 +99,7 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 		row += 2;
 		
 		/* Gender */
-		add(new JLabel(RESOURCE.getString("rolemaster.characteristics.gender")), cc.xy(COL_LBL_L, row));
+		add(new JLabel(RESOURCE.getString("rolemaster.characteristics.gender")), CC.xy(COL_LBL_L, row));
 		ValueModel genderConverter = new AbstractConverter(characteristicsPM.getModel(Characteristics.PROP_IS_FEMALE)) {
 			private static final long serialVersionUID = 1L;
 
@@ -122,29 +121,29 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 				                                                                            RESOURCE.getString("gender.female")}, genderConverter);
 		JComboBox cbGender =  new JComboBox(cbGenderAdapter);
 		Bindings.bind(cbGender, "enabled", enabledValueHolder);
-		add(cbGender, cc.xyw(COL_COMP_L, row, 3));
+		add(cbGender, CC.xyw(COL_COMP_L, row, 3));
 
 		addTextFieldR(Characteristics.PROP_SKIN, row, characteristicsPM, enabledValueHolder, null, builder);
 		
 		row +=2;
 		
 		/* Height + Unit */
-		builder.addLabel(RESOURCE.getString("rolemaster.characteristics.height"), cc.xy(COL_LBL_L, row));
+		builder.addLabel(RESOURCE.getString("rolemaster.characteristics.height"), CC.xy(COL_LBL_L, row));
 		JTextField tfHeight =  new JTextField();
 		LengthFormatToIntegerConverter heightConverter = new LengthFormatToIntegerConverter(characteristicsPM.getModel(Characteristics.PROP_HEIGHT_CM), sheetAdapter);
 		Bindings.bind(tfHeight, heightConverter, true);
 		Bindings.bind(tfHeight, "enabled", enabledValueHolder);
-		builder.add(tfHeight, cc.xyw(COL_COMP_L, row, 3));
+		builder.add(tfHeight, CC.xyw(COL_COMP_L, row, 3));
 		
 		/* Weight*/
-		builder.addLabel(RESOURCE.getString("rolemaster.characteristics.weight"), cc.xy(COL_LBL_R, row));
+		builder.addLabel(RESOURCE.getString("rolemaster.characteristics.weight"), CC.xy(COL_LBL_R, row));
 		JFormattedTextField tfWeight = BasicComponentFactory.createIntegerField(characteristicsPM.getModel(Characteristics.PROP_WEIGHT));
 		Bindings.bind(tfWeight, "enabled", enabledValueHolder);
-		builder.add(tfWeight, cc.xy(COL_COMP_R, row));
+		builder.add(tfWeight, CC.xy(COL_COMP_R, row));
 
 		EnumValueConverter weightCon = new EnumValueConverter(sheetAdapter.getValueModel(RMSheet.PROPERTY_WEIGHT_UNIT));
 		JLabel lblWeightUnit = BasicComponentFactory.createLabel(weightCon);
-		builder.add(lblWeightUnit, cc.xy(COL_COMP_R + 2, row));
+		builder.add(lblWeightUnit, CC.xy(COL_COMP_R + 2, row));
 
 		row += 2;
 		
@@ -162,7 +161,7 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 		
 		row += 2;
 
-		builder.addSeparator(RESOURCE.getString("rolemaster.characteristics.background.title"), cc.xyw(1, row, 11));
+		builder.addSeparator(RESOURCE.getString("rolemaster.characteristics.background.title"), CC.xyw(1, row, 11));
 		row += 1;
 		
 		
@@ -204,7 +203,7 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 		addTextFieldL(Characteristics.PROP_MISC4, row, characteristicsPM, enabledValueHolder, null, builder);
 		
 		row += 2;
-		builder.addSeparator(RESOURCE.getString("rolemaster.characteristics.image.title"), cc.xyw(1, row, 11));
+		builder.addSeparator(RESOURCE.getString("rolemaster.characteristics.image.title"), CC.xyw(1, row, 11));
 		row += 1;
 		/* Image */
 		final ValueModel charImageConverter = new ByteArrayToIconConverter(characteristicsPM.getModel(Characteristics.PROP_CHARIMAGE));
@@ -238,12 +237,23 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 				}
 			}
 		});
-		CellConstraints cc1 = new CellConstraints(COL_LBL_L, row, CellConstraints.LEFT , CellConstraints.TOP);
-		builder.add(btCharImage, cc1);
+		JButton btDelImage = new JButton(RESOURCE.getString("rolemaster.characteristics.image.delete"));
+		btDelImage.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				charImageConverter.setValue(null);
+			}
+		});
+		
+		builder.add(btCharImage, CC.xy(COL_LBL_L, row));
+		Bindings.bind(btDelImage, "enabled", enabledValueHolder);
+		builder.add(btDelImage, CC.xy(COL_LBL_L, row + 2));
+		
 		JLabel lbCharImage = new JLabel();
 		Bindings.bind(lbCharImage, "icon", charImageConverter);
 		Bindings.bind(btCharImage, "enabled", enabledValueHolder);
-		builder.add(new JScrollPane(lbCharImage), cc.xyw(COL_COMP_L, row, 9, "fill fill"));
+		builder.add(new JScrollPane(lbCharImage), CC.xywh(COL_COMP_L, row, 9, 5, "fill fill"));
 	}
 		
 	@Override

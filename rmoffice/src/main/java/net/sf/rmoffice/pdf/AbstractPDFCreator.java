@@ -246,8 +246,8 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		
 		canvas.beginText();              
         canvas.setFontAndSize(fontHeadline, 14);
-        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page.title"), 92, 818, 0);
-        canvas.showTextAligned(Element.ALIGN_LEFT, title, 92, 802, 0);
+        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page.title"), 92, 810, 0);
+        canvas.showTextAligned(Element.ALIGN_LEFT, title, 92, 794, 0);
         
         canvas.setFontAndSize(fontHeadline, 8);
         canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page2.character"), 60, 771, 0);

@@ -48,6 +48,7 @@ import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.Spelllist;
 import net.sf.rmoffice.meta.TrainPack;
+import net.sf.rmoffice.meta.enums.CharImagePos;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.MagicalItemFeatureType;
 import net.sf.rmoffice.meta.enums.RankType;
@@ -118,6 +119,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	public static final String PROPERTY_LENGTH_UNIT = "lengthUnit";
 	public static final String PROPERTY_LEVELUP_MODE = "lvlUpActive";
 	public static final String PROPERTY_PRINT_OUTLINE_IMG = "printOutlineImage";
+	public static final String PROPERTY_IMG_POS = "imagePos";
 	
 	/* export to xml */
 	private String playerName;
@@ -152,6 +154,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	private WeightUnit weightUnit;
 	private LengthUnit lengthUnit;
 	private Boolean printOutlineImage;
+	private CharImagePos imagePos;
 
 	/* must not be exported to XML */
 	private transient MetaData data;
@@ -2207,5 +2210,22 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 
 	public void setMetaData(MetaData data) {
 		this.data = data;
+	}
+
+	public CharImagePos getImagePos() {
+		if (this.imagePos == null) {
+			setImagePos(CharImagePos.PAGE1_AND_EQUIPMENT);
+		}
+		return imagePos;
+	}
+
+	public void setImagePos(CharImagePos imagePos) {
+		CharImagePos oldValue = this.imagePos;
+		this.imagePos = imagePos;
+		if (this.imagePos == null) {
+			this.imagePos = CharImagePos.PAGE1_AND_EQUIPMENT;
+		}
+		firePropertyChange(PROPERTY_IMG_POS, oldValue, this.imagePos);
+		
 	}
 }

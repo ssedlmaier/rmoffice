@@ -30,6 +30,7 @@ import net.sf.rmoffice.meta.Culture;
 import net.sf.rmoffice.meta.Profession;
 import net.sf.rmoffice.meta.Race;
 import net.sf.rmoffice.meta.Shield;
+import net.sf.rmoffice.meta.enums.CharImagePos;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.WeightUnit;
@@ -207,6 +208,13 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		JCheckBox cbShowOutline = BasicComponentFactory.createCheckBox(basicModel.getModel(RMSheet.PROPERTY_PRINT_OUTLINE_IMG), "");
 		Bindings.bind(cbShowOutline, "enabled", enabledValueHolder);
 		builder.add(cbShowOutline, cc.xyw(COL_COMP_L, row, 3));
+		
+		/* image position */
+		builder.addLabel(RESOURCE.getString("ui.basic.imagepos"), cc.xy(COL_LBL_R, row));
+		SelectionInList<CharImagePos> selCharImgList = new SelectionInList<CharImagePos>(basicModel.getAvailableCharImgPos(), basicModel.getModel(RMSheet.PROPERTY_IMG_POS));
+		JComboBox cbCharImg = BasicComponentFactory.createComboBox(selCharImgList, new EnumListCellRenderer());
+		Bindings.bind(cbCharImg, "enabled", enabledValueHolder);
+		builder.add(cbCharImg, cc.xyw(COL_COMP_R, row, 3));
 	}
 	
 	@Override

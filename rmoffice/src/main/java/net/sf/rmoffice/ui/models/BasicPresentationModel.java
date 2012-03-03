@@ -37,6 +37,7 @@ import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.Profession;
 import net.sf.rmoffice.meta.Race;
 import net.sf.rmoffice.meta.Shield;
+import net.sf.rmoffice.meta.enums.CharImagePos;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.WeightUnit;
@@ -208,5 +209,9 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 		sb.append(AbstractPDFCreator.format(adapter.getBean().getArmorReactionModi(), false)).append(" / ");
 		sb.append(""+adapter.getBean().getArmorRangeModi());
 		return sb.toString();
+	}
+
+	public List<CharImagePos> getAvailableCharImgPos() {
+		return Arrays.asList(CharImagePos.values());
 	}
 }

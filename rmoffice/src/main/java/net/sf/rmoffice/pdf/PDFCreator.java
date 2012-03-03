@@ -486,11 +486,17 @@ public class PDFCreator extends AbstractPDFCreator {
 		return y;
 	}
 
-	private void drawHitsPPExhaust(PdfContentByte canvas, final float initialY) {
-		hline(canvas, PAGE1_RIGHTBOX_LEFTX, initialY, RIGHT_X);
+	private void page1drawHitsPPExhaust(PdfContentByte canvas, final float initialY, final float xImgPos) {
+		/* hline until xImgPos */
+		hline(canvas, PAGE1_RIGHTBOX_LEFTX, initialY, xImgPos);
 		float lineHeight = 11;
 		float y = initialY - lineHeight;
-		float[] xVal = new float[]{PAGE1_RIGHTBOX_LEFTX + 4, PAGE1_RIGHTBOX_LEFTX + 100, PAGE1_RIGHTBOX_LEFTX + 160, PAGE1_RIGHTBOX_LEFTX + 220};
+		/* calculate x positions - distribute to given place */
+		float diff = (xImgPos - PAGE1_RIGHTBOX_LEFTX - 50) / 3;
+		float[] xVal = new float[]{PAGE1_RIGHTBOX_LEFTX + 4, PAGE1_RIGHTBOX_LEFTX + 10 + diff,
+                                                             PAGE1_RIGHTBOX_LEFTX + 10 + 2 * diff,
+                                                             PAGE1_RIGHTBOX_LEFTX + 10 + 3 * diff};
+		
 		canvas.beginText();
 		canvas.setFontAndSize(fontBold, 7);
 		/* 1st line */
@@ -905,8 +911,8 @@ public class PDFCreator extends AbstractPDFCreator {
 		
 		canvas.beginText();              
         canvas.setFontAndSize(fontHeadline, 14);
-        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page.title"), 92, 818, 0);
-        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page1.title2"), 92, 802, 0);
+        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page.title"), 92, 810, 0);
+        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page1.title2"), 92, 794, 0);
         canvas.endText();
         
 		if (log.isDebugEnabled()) log.debug("loading image runes");
@@ -949,12 +955,50 @@ public class PDFCreator extends AbstractPDFCreator {
         	canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.header.notes"), centerX, y, 0);
         	canvas.endText();
         }
+        float xImgPos = page1charImage(canvas, y + 8);
         /* */
-        drawHitsPPExhaust(canvas, 111);
+        page1drawHitsPPExhaust(canvas, 111, xImgPos);
     	
     	footer(canvas);
 	}
 	
+	/*
+	 * Returns the x value of the image.
+	 */
+	private float page1charImage(PdfContentByte canvas, final float y) throws IOException, DocumentException {
+		if (sheet.getImagePos().isPage1() && sheet.getCharacteristics().getCharImage() != null) {
+			/* image */
+			Image charImage = Image.getInstance(sheet.getCharacteristics().getCharImage());
+			float maxWidth = 100;
+			float maxHeight = Math.min(120, y - BOTTOM_Y);
+			float height = charImage.getHeight(); 
+			float width = charImage.getWidth();
+			if (log.isDebugEnabled()) log.debug("character image size w x h = "+width+" x "+height );
+			if (height > maxHeight) {
+				float f = height / maxHeight;
+				height = maxHeight;
+				width = width / f;
+				if (log.isDebugEnabled()) log.debug("character image scaled (height) to w x h = "+width+" x "+height );
+			}
+			if (width > maxWidth) {
+				float f = width / maxWidth;
+				width = maxWidth;
+				height = height / f;
+				if (log.isDebugEnabled()) log.debug("character image scaled (width) to w x h = "+width+" x "+height );
+			}
+			float absX = RIGHT_X - width - 1;
+			float absY = BOTTOM_Y + 1;
+			charImage.setAbsolutePosition(absX, absY);
+			charImage.scaleAbsolute(width, height);
+			canvas.addImage(charImage, true);
+			/* lines */
+			hline(canvas, RIGHT_X - width - 2.5f, BOTTOM_Y + height + 2, RIGHT_X);
+			vline(canvas, RIGHT_X - width - 2, BOTTOM_Y + height + 2.5f, BOTTOM_Y);
+			return absX - 1;
+		}
+		return RIGHT_X;
+	}
+
 	private void createPage2(PdfContentByte canvas) throws BadElementException, MalformedURLException, IOException, DocumentException {
 		header2(canvas, 2);
         drawSkillcategories(canvas);
