@@ -85,7 +85,7 @@ public enum LengthUnit {
 			int inches = value % 12;
 			int feet = (value - inches) / 12;
 			/* f" i' */
-			return feet + "\" " + inches + "'";
+			return feet + "' " + inches + "\"";
 		}
 		return WITHOUT_SCALE.format(value) + " " + RESOURCE.getString("LengthUnit."+name());
 	}
@@ -113,7 +113,7 @@ public enum LengthUnit {
 					retVal = Integer.parseInt(StringUtils.trimToEmpty(valueStr));
 				}
 			} else {
-				int idx = valueStr.indexOf('"');
+				int idx = valueStr.indexOf("'");
 				String[] parts = StringUtils.split(valueStr, "\"'");
 				if (parts.length == 1) {
 					retVal = NumberUtils.toInt(parts[0]);

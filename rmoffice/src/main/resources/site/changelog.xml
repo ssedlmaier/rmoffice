@@ -54,6 +54,7 @@
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>
+		     <listitem><para>BASIC: Fix Length unit format (feet/inch was f&quot;i')</para></listitem>
 		     <listitem><para>PDF: Weight penalty can't be lower than 0 anymore</para></listitem>
 		     <listitem><para>NPC: Appearence diced with pot PR - 25 + 5d10</para></listitem>
 		   </itemizedlist>

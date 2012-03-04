@@ -25,12 +25,13 @@ public class LengthUnitTest {
 	@Test
 	public void testParse() {
 		assertEquals(4, LengthUnit.INCH.parseInt("4"));
-		assertEquals(48, LengthUnit.INCH.parseInt("4\""));
-		assertEquals(49, LengthUnit.INCH.parseInt("4\"1'"));
-		assertEquals(59, LengthUnit.INCH.parseInt("4\"11'"));
-		assertEquals(59, LengthUnit.INCH.parseInt("4\" 11'"));
-		assertEquals(59, LengthUnit.INCH.parseInt("4\" 11' "));
-		assertEquals(11, LengthUnit.INCH.parseInt("11'"));
+		assertEquals(48, LengthUnit.INCH.parseInt("4'"));
+		assertEquals(75, LengthUnit.INCH.parseInt("75\""));
+		assertEquals(49, LengthUnit.INCH.parseInt("4'1\""));
+		assertEquals(59, LengthUnit.INCH.parseInt("4'11\""));
+		assertEquals(59, LengthUnit.INCH.parseInt("4' 11\""));
+		assertEquals(59, LengthUnit.INCH.parseInt("4' 11\" "));
+		assertEquals(11, LengthUnit.INCH.parseInt("11\""));
 		
 		assertEquals(167, LengthUnit.CM.parseInt("167"));
 		assertEquals(11, LengthUnit.CM.parseInt("11 cm"));
@@ -62,6 +63,6 @@ public class LengthUnitTest {
 	
 	@Test
 	public void testFormattedString() {
-		assertEquals("6\" 3'", LengthUnit.INCH.getFormattedString(75)); // 6" 3' = 75'
+		assertEquals("6' 3\"", LengthUnit.INCH.getFormattedString(75)); // 6' 3" = 75"
 	}
 }
