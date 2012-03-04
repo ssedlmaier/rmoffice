@@ -492,10 +492,10 @@ public class PDFCreator extends AbstractPDFCreator {
 		float lineHeight = 11;
 		float y = initialY - lineHeight;
 		/* calculate x positions - distribute to given place */
-		float diff = (xImgPos - PAGE1_RIGHTBOX_LEFTX - 50) / 3;
-		float[] xVal = new float[]{PAGE1_RIGHTBOX_LEFTX + 4, PAGE1_RIGHTBOX_LEFTX + 10 + diff,
-                                                             PAGE1_RIGHTBOX_LEFTX + 10 + 2 * diff,
-                                                             PAGE1_RIGHTBOX_LEFTX + 10 + 3 * diff};
+		float diff = (xImgPos - PAGE1_RIGHTBOX_LEFTX - 40) / 3;
+		float[] xVal = new float[]{PAGE1_RIGHTBOX_LEFTX + 4, PAGE1_RIGHTBOX_LEFTX + 5 + diff,
+                                                             PAGE1_RIGHTBOX_LEFTX + 5 + 2 * diff,
+                                                             PAGE1_RIGHTBOX_LEFTX + 5 + 3 * diff};
 		
 		canvas.beginText();
 		canvas.setFontAndSize(fontBold, 7);
@@ -969,8 +969,8 @@ public class PDFCreator extends AbstractPDFCreator {
 		if (sheet.getImagePos().isPage1() && sheet.getCharacteristics().getCharImage() != null) {
 			/* image */
 			Image charImage = Image.getInstance(sheet.getCharacteristics().getCharImage());
-			float maxWidth = 100;
-			float maxHeight = Math.min(120, y - BOTTOM_Y);
+			float maxWidth = 105;
+			float maxHeight = Math.min(200, y - BOTTOM_Y);
 			float height = charImage.getHeight(); 
 			float width = charImage.getWidth();
 			if (log.isDebugEnabled()) log.debug("character image size w x h = "+width+" x "+height );
