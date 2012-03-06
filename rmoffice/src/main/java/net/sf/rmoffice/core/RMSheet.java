@@ -1390,7 +1390,6 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 				if (professionId != null && raceId != null && cultureId != null) {
 					setState(State.NORMAL);
 					success = true;
-					addToDo(new ToDo(RESOURCE.getString("todo.height"), ToDoType.SYSTEM));
 					addToDo(new ToDo(RESOURCE.getString("todo.backgroundoptions")+" "+getRace().getBackgroundOptions(), ToDoType.SYSTEM));
 					for (String todoString : getCulture().getTodos()) {
 						addToDo(new ToDo(todoString, ToDoType.SYSTEM));
