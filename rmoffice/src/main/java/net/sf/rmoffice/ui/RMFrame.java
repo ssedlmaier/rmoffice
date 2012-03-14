@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2012 Daniel Golesny
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -102,6 +101,7 @@ import net.sf.rmoffice.ui.models.SkillTreeNode;
 import net.sf.rmoffice.ui.models.SkillcategoryTableModel;
 import net.sf.rmoffice.ui.models.SkillsTableModel;
 import net.sf.rmoffice.ui.models.StatValueModelAdapter;
+import net.sf.rmoffice.ui.models.TalentFlawPresentationModel;
 import net.sf.rmoffice.ui.panels.BasicPanel;
 import net.sf.rmoffice.ui.panels.CharacteristicsPanel;
 import net.sf.rmoffice.ui.panels.CoinsPanel;
@@ -112,6 +112,7 @@ import net.sf.rmoffice.ui.panels.MagicalItemPanel;
 import net.sf.rmoffice.ui.panels.ModifySkillDialog;
 import net.sf.rmoffice.ui.panels.ProgressGlassPane;
 import net.sf.rmoffice.ui.panels.StatPanel;
+import net.sf.rmoffice.ui.panels.TalentFlawPanel;
 import net.sf.rmoffice.ui.panels.TodoPanel;
 import net.sf.rmoffice.ui.renderer.ColoredBooleanRenderer;
 import net.sf.rmoffice.ui.renderer.NumberSpinnerTableRenderer;
@@ -140,7 +141,6 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	private static final String TITLE = "RoleMaster Office";
 
-	private List<JComponent> allComponents = new ArrayList<JComponent>();
 	private JTabbedPane tabbedPane;
 	private Map<SkillCategory, JTextField> skillcostFields = new HashMap<SkillCategory, JTextField>();
 	private List<SkillCategory> modifiableSkillgroups = new ArrayList<SkillCategory>();
@@ -220,10 +220,17 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		BasicPresentationModel basicModel = new BasicPresentationModel(this, getRMSheetAdapter(), data);
 		BasicPanel basicPanel = new BasicPanel(basicModel, enableValueHolder);
 		tabbedPane.addTab(RESOURCE.getString("ui.tab.basic"), new JScrollPane(basicPanel));
-		
+		/* ---- characteristics / BG / talents & flaws */
+		JTabbedPane characteristicsTabs = new JideTabbedPane();
 		CharacteristicsPresentationModel characteristicsModel = new CharacteristicsPresentationModel(getCharacteristicsAdapter().getBeanChannel());
 		CharacteristicsPanel characteristicsPanel = new CharacteristicsPanel(characteristicsModel, getRMSheetAdapter(), enableValueHolder);
-		tabbedPane.addTab(RESOURCE.getString("ui.tab.characteristics"), null, createNorthPanel( characteristicsPanel ) );
+		characteristicsTabs.addTab(RESOURCE.getString("ui.tab.characteristics"), null, createNorthPanel( characteristicsPanel ));
+		
+		TalentFlawPresentationModel talentPresModel = new TalentFlawPresentationModel(getRMSheetAdapter().getBeanChannel(), enableValueHolder);
+		TalentFlawPanel talentPanel = new TalentFlawPanel(talentPresModel);
+		characteristicsTabs.addTab(RESOURCE.getString("ui.tab.talentflaws"), null, createNorthPanel( talentPanel ));
+		tabbedPane.addTab(RESOURCE.getString("ui.tab.characteristics"), null, characteristicsTabs);
+		/* stats */
 		StatPanel statPanel = new StatPanel(getStatValueModelAdapter(), getRMSheetAdapter(), enableValueHolder);
 		JPanel panel1 = new JPanel(new BorderLayout());
 		panel1.add(statPanel, BorderLayout.WEST);
@@ -243,7 +250,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		CoinsPanel coinsPanel = new CoinsPanel(getCoinsAdapter());
 		equipmentTabs.addTab(RESOURCE.getString("rolemaster.money.header"), createNorthPanel(coinsPanel));
 		/* MagicalItem Panel */
-		MagicalItemPanel itemPanel = registerComp(new MagicalItemPanel(getRMSheetAdapter(), enableValueHolder));
+		MagicalItemPanel itemPanel = new MagicalItemPanel(getRMSheetAdapter(), enableValueHolder);
 		equipmentTabs.addTab(RESOURCE.getString("ui.tab.items"), null, createNorthPanel(itemPanel));		
 		tabbedPane.addTab(RESOURCE.getString("ui.tab.equipment"), null, equipmentTabs);
 		/* Info Panel */
@@ -794,9 +801,6 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 	}
 	
 	private void setAllEnabled(boolean enabled) {
-		for (JComponent comp : allComponents) {
-			comp.setEnabled(enabled);
-		}
 		enableValueHolder.setValue(enabled);
 		if (enabled) {
 			refreshing = true;
@@ -813,12 +817,6 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 	public void setCurrentFile(File currentFile) {
 		this.currentFile = currentFile;
 		enableMenuSaveValueHolder.setValue(currentFile != null);
-	}
-	
-	/* adds component to list for enablement/disablement */	
-	private <T extends JComponent> T registerComp(T comp) {
-		allComponents.add(comp);
-		return comp;
 	}
 	
 	/** Bonus format 
