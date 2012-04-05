@@ -41,8 +41,8 @@ import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.WeightUnit;
 import net.sf.rmoffice.pdf.AbstractPDFCreator;
+import net.sf.rmoffice.ui.dialog.TrainingPackDialog;
 import net.sf.rmoffice.ui.panels.BasicPanel;
-import net.sf.rmoffice.ui.panels.TrainingPackDialog;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.beans.BeanAdapter;

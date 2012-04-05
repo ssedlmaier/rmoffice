@@ -17,7 +17,9 @@ package net.sf.rmoffice.core;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -25,8 +27,8 @@ import net.sf.rmoffice.LevelUpVetoException;
 import net.sf.rmoffice.RMPreferences;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
-import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.SkillCategory;
+import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.TrainPack;
 
 import org.slf4j.Logger;
@@ -34,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * 
+ * Is saved for each character and saves the level-up information.
  */
 public class RMLevelUp {
 	private final static Logger log = LoggerFactory.getLogger(RMLevelUp.class);
@@ -43,11 +45,14 @@ public class RMLevelUp {
 	public static final String PROPERTY_LVLUP_ACTIVE = "LvlUpActive";
 	public static final String PROPERTY_LVLUP_STATUSTEXT = "LvlUpStatusText";
 	public static final String PROPERTY_LVLUP_DEVPOINTS = "LvlUpDevPoints";
-	public static final String PROPERTY_LVLUP_SPELLRANKS = "LvlUpSpellRanks";
+	public static final String PROPERTY_LVLUP_SPELLLISTS = "LvlUpSpellLists";
 	
 	private boolean active;
 	private int devPoints;
+	/* deprecated since 4.2.5 */
+	@SuppressWarnings("unused") @Deprecated
 	private int spellRanks;
+	private List<Integer> spellLists;
 	private String devPointsText = "";
 	private Map<Integer, Integer> skillRanks;
 	private Map<Integer, Integer> skillgroupRanks;
@@ -74,7 +79,9 @@ public class RMLevelUp {
 		if (skillgroupRanks == null) {
 			skillgroupRanks = new HashMap<Integer, Integer>();
 		}
-		setSpellRanks(0);
+		if (spellLists == null) {
+			spellLists = new ArrayList<Integer>();
+		}
 		fireDevPointsUpdated();
 	}
 	
@@ -91,9 +98,9 @@ public class RMLevelUp {
 			devPoints = sheet.getDevPoints();
 			skillRanks = new HashMap<Integer, Integer>();
 			skillgroupRanks = new HashMap<Integer, Integer>();
+			spellLists = new ArrayList<Integer>();
 			fireDevPointsUpdated();
 		} else {
-			setSpellRanks(0);
 			devPoints = 0;
 			setLvlUpStatusText(null);
 			fireDevPointsUpdated();
@@ -165,17 +172,15 @@ public class RMLevelUp {
 				/* check DPs */
 				int costDP = costs.getCost(costSteps);
 				if (skill.isSpelllist()) {
-					costDP *= getSpellRankDPFactor();
+					costDP *= getSpellListsDPFactor(skill);
 				}
 				if (costDP <= devPoints) {
 					skillRanks.put(skill.getId(), Integer.valueOf(costSteps + 1));
 					devPoints -= costDP;
 					if (log.isDebugEnabled()) log.debug("decrease DP by "+costDP);
-					if (skill.isSpelllist()) {
-						setSpellRanks(getSpellRanks() + 1);
-					}
 					setLvlUpStatusText(MessageFormat.format(RESOURCE.getString("ui.levelup.msg.decrease"), Integer.valueOf(costDP), skill.getName()));
 					fireDevPointsUpdated();
+					sheet.firePropertyChange(PROPERTY_LVLUP_SPELLLISTS, null, getLvlUpSpellLists());
 				} else {
 					setError(RESOURCE.getString("ui.levelup.error.skill.notenoughDP"));
 					throw new LevelUpVetoException(RESOURCE.getString("ui.levelup.error.skill.notenoughDP"));
@@ -201,14 +206,49 @@ public class RMLevelUp {
 		}
 		int costDP = costs.getCost(costSteps - 1);
 		if (skill.isSpelllist()) {
-			setSpellRanks(getSpellRanks() - 1);
-			costDP *= getSpellRankDPFactor();
+			costDP *= getSpellListsDPFactor(skill);
+			if (costSteps == 1) {
+				/* move spell list because we reduce the last rank in spell list */
+				int idx = spellLists.indexOf(skill.getId());
+				moveSpelllists(idx);
+			}
 		}
 		devPoints += costDP;
 		skillRanks.put(skill.getId(), Integer.valueOf(costSteps - 1));
 		if (log.isDebugEnabled()) log.debug("increase DP by "+costDP);
 		setLvlUpStatusText(MessageFormat.format(RESOURCE.getString("ui.levelup.msg.increase"), Integer.valueOf(costDP), skill.getName()));
 		fireDevPointsUpdated();
+	}
+
+	/*
+	 * Moves the spell list from list. Changing costs will be calculated.
+	 */
+	private void moveSpelllists(final int idx) {
+		for (int position = idx+1; position<spellLists.size(); position++) {
+			Integer spellId = spellLists.get(position);
+			int costSteps = 0;
+			if (skillRanks.containsKey(spellId)) {
+				costSteps = skillRanks.get(spellId).intValue();
+			}
+			int f1 = getSpellListsDPFactor(position);
+			int f2 = getSpellListsDPFactor(position - 1);
+			if (f1 != f2) {
+				// new factor (f2) is smaller than the old factor (f1)
+				int costDPPos = 0;
+				Skillcost costPos = sheet.getSkillcost(meta.getSkill(spellId));
+				for (int i=0; i< costSteps; i++) {
+					costDPPos += costPos.getCost(costSteps - 1);
+				}
+				int dp = costDPPos * (f1 - f2);
+				if (log.isDebugEnabled()) log.debug("increase DP by "+dp +" for moving spell list "+spellId+" from position "+position+" one down");
+				devPoints += dp;
+			}
+			// put skill ID to next lower position
+			spellLists.set(position - 1, spellId);
+		}
+		// remove last position
+		spellLists.remove(spellLists.size() - 1);
+		sheet.firePropertyChange(PROPERTY_LVLUP_SPELLLISTS, null, getLvlUpSpellLists());
 	}
 
 	/**
@@ -314,11 +354,15 @@ public class RMLevelUp {
 					for (int i=costSteps; i>0; i--) {
 						int costDP = costs.getCost(i - 1);
 						if (skill.isSpelllist()) {
-							setSpellRanks(getSpellRanks() - 1);
-							costDP *= getSpellRankDPFactor();
+							costDP *= getSpellListsDPFactor(skill);
 						}
 						devPoints += costDP;
 						dps += costDP;
+					}
+					if (skill.isSpelllist()) {
+						/* remove the spell list with costs */
+						int idx = spellLists.indexOf(skill.getId());
+						moveSpelllists(idx);
 					}
 					skillRanks.put(skill.getId(), Integer.valueOf(0));
 					if (log.isDebugEnabled()) log.debug("increase DP by "+dps);
@@ -344,30 +388,37 @@ public class RMLevelUp {
 	}
 
 	
-	public int getSpellRanks() {
-		return spellRanks;
+	public int getSpellLists() {
+		return spellLists.size();
 	}
 	
-	private void setSpellRanks(int spellRanks) {
-		this.spellRanks = spellRanks;
-		sheet.firePropertyChange(PROPERTY_LVLUP_SPELLRANKS, null, getLvlUpSpellRanks());		
-	}
-	
-	public String getLvlUpSpellRanks() {
-		if (getSpellRankDPFactor() > 1) {
-			String costFactor = "" + getSpellRankDPFactor();
-			return MessageFormat.format(RESOURCE.getString("ui.levelup.spellranks"), "" + getSpellRanks(), costFactor );
-		} else {
-			return "";
+	public String getLvlUpSpellLists() {
+		if (spellLists.size() > 1) {
+			int dpFactor = getSpellListsDPFactor(spellLists.size());
+			if (dpFactor > 1) {
+				String costFactor = "" + dpFactor;
+				return MessageFormat.format(RESOURCE.getString("ui.levelup.spellranks"), "" + getSpellLists(), costFactor );
+			}
 		}
+		return "";
 	}
 	
-	public int getSpellRankDPFactor() {
+	private int getSpellListsDPFactor(ISkill skill) {
+		if (!spellLists.contains(skill.getId())) {
+			spellLists.add(skill.getId());
+		}
+		int position = spellLists.indexOf(skill.getId());
+		return getSpellListsDPFactor(position);
+	}
+
+	private int getSpellListsDPFactor(int position) {
 		int f = RMPreferences.getInstance().getSpelllistDPIncrease();
-		if (f > 0) {
-			return (1 + (getSpellRanks() / f ));
+		if (f > 0 && position > 0) {
+			f = (1 + (position / f ));
 		} else {
-			return 1;
+			f = 1;
 		}
+		log.debug("spelllist factor "+f+" at position="+position);
+		return f;
 	}
 }

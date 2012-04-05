@@ -1136,7 +1136,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		for (int i=1; i<=6; i++) {
 			String textLine = RESOURCE.getString("pdf.page6.order"+i);
 			if (textLine.contains("{0}")) {
-				String quBonus = format(sheet.getStatBonusTotal(StatEnum.QUICKNESS), false);
+				String quBonus = format(sheet.getInitiativeBonus(), false);
 				if ("0".equals(quBonus)) {
 					quBonus = "+0";
 				}

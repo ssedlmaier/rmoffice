@@ -27,6 +27,8 @@ import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
+import net.sf.rmoffice.meta.enums.TalentFlawTransform;
+import net.sf.rmoffice.meta.enums.TalentFlawType;
 import net.sf.rmoffice.meta.enums.ToDoType;
 import net.sf.rmoffice.meta.enums.WeightUnit;
 
@@ -86,6 +88,7 @@ public class ExportImport {
 		xStream.alias("levelup", RMLevelUp.class);
 		xStream.alias("infopage", InfoPage.class);
 		xStream.alias("skillType", SkillType.class);
+		xStream.alias("talentflaw", TalentFlaw.class);
 		xStream.addImmutableType(SkillType.class);
 		xStream.addImmutableType(StatEnum.class);
 		xStream.addImmutableType(ToDoType.class);
@@ -95,6 +98,8 @@ public class ExportImport {
 		xStream.addImmutableType(WeightUnit.class);
 		xStream.addImmutableType(CharImagePos.class);
 		xStream.addImmutableType(TalentFlawLevel.class);
+		xStream.addImmutableType(TalentFlawType.class);
+		xStream.addImmutableType(TalentFlawTransform.class);
 		/* StatEnum converter */
 		SingleValueConverter converter = new SingleValueConverter() {
 			

@@ -93,6 +93,7 @@ import net.sf.rmoffice.ui.actions.CreatePDFAction;
 import net.sf.rmoffice.ui.actions.DesktopAction;
 import net.sf.rmoffice.ui.actions.SaveAction;
 import net.sf.rmoffice.ui.actions.SaveAsAction;
+import net.sf.rmoffice.ui.dialog.ModifySkillDialog;
 import net.sf.rmoffice.ui.editor.NumberSpinnerTableCellEditor;
 import net.sf.rmoffice.ui.models.BasicPresentationModel;
 import net.sf.rmoffice.ui.models.CharacteristicsPresentationModel;
@@ -109,7 +110,6 @@ import net.sf.rmoffice.ui.panels.EquipmentPanel;
 import net.sf.rmoffice.ui.panels.InfoPagePanel;
 import net.sf.rmoffice.ui.panels.LevelUpStatusBar;
 import net.sf.rmoffice.ui.panels.MagicalItemPanel;
-import net.sf.rmoffice.ui.panels.ModifySkillDialog;
 import net.sf.rmoffice.ui.panels.ProgressGlassPane;
 import net.sf.rmoffice.ui.panels.StatPanel;
 import net.sf.rmoffice.ui.panels.TalentFlawPanel;
@@ -147,7 +147,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 	private RMSheet sheet;
 	private MetaData data;
 	private boolean refreshing = false;
-	private JTable skillgroupTable;
+	private JTable skillcatTable;
 	private JTable skillsTable;
 	private SkillsTableModel skillModel;
 	
@@ -226,7 +226,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		CharacteristicsPanel characteristicsPanel = new CharacteristicsPanel(characteristicsModel, getRMSheetAdapter(), enableValueHolder);
 		characteristicsTabs.addTab(RESOURCE.getString("ui.tab.characteristics"), null, createNorthPanel( characteristicsPanel ));
 		
-		TalentFlawPresentationModel talentPresModel = new TalentFlawPresentationModel(getRMSheetAdapter().getBeanChannel(), enableValueHolder);
+		TalentFlawPresentationModel talentPresModel = new TalentFlawPresentationModel(getRMSheetAdapter(), enableValueHolder, this, data);
 		TalentFlawPanel talentPanel = new TalentFlawPanel(talentPresModel);
 		characteristicsTabs.addTab(RESOURCE.getString("ui.tab.talentflaws"), null, createNorthPanel( talentPanel ));
 		tabbedPane.addTab(RESOURCE.getString("ui.tab.characteristics"), null, characteristicsTabs);
@@ -267,7 +267,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		sheet.init();
 		Bindings.bind(statusBar, "text", getRMSheetAdapter().getValueModel(RMLevelUp.PROPERTY_LVLUP_STATUSTEXT, "getLvlUpStatusText", "setLvlUpStatusText"));
 		Bindings.bind(statusBar, "devPoints", getRMSheetAdapter().getValueModel(RMLevelUp.PROPERTY_LVLUP_DEVPOINTS, "getLvlUpDevPoints", "setLvlUpDevPoints"));
-		Bindings.bind(statusBar, "spellRanks", getRMSheetAdapter().getValueModel(RMLevelUp.PROPERTY_LVLUP_SPELLRANKS, "getLvlUpSpellRanks", "setLvlUpSpellRanks"));
+		Bindings.bind(statusBar, "spellRanks", getRMSheetAdapter().getValueModel(RMLevelUp.PROPERTY_LVLUP_SPELLLISTS, "getLvlUpSpellLists", "setLvlUpSpellLists"));
 	}
 
 	/**
@@ -418,8 +418,8 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		/* special bonus col */
 		TableColumn specialCol = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_SPECIAL_BONUS);
 		specialCol.setPreferredWidth(50);
-		NumberSpinnerTableCellEditor spinner2 = new NumberSpinnerTableCellEditor(1, true);
-		specialCol.setCellEditor(spinner2);
+		NumberSpinnerTableCellEditor specialBonusSpinner2 = new NumberSpinnerTableCellEditor(1, true, -9999);
+		specialCol.setCellEditor(specialBonusSpinner2);
 		NumberSpinnerTableRenderer spinnRenderer2 = new NumberSpinnerTableRenderer();
 		specialCol.setCellRenderer(spinnRenderer2);
 		skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_TOTAL_BONUS).setPreferredWidth(50);
@@ -547,38 +547,38 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		
 		skillcatModel = new SkillcategoryTableModel(data);
 		skillcatModel.setSheet(sheet);
-		skillgroupTable = new JTable(skillcatModel);
-		skillgroupTable.setSelectionBackground(UIConstants.COLOR_SELECTION_BG);
-		skillgroupTable.setSelectionForeground(UIConstants.COLOR_SELECTION_FG);
+		skillcatTable = new JTable(skillcatModel);
+		skillcatTable.setSelectionBackground(UIConstants.COLOR_SELECTION_BG);
+		skillcatTable.setSelectionForeground(UIConstants.COLOR_SELECTION_FG);
 		
-		skillgroupTable.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
-		skillgroupTable.setTableHeader(new JTableHeader(skillgroupTable.getColumnModel()));
-		skillgroupTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_NAME).setPreferredWidth(200);
-		skillgroupTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_STAT).setPreferredWidth(40);
-		skillgroupTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_AP_COST).setPreferredWidth(40);
+		skillcatTable.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
+		skillcatTable.setTableHeader(new JTableHeader(skillcatTable.getColumnModel()));
+		skillcatTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_NAME).setPreferredWidth(200);
+		skillcatTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_STAT).setPreferredWidth(40);
+		skillcatTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_AP_COST).setPreferredWidth(40);
 		
 		/* rank renderer/editor*/
-		TableColumn rankCol = skillgroupTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_RANKS);
+		TableColumn rankCol = skillcatTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_RANKS);
 		rankCol.setPreferredWidth(20);
-		NumberSpinnerTableCellEditor spinner = new NumberSpinnerTableCellEditor(1, false);
-		rankCol.setCellEditor(spinner);
+		NumberSpinnerTableCellEditor rankSpinner = new NumberSpinnerTableCellEditor(1, false, 0);
+		rankCol.setCellEditor(rankSpinner);
 		NumberSpinnerTableRenderer spinnRenderer = new NumberSpinnerTableRenderer();
 		rankCol.setCellRenderer(spinnRenderer);
 		
 		/* special 2 bonus */
-		TableColumn spec2Col = skillgroupTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_SPEC2_BONUS);
-		NumberSpinnerTableCellEditor spinner2 = new NumberSpinnerTableCellEditor(1, true);
-		spec2Col.setCellEditor(spinner2);
+		TableColumn spec2Col = skillcatTable.getColumnModel().getColumn(SkillcategoryTableModel.SKILLCAT_TABLE_COL_SPEC2_BONUS);
+		NumberSpinnerTableCellEditor specialBonusSpinnerCat = new NumberSpinnerTableCellEditor(1, true, -9999);
+		spec2Col.setCellEditor(specialBonusSpinnerCat);
 		NumberSpinnerTableRenderer spinnRenderer2 = new NumberSpinnerTableRenderer(true);
 		spec2Col.setCellRenderer(spinnRenderer2);
 		
 		/**/
 		for (int i=4; i<10; i++) {
-			skillgroupTable.getColumnModel().getColumn(i).setPreferredWidth(15);			
+			skillcatTable.getColumnModel().getColumn(i).setPreferredWidth(15);			
 		}
 		
 		/* Scroll bar */
-		JScrollPane pane = new JScrollPane(skillgroupTable);
+		JScrollPane pane = new JScrollPane(skillcatTable);
 		return pane;
 	}
 

@@ -118,7 +118,8 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	public static final String PROPERTY_LENGTH_UNIT = "lengthUnit";
 	public static final String PROPERTY_LEVELUP_MODE = "lvlUpActive";
 	public static final String PROPERTY_PRINT_OUTLINE_IMG = "printOutlineImage";
-	public static final String PROPERTY_IMG_POS = "imagePos";
+	public static final String IMG_POS_PROP = "imagePos";
+	public static final String TALENTSFLAWS_PROP = "talentsFlaws";
 	
 	/* export to xml */
 	private String playerName;
@@ -154,6 +155,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	private LengthUnit lengthUnit;
 	private Boolean printOutlineImage;
 	private CharImagePos imagePos;
+	private List<TalentFlaw> talentsFlaws;
 
 	/* must not be exported to XML */
 	private transient MetaData data;
@@ -168,6 +170,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	public void init() {
 		convertOldFormats();
 		firePropertyChange(PROPERTY_MAGICREALM_EDITABLE, null, Boolean.FALSE);
+		if (talentsFlaws == null) {talentsFlaws = new ArrayList<TalentFlaw>();}
 		if (todos == null) {todos = new ArrayList<ToDo>();}
 		if (tempAttr == null) {tempAttr = new HashMap<StatEnum, Integer>();}
 		if (potAttr == null) {potAttr = new HashMap<StatEnum, Integer>();}
@@ -2044,15 +2047,15 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		}
 	}
 	
-	public String getLvlUpSpellRanks() {
+	public String getLvlUpSpellLists() {
 		if (levelUp == null) {
 			return "";
 		}
-		return levelUp.getLvlUpSpellRanks();
+		return levelUp.getLvlUpSpellLists();
 	}
 	
-	public void setLvlUpSpellRanks(String s) {
-		if (log.isDebugEnabled()) log.debug("ignoring setLvlUpSpellRanks="+s);
+	public void setLvlUpSpellLists(String s) {
+		if (log.isDebugEnabled()) log.debug("ignoring setLvlUpSpellLists="+s);
 	}
 	
 	/**
@@ -2223,7 +2226,43 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (this.imagePos == null) {
 			this.imagePos = CharImagePos.PAGE1_AND_EQUIPMENT;
 		}
-		firePropertyChange(PROPERTY_IMG_POS, oldValue, this.imagePos);
-		
+		firePropertyChange(IMG_POS_PROP, oldValue, this.imagePos);
+	}
+
+	/**
+	 * Returns the list of talent and flaws. If you want to modify the list, you have
+	 * to set the list again in {{@link #setTalentsFlaws(List)} to notify about changes.
+	 * 
+	 * @return list of talent and flaws, not {@code null}
+	 */
+	public List<TalentFlaw> getTalentsFlaws() {
+		return talentsFlaws;
+	}
+
+	/**
+	 * Sets the new list of talent and flaws.
+	 * 
+	 * @param talentsFlaws the new talent flaw list, not {@code null}
+	 */
+	public void setTalentsFlaws(List<TalentFlaw> talentsFlaws) {
+		Object oldValue = this.talentsFlaws;
+		this.talentsFlaws = talentsFlaws;
+		firePropertyChange(TALENTSFLAWS_PROP, oldValue, this.talentsFlaws);
+	}
+
+	/**
+	 * Returns the initiative bonus including the modifications by talent and flaws.
+	 * 
+	 * @return the initiative bonus
+	 */
+	public int getInitiativeBonus() {
+		int bonus = getStatBonusTotal(StatEnum.QUICKNESS);
+		// check the talents/flaws
+		for (TalentFlaw tf : getTalentsFlaws()) {
+			if (tf.getInitiativeBonus() != null) {
+				bonus += tf.getInitiativeBonus().intValue();
+			}
+		}
+		return bonus;
 	}
 }

@@ -48,8 +48,8 @@ public class NumberSpinnerTableCellEditor extends AbstractCellEditor implements 
 		((DefaultEditor) editor.getEditor()).getTextField().setEditable(false);
 	}
 	
-	public NumberSpinnerTableCellEditor(int stepSize, boolean editable) {
-		SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 9999, stepSize);
+	public NumberSpinnerTableCellEditor(int stepSize, boolean editable, int minimum) {
+		SpinnerNumberModel model = new SpinnerNumberModel(0, minimum, 9999, stepSize);
 		editor = new JSpinner(model);
 		model.addChangeListener(this);
 		editor.setBorder(null);

@@ -80,7 +80,8 @@ public class MetaData {
 	private Map<Integer, TrainPack> trainPacks = new HashMap<Integer, TrainPack>();
 	private Map<TrainPackKey, Integer> trainPackCosts = new HashMap<TrainPackKey, Integer>();
 	private Map<SkillcategorySpelllistPartKey, Skillcost> spellcostByLevel = new HashMap<SkillcategorySpelllistPartKey, Skillcost>();
-    
+    private List<TalentFlawPreset> talentFlaws = new ArrayList<TalentFlawPreset>();
+	
 	public List<Race> getRaces() {
 		return races;
 	}
@@ -137,6 +138,14 @@ public class MetaData {
 		this.skillgroups = skillgroups;
 	}
 	
+	/**
+	 * Returns the skill category or {@code null} if no category exists for the
+	 * given id.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the skill category or {@code null}
+	 */
 	public SkillCategory getSkillCategory(Integer id) {
 		return skillgroupById.get(id);
 	}
@@ -414,9 +423,21 @@ public class MetaData {
 	 * @param type the spell user type, not {@code null}
 	 * @param sc the cost value
 	 */
-	public void addSpellcostByLevel(Integer skillCatID, SpelllistPart part, SpellUserType type, Skillcost sc) {
+	/* package */ void addSpellcostByLevel(Integer skillCatID, SpelllistPart part, SpellUserType type, Skillcost sc) {
 		SkillCategory category = getSkillCategory(skillCatID);
 		spellcostByLevel.put(new SkillcategorySpelllistPartKey(category, part, type), sc);
+	}
+	
+	/**
+	 * Returns a list of all loaded talents and flaws with there parameter properties.
+	 * @return an unmodifiable list of {@link TalentFlawPreset}s
+	 */
+	public List<TalentFlawPreset> getTalentFlaws() {
+		return Collections.unmodifiableList(talentFlaws);
+	}
+	
+	/* package */ void addTalentFlaw(TalentFlawPreset newEntry) {
+		this.talentFlaws.add(newEntry);
 	}
 	
 	/* **************************************************

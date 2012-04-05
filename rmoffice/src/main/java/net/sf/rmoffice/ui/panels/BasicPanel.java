@@ -207,7 +207,7 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		
 		/* image position */
 		builder.addLabel(RESOURCE.getString("ui.basic.imagepos"), CC.xy(COL_LBL_R, row));
-		SelectionInList<CharImagePos> selCharImgList = new SelectionInList<CharImagePos>(basicModel.getAvailableCharImgPos(), basicModel.getModel(RMSheet.PROPERTY_IMG_POS));
+		SelectionInList<CharImagePos> selCharImgList = new SelectionInList<CharImagePos>(basicModel.getAvailableCharImgPos(), basicModel.getModel(RMSheet.IMG_POS_PROP));
 		JComboBox cbCharImg = BasicComponentFactory.createComboBox(selCharImgList, new EnumListCellRenderer());
 		Bindings.bind(cbCharImg, "enabled", enabledValueHolder);
 		builder.add(cbCharImg, CC.xyw(COL_COMP_R, row, 3));

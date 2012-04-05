@@ -41,6 +41,8 @@ import net.sf.rmoffice.meta.enums.SpellUserType;
 import net.sf.rmoffice.meta.enums.SpelllistPart;
 import net.sf.rmoffice.meta.enums.SpelllistType;
 import net.sf.rmoffice.meta.enums.StatEnum;
+import net.sf.rmoffice.meta.enums.TalentFlawLevel;
+import net.sf.rmoffice.meta.enums.TalentFlawType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -65,10 +67,16 @@ public class MetaDataLoader {
 	private static final String CONF_ARMOR = "/conf/armor.conf";
 	private static final String CONF_TRAINING_PACK = "/conf/trainingpacks.conf";
 	private static final String CONF_TRAINING_PACK_COSTS = "/conf/trainingpackcosts.conf";
+	private static final String CONF_TALENT_FLAW = "/conf/talentflaw.conf";
 	
 	private final static Logger log = LoggerFactory.getLogger(MetaDataLoader.class);
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	private static final Charset CHARSET = Charset.forName("UTF-8");
+
+	private static final String CATEGORY_CHAR = "C";
+	private static final String SKILL_CHAR = "S";
+	private static final String INI = "INI=";
+	private static final String DESCR = "DESCR=";
 	
 	public MetaDataLoader() {
 	}
@@ -85,13 +93,99 @@ public class MetaDataLoader {
 		loadArmorConf(metaData);
 		loadTrainingPacks(metaData);
 		loadTrainingPackCosts(metaData);
+		loadTalentFlaw(metaData);
 		return metaData;
 	}
 	
+	private void loadTalentFlaw(MetaData metaData) throws IOException {
+		BufferedReader reader = getReader(CONF_TALENT_FLAW);
+		String line = null;
+		int lineNo = 0;
+		/* read lines */
+		TalentFlawPreset talentFlaw = null;
+		while ( (line = reader.readLine()) != null ) {
+			lineNo++;
+			if ( isValidLine(line)) {
+				try {
+					line = StringUtils.trimToEmpty(line);				
+					String[] split = StringUtils.splitPreserveAllTokens(line, ",");
+					if (split.length > 4) {
+						Integer id = Integer.valueOf(StringUtils.trimToEmpty(split[0]));
+						if (talentFlaw != null && !talentFlaw.getId().equals(id)) {
+							/* new ID in line */
+							metaData.addTalentFlaw(talentFlaw);
+							talentFlaw = null;
+						}
+						if (talentFlaw == null) {
+							talentFlaw = new TalentFlawPreset(id);
+							/* we only have to read first 2 parameters for new talentFlaw */
+							talentFlaw.setType(TalentFlawType.valueOf(StringUtils.trimToEmpty(split[1])));
+							talentFlaw.setSource(StringUtils.trimToEmpty(split[2]));
+							talentFlaw.setName(RESOURCE.getString(StringUtils.trimToEmpty("talentflaw."+id)));
+						}
+						// read the sub values
+						TalentFlawPresetValue subVal = new TalentFlawPresetValue();
+						subVal.setLevel(TalentFlawLevel.valueOf(StringUtils.trimToEmpty(split[3])));
+						subVal.setCosts(Integer.parseInt(StringUtils.trimToEmpty(split[4])));
+						for (int i=5; i<split.length; i++) {
+							parseTalentFlawValue(subVal, StringUtils.trimToEmpty(split[i]), metaData);
+						}
+						talentFlaw.addValues(subVal);
+					}
+				} catch (Exception e) {
+					log.error(CONF_TALENT_FLAW+": Could not decode lineNo "+lineNo, e);
+				}
+			}
+		}
+		if (talentFlaw != null) {
+			metaData.addTalentFlaw(talentFlaw);
+		}
+	}
+
+	/* package for test */ void parseTalentFlawValue(TalentFlawPresetValue talFlawVal, String param, MetaData metaData) throws Exception {
+		if (param.startsWith("CHOOSE=")) {
+			
+		} else if (param.startsWith(CATEGORY_CHAR) || param.startsWith(SKILL_CHAR)) {
+			String[] parts = StringUtils.splitPreserveAllTokens(param.substring(1), "=");
+			Integer id = Integer.valueOf(parts[0]);
+			try {
+				SkillType type = SkillType.valueOf(parts[1]);
+				// it is a skill type
+				if (param.startsWith(CATEGORY_CHAR)) {
+					SkillCategory category = metaData.getSkillCategory(id);
+					if (category != null) {
+						talFlawVal.putSkillCatType(category,type);
+					}
+				} else if (param.startsWith(SKILL_CHAR)) {
+					ISkill skill = metaData.getSkill(id);
+					if (skill != null) {
+						talFlawVal.putSkillType(skill, type);
+					}
+				}
+			} catch (Exception e) {
+				// param is not a type. Parse as number --> skill(cat) bonus
+				Integer bonus = Integer.valueOf(parts[1]);
+				if (param.startsWith(CATEGORY_CHAR)) {
+					SkillCategory category = metaData.getSkillCategory(id);
+					if (category != null) {
+						talFlawVal.putSkillCatBonus(category, bonus);
+					}
+				} else if (param.startsWith(SKILL_CHAR)) {
+					ISkill skill = metaData.getSkill(id);
+					if (skill != null) {
+						talFlawVal.putSkillBonus(skill, bonus);
+					}
+				}
+			}
+		} else if (param.startsWith(INI)) {
+			talFlawVal.setInitiativeBonus(Integer.valueOf(param.substring(INI.length())));
+		} else if (param.startsWith(DESCR)){
+			talFlawVal.addDescriptions(RESOURCE.getString(param.substring(DESCR.length())));
+		}
+	}
+
 	private void loadSkillcostPerLevel(MetaData metaData) throws IOException {
-		InputStream res = getClass().getResourceAsStream( CONF_SPELLCOSTS_BY_LEVEL );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_SPELLCOSTS_BY_LEVEL);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_SPELLCOSTS_BY_LEVEL);
 		String line = null;
 		int lineNo = 0;
 		SpellUserType[] spellUserTypesHeader = null;
@@ -146,9 +240,7 @@ public class MetaDataLoader {
 	}
 
 	private void loadTrainingPackCosts(MetaData metaData) throws IOException {
-		InputStream res = getClass().getResourceAsStream( CONF_TRAINING_PACK_COSTS );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_TRAINING_PACK_COSTS);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_TRAINING_PACK_COSTS);
 		String line = null;
 		int lineNo = 0;
 		
@@ -220,9 +312,7 @@ public class MetaDataLoader {
 						
 	
 	private void loadTrainingPacks(MetaData metaData) throws IOException {
-		InputStream res = getClass().getResourceAsStream( CONF_TRAINING_PACK );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_TRAINING_PACK);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_TRAINING_PACK);
 		String line = null;
 		int lineNo = 0;
 		
@@ -326,7 +416,7 @@ public class MetaDataLoader {
 								int gid = NumberUtils.toInt(g[0]);
 								String group = RESOURCE.getString("skillgroup."+gid);
 								tp.addTodo(MessageFormat.format(RESOURCE.getString("training.chooseskillfromgroup"), g[1], group));
-							} else if (s.startsWith("C")) {
+							} else if (s.startsWith(CATEGORY_CHAR)) {
 								/* choice, ex: CG12|G13=3
 								 * currently we create a Todo */
 								String[] g = StringUtils.splitPreserveAllTokens(s.substring(1), "=");
@@ -336,7 +426,7 @@ public class MetaDataLoader {
 									if (choice.startsWith("G")) {
 										int gid = NumberUtils.toInt(choice.substring(1));
 										sb.append(RESOURCE.getString("skillgroup."+gid)).append(",");
-									} else if (choice.startsWith("S")) {
+									} else if (choice.startsWith(SKILL_CHAR)) {
 										int sid = NumberUtils.toInt(choice.substring(1));
 										sb.append(RESOURCE.getString("skill."+sid)).append(",");
 									} else {
@@ -365,7 +455,7 @@ public class MetaDataLoader {
 							} else if (s.startsWith("SPELLLIST")) {
 								/* make a todo */
 								tp.addTodo(s);
-							} else if (s.startsWith("S")) {
+							} else if (s.startsWith(SKILL_CHAR)) {
 								/* sKill */
 								String[] g = StringUtils.splitPreserveAllTokens(s.substring(1), "=");
 								int skillId = Integer.parseInt(g[0]);
@@ -375,7 +465,7 @@ public class MetaDataLoader {
 									SkillType type = SkillType.valueOf(StringUtils.trim(g[1]));
 									tp.addSkillType(skillId, type);
 								}
-							} else if (s.startsWith("DESCR")) {
+							} else if (s.startsWith(DESCR)) {
 								/* description */
 								/* try to localize */
 								String todo = s.substring(6);
@@ -405,9 +495,7 @@ public class MetaDataLoader {
 	}
 
 	private void loadArmorConf(MetaData metaData) throws IOException {
-		InputStream res = getClass().getResourceAsStream( CONF_ARMOR );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_ARMOR);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_ARMOR);
 		String line = null;
 		int lineNo = 0;
 		
@@ -433,9 +521,7 @@ public class MetaDataLoader {
 	}
 
 	private void loadShields(MetaData metaData) throws IOException {		
-		InputStream res = getClass().getResourceAsStream( CONF_SHIELD );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_SHIELD);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_SHIELD);
 		String line = null;
 		int lineNo = 0;
 		
@@ -460,9 +546,7 @@ public class MetaDataLoader {
 	}
 
 	private void loadSpelllists(List<ISkill> skills) throws IOException {
-		InputStream res = getClass().getResourceAsStream( CONF_SPELLLISTS );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_SPELLLISTS);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_SPELLLISTS);
 		String line = null;
 		int lineNo = 0;
 		while ( (line = reader.readLine()) != null ) {
@@ -501,7 +585,7 @@ public class MetaDataLoader {
 								builder.setEvil(true);
 							} else if (val.startsWith("O")) {
 								builder.setOpen();
-							} else if (val.startsWith("C")) {
+							} else if (val.startsWith(CATEGORY_CHAR)) {
 								builder.setClosed();
 							} else if (val.startsWith("P")) {
 								builder.setProf();
@@ -519,9 +603,7 @@ public class MetaDataLoader {
 	}
 
 	private void loadCultures(MetaData metaData) throws IOException {
-		InputStream res = getClass().getResourceAsStream( CONF_CULTURES );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_CULTURES);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_CULTURES);
 		String line = null;
 		int lineNo = 0;
 		List<Culture> cultures = new ArrayList<Culture>(); 
@@ -636,9 +718,7 @@ public class MetaDataLoader {
 	private List<ISkill> loadSkills(MetaData metaData) throws IOException {
 		List<ISkill> skills = new ArrayList<ISkill>();
 		List<Integer> id = new ArrayList<Integer>();
-		InputStream res = getClass().getResourceAsStream( CONF_SKILLS );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_SKILLS);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_SKILLS);
 		String line = null;
 		int lineNo = 0;
 		while ( (line = reader.readLine()) != null ) {
@@ -696,9 +776,7 @@ public class MetaDataLoader {
 
 	private List<Race> loadRaces() throws IOException {
 		List<Race> races = new ArrayList<Race>();
-		InputStream res = getClass().getResourceAsStream( CONF_RACE );
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_RACE);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_RACE);
 		String line = null;
 		int lineNo = 0;
 		while ( (line = reader.readLine()) != null ) {
@@ -778,9 +856,7 @@ public class MetaDataLoader {
 	private List<Profession> loadProfessions() throws IOException {
 		List<Profession> profs = new ArrayList<Profession>();
 		
-		InputStream res = getClass().getResourceAsStream( CONF_PROF);
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_PROF);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_PROF);
 		String line = null;
 		int lineNo = 0;
 		while ( (line = reader.readLine()) != null ) {
@@ -858,7 +934,7 @@ public class MetaDataLoader {
 											} else {
 												p.addSkillGroupType(id, skillType);
 											}
-										} else if (parts[0].startsWith("S")) {
+										} else if (parts[0].startsWith(SKILL_CHAR)) {
 											/* Skill */
 											if (skillType == null) {
 												p.addSkillBonus(id, bonus);
@@ -896,9 +972,7 @@ public class MetaDataLoader {
 		List<SkillCategory> skillcategories = new ArrayList<SkillCategory>();
 		List<Integer> skillgroupIds = new ArrayList<Integer>();
 
-		InputStream res = getClass().getResourceAsStream( CONF_SKILLCOSTS);
-		if (res == null) throw new RuntimeException("Could not find the "+CONF_SKILLCOSTS);
-		BufferedReader reader = new BufferedReader( new InputStreamReader(res, CHARSET) );
+		BufferedReader reader = getReader(CONF_SKILLCOSTS);
 		String line = null;
 		int lineNo = 0;
 		/* first header line */
@@ -1012,5 +1086,13 @@ public class MetaDataLoader {
 				return sc1.getName().compareTo(sc2.getName());
 			}});
 		return skillcategories;
+	}
+	
+
+	private BufferedReader getReader(String file) {
+		log.debug("reading configuration file "+file);
+		InputStream res = getClass().getResourceAsStream( file );
+		if (res == null) throw new RuntimeException("Could not find the "+file);
+		return new BufferedReader( new InputStreamReader(res, CHARSET) );
 	}
 }

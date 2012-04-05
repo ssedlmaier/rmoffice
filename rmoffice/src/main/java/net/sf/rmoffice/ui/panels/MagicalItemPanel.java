@@ -161,7 +161,7 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 		final MagicalItemFeatureTypeTableCellRenderer cbRenderer = new MagicalItemFeatureTypeTableCellRenderer();
 		final EnumTableCellEditor cbEditor = new EnumTableCellEditor(MagicalItemFeatureType.values());
 		final NumberSpinnerTableRenderer bonusRenderer = new NumberSpinnerTableRenderer();
-		final NumberSpinnerTableCellEditor bonusEditor = new NumberSpinnerTableCellEditor(1, false);
+		final NumberSpinnerTableCellEditor bonusEditor = new NumberSpinnerTableCellEditor(1, false, -9999);
 		final MagicalFeatureTableCellRenderer descrRenderer = new MagicalFeatureTableCellRenderer();
 		final MagicalFeatureTableCellEditor descrEditor = new MagicalFeatureTableCellEditor(rmSheetAdapter);
 		
