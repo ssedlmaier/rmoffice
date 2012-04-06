@@ -68,7 +68,7 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		
 		FormLayout layout = new FormLayout(
 				COL_DEFINITION_2COLGROUPS,
-				StringUtils.repeat(ROW_WITH_GAP, 8) + HEADLINE_SEPARATOR + 
+				StringUtils.repeat(ROW_WITH_GAP, 9) + HEADLINE_SEPARATOR + 
 				StringUtils.repeat(ROW_WITH_GAP, 3));
 		layout.setColumnGroups(new int[][]{{1, 7}});
 
@@ -158,6 +158,18 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		
 		row += 2;
 		
+		/* Shield */
+		builder.addLabel(RESOURCE.getString("rolemaster.shield"), CC.xy(COL_LBL_L, row));
+		SelectionInList<Shield> selShield = new SelectionInList<Shield>(basicModel.getAvailableShields(), basicModel.getModel(RMSheet.PROPERTY_SHIELD));
+		JComboBox cbShield = BasicComponentFactory.createComboBox(selShield);
+		Bindings.bind(cbShield, "enabled", enabledValueHolder);
+		builder.add(cbShield, CC.xyw(COL_COMP_L, row, 3));
+		
+		/* Fate points */
+		LongToStringConverter fateConverter = new LongToStringConverter(basicModel.getModel(RMSheet.FATEPOINTS_PROP));
+		addTextFieldR(RMSheet.FATEPOINTS_PROP, row, basicModel, enabledValueHolder, fateConverter, builder).setDocument(new NumberDocument());
+		row += 2;
+		
 		/* Armor */
 		builder.addLabel(RESOURCE.getString("rolemaster.armor"), CC.xy(COL_LBL_L, row));
 		SelectionInList<Integer> selArmor = new SelectionInList<Integer>(basicModel.getAvailableArmors(), basicModel.getModel(RMSheet.PROPERTY_ARMOR));
@@ -165,18 +177,20 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		Bindings.bind(cbArmor, "enabled", enabledValueHolder);
 		builder.add(cbArmor, CC.xyw(COL_COMP_L, row, 3));
 		
-		/* Shield */
-		builder.addLabel(RESOURCE.getString("rolemaster.shield"), CC.xy(COL_LBL_R, row));
-		SelectionInList<Shield> selShield = new SelectionInList<Shield>(basicModel.getAvailableShields(), basicModel.getModel(RMSheet.PROPERTY_SHIELD));
-		JComboBox cbShield = BasicComponentFactory.createComboBox(selShield);
-		Bindings.bind(cbShield, "enabled", enabledValueHolder);
-		builder.add(cbShield, CC.xyw(COL_COMP_R, row, 3));
+		/* Grace Points */
+		LongToStringConverter graceConverter = new LongToStringConverter(basicModel.getModel(RMSheet.GRACEPOINTS_PROP));
+		addTextFieldR(RMSheet.GRACEPOINTS_PROP, row, basicModel, enabledValueHolder, graceConverter, builder).setDocument(new NumberDocument(true));
 		row += 2;
 
 		/* armor penalties */
 		builder.addLabel(RESOURCE.getString("rolemaster.penalty.ui.label"), CC.xy(COL_LBL_L, row));
 		JLabel lblArmor = BasicComponentFactory.createLabel(basicModel.getArmorModis());
 		builder.add(lblArmor, CC.xyw(COL_COMP_L, row, 3));
+		
+		builder.addLabel(RESOURCE.getString("ui.basic.divinestatus"), CC.xy(COL_LBL_R, row));
+		JLabel lblDivineStatus = BasicComponentFactory.createLabel(basicModel.getModel(RMSheet.DIVINESTATUS_PROP));
+		builder.add(lblDivineStatus, CC.xyw(COL_COMP_R, row, 3));
+		
 		row += 2;
 		
 		/* settings  */

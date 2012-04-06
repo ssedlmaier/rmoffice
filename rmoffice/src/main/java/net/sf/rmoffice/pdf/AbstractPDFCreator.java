@@ -25,6 +25,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -408,6 +409,13 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 				canvas.beginText();
 				canvas.setFontAndSize(fontHeadline, 8);
 				canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.spell.favs"), centerX, y, 0);
+				if (sheet.getDivineStatusObject().getStaticSpellcastModifier() != 0) {
+					String str = MessageFormat.format(RESOURCE.getString("rolemaster.divinestatus.spellcastmanoevermodifier"),
+							format(sheet.getDivineStatusObject().getStaticSpellcastModifier(), false));
+					y -= lineHeight - 2;
+					canvas.setFontAndSize(fontUser, 7);
+					canvas.showTextAligned(Element.ALIGN_CENTER, str, centerX, y, 0);
+				}
 				canvas.endText();
 				y -= lineHeight;
 				/* reset both column variables */
@@ -559,6 +567,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 
 	protected float page6ExhaustionPointsAndMovement(PdfContentByte canvas, final float lineHeight, final float initialY, boolean withBottomLine) {
 		canvas.beginText();
+		/* Headlines */
 		canvas.setFontAndSize(fontBold, 8);
 		float y = initialY - lineHeight;
 		canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page6.exhaustionpoints"), LEFT_X + 5, y, 0);
@@ -579,10 +588,27 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 			canvas.setFontAndSize(fontWidget, 8);
 			canvas.showTextAligned(Element.ALIGN_LEFT, str, LEFT_X + 25, y, 0);
 		}
-		
-		/* movement */
+		/* fate points */
 		canvas.setFontAndSize(fontBold, 8);
 		y = initialY - lineHeight;
+		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("ui.basic.fatepoints"), LEFT_X + 240, y, 0);
+		y -= lineHeight;
+		canvas.setFontAndSize(fontWidget, 8);
+		String str = getWidgetBoxes(sheet.getFatepoints().intValue());
+		canvas.showTextAligned(Element.ALIGN_CENTER, str, LEFT_X + 240, y, 0);
+		
+		/* grace / corruption */
+		canvas.setFontAndSize(fontBold, 8);
+		y -= 2 * lineHeight;
+		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("ui.basic.gracepoints"), LEFT_X + 240, y, 0);
+		y -= lineHeight;
+		canvas.setFontAndSize(fontRegular, 8);
+		canvas.showTextAligned(Element.ALIGN_CENTER, ""+sheet.getGracepoints(), LEFT_X + 240, y, 0);
+		
+		
+		/* movement */
+		y = initialY - lineHeight;
+		canvas.setFontAndSize(fontBold, 8);
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page6.movement"), RIGHT_X - 100, y, 0);
 		y -= lineHeight;
 		canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page6.movement.title.pace"), RIGHT_X - 195, y , 0);
@@ -892,7 +918,14 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		}
 		/* additional resistance lines */
 		for (String lineStr : sheet.getRace().getAdditionalResistenceLines()) {
-			showUserText(canvas, 8,  60.0f, y, lineStr);
+			showUserText(canvas, 7,  60.0f, y, lineStr);
+			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
+		}
+		/* divine protection */
+		if (sheet.getDivineStatusObject().getProtectionAgainstEvil() > 0) {
+			String lineStr = MessageFormat.format(RESOURCE.getString("rolemaster.divinestatus.evilprotection"),
+					     format(sheet.getDivineStatusObject().getProtectionAgainstEvil(), false));
+			showUserText(canvas, 7,  60.0f, y, lineStr);
 			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		}
 		/* -------------- */

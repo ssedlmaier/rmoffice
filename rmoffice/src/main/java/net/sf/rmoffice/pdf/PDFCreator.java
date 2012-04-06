@@ -430,6 +430,8 @@ public class PDFCreator extends AbstractPDFCreator {
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.deity")+":", ch.getDeity(), x1, y, x2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
+		labeledUserText(canvas, RESOURCE.getString("ui.basic.divinestatus")+":", sheet.getDivinestatus(), x1, y, x2, fontRegular, 8);
+		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.lord")+":", ch.getLord(), x1, y, x2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.parent")+":", ch.getParent(), x1, y, x2, fontRegular, 8);
@@ -516,7 +518,11 @@ public class PDFCreator extends AbstractPDFCreator {
 		canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("rolemaster.recover.active"), xVal[0], y, 0);
 		canvas.showTextAligned(Element.ALIGN_CENTER, "1 / 3 "+RESOURCE.getString("common.hour.short"), xVal[1], y, 0);
 		canvas.showTextAligned(Element.ALIGN_CENTER, "1 / 3 "+RESOURCE.getString("common.minute.short"), xVal[2], y, 0);
-		canvas.showTextAligned(Element.ALIGN_CENTER, "1 / 3 "+RESOURCE.getString("common.hour.short"), xVal[3], y, 0);
+		int ppP3h = Math.round( 1f * sheet.getDivineStatusObject().getPPRegenerationFactor() );
+		if (ppP3h > sheet.getPowerPoints()) {
+			ppP3h = sheet.getPowerPoints();
+		}
+		canvas.showTextAligned(Element.ALIGN_CENTER, ppP3h + " / 3 "+RESOURCE.getString("common.hour.short"), xVal[3], y, 0);
 		y -= lineHeight;
 		
 		/* resting line per 1 h */
@@ -1150,6 +1156,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		}
 		for (int i=1; i<=4; i++) {
 			canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page6.exhaus"+i), LEFT_X + 15 + x1, UPPER_Y + (-1 * lineHeight * i), 0);
+			/* find the max length */
 			float x0 = fontRegular.getWidthPoint(RESOURCE.getString("pdf.page6.exhaus"+i), 8);
 			if (x2 == 0 || x2 < x0) {
 				x2 = x0;

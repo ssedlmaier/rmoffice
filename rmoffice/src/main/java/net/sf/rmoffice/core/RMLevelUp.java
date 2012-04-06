@@ -389,11 +389,14 @@ public class RMLevelUp {
 
 	
 	public int getSpellLists() {
+        if (spellLists == null) {
+        	return 0;
+        }
 		return spellLists.size();
 	}
 	
 	public String getLvlUpSpellLists() {
-		if (spellLists.size() > 1) {
+		if (spellLists != null && spellLists.size() > 1) {
 			int dpFactor = getSpellListsDPFactor(spellLists.size());
 			if (dpFactor > 1) {
 				String costFactor = "" + dpFactor;
