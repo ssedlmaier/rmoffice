@@ -20,21 +20,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
-import net.sf.rmoffice.core.RMSheet;
-import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.ui.models.TalentFlawPresentationModel;
 import net.sf.rmoffice.ui.models.TalentFlawTableAdapter;
 
-import com.jgoodies.binding.list.SelectionInList;
-import com.jgoodies.binding.value.ValueHolder;
-import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
 
 /**
- * Talent and flaw panel provides adding, removing and editing the characters talents and flaws.
+ * Talent and flaw panel provides buttons for adding and removing the characters talents and flaws.
+ * It shows an all talents and flaws of the character in a table. For each talent entry the user can
+ * write a background story or further information. 
  */
 public class TalentFlawPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -63,12 +62,16 @@ public class TalentFlawPanel extends JPanel {
 		btBuilder.addButton(talentPresModel.getDelTalentFlawAction());
 		add(btBuilder.getPanel(), CC.xyw(1, 1, 3));
 		
-		ValueModel selectionHolder = new ValueHolder();
-		SelectionInList<TalentFlaw> listModel = new SelectionInList<TalentFlaw>(talentPresModel.getModel(RMSheet.TALENTSFLAWS_PROP), selectionHolder);
-		JTable currentTalentFlaws = new JTable(new TalentFlawTableAdapter(listModel));
+		
+		JTable currentTalentFlaws = new JTable(new TalentFlawTableAdapter(talentPresModel.getListModel()));
+		currentTalentFlaws.setSelectionModel(new SingleListSelectionAdapter(talentPresModel.getListModel().getSelectionIndexHolder()));
+		currentTalentFlaws.getTableHeader().setReorderingAllowed(false);
 		builder.add(new JScrollPane(currentTalentFlaws), CC.xy(1, 2));
 		
 		JTextArea bgArea = new JTextArea();
+		bgArea.setLineWrap(true);
 		builder.add(new JScrollPane(bgArea), CC.xy(3, 2));
+		Bindings.bind(bgArea, "enabled", talentPresModel.getSelectionEnabledHolder());
+		
 	}
 }

@@ -19,35 +19,53 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import net.sf.rmoffice.core.RMSheet;
+import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.MetaData;
+import net.sf.rmoffice.ui.UIConstants;
+import net.sf.rmoffice.ui.converters.SelectionIndexToEnabledListener;
 import net.sf.rmoffice.ui.dialog.TalentFlawPresetDialog;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.beans.BeanAdapter;
+import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
 public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 	private static final long serialVersionUID = 1L;
+	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	
 	private final Action addTalentFlawAction;
 	private final Action delTalentFlawAction;
-
 	private final ValueModel enabledModel;
+	private ValueHolder selectionEnabledHolder;
 
 	private TalentFlawPresetDialog presetDialog;
+	private SelectionInList<TalentFlaw> listModel;
 	
 	public TalentFlawPresentationModel(BeanAdapter<RMSheet> beanAdapter, ValueModel enabledModel, Frame owner, MetaData metaData) {
 		super(beanAdapter.getBeanChannel());
 		this.enabledModel = enabledModel;
-		addTalentFlawAction = new AddAction();
-		delTalentFlawAction = new DelAction();
-		enabledModel.addValueChangeListener(new EnabledListener());
+		// 
 		presetDialog = new TalentFlawPresetDialog(owner, metaData, beanAdapter);
+		listModel = new SelectionInList<TalentFlaw>(getModel(RMSheet.TALENTSFLAWS_PROP));
+		// add buttons
+		addTalentFlawAction = new AddAction();
+		enabledModel.addValueChangeListener(new ActionEnabledListener(addTalentFlawAction));
+		// delete button
+		delTalentFlawAction = new DelAction();
+		selectionEnabledHolder = new ValueHolder(false);
+		ValueModel selectionIndexHolder = listModel.getSelectionIndexHolder();
+		selectionIndexHolder.addValueChangeListener(new SelectionIndexToEnabledListener(selectionEnabledHolder));
+		selectionEnabledHolder.addValueChangeListener(new ActionEnabledListener(delTalentFlawAction));
 	}
 
 	public Action getAddTalentFlawAction() {
@@ -62,21 +80,41 @@ public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 		return enabledModel;
 	}
 	
-	private class EnabledListener implements PropertyChangeListener {
+	public SelectionInList<TalentFlaw> getListModel() {
+		return listModel;
+	}
+	
+	public ValueHolder getSelectionEnabledHolder() {
+		return selectionEnabledHolder;
+	}
+	
+	/* 
+	 * Listener for enabled changes.
+	 */
+	private class ActionEnabledListener implements PropertyChangeListener {
 
+		private final Action action;
+
+		public ActionEnabledListener(Action action) {
+			this.action = action;
+		}
+		
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			boolean enabled = Boolean.TRUE.equals(evt.getNewValue());
-			addTalentFlawAction.setEnabled(enabled);
-			delTalentFlawAction.setEnabled(enabled);
+			action.setEnabled(enabled);
 		}
 	}
 
+	/* 
+	 * add action.
+	 */
 	private class AddAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public AddAction() {
-			super("Add (TODO)");
+			super(RESOURCE.getString("ui.talentflaw.add"), UIConstants.ICON_NEWLINE);
+			setEnabled(false);
 		}
 		
 		@Override
@@ -85,16 +123,26 @@ public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 		}
 		
 	}
+	
+	/*
+	 * delete action.
+	 */
 	private class DelAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public DelAction() {
-			super("TODO (DEL)");
+			super(RESOURCE.getString("ui.talentflaw.delete"), UIConstants.ICON_DELETE);
+			setEnabled(false);
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+			if (listModel.getSelection() != null) {
+				List<TalentFlaw> talentsFlaws = new ArrayList<TalentFlaw>();
+				talentsFlaws.addAll(getBean().getTalentsFlaws());
+				talentsFlaws.remove(listModel.getSelection());
+				getBean().setTalentsFlaws(talentsFlaws);
+			}
 		}
 		
 	}

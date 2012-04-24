@@ -13,27 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.rmoffice.meta.enums;
+package net.sf.rmoffice.meta;
 
-public enum TalentFlawLevel {
-	LESSER(2),
-	MINOR(3),
-	MAJOR(4),
-	GREATER(5);
+public class UTSkill extends Skill {
 
-	private final int bgCosts;
-
-	private TalentFlawLevel(int bgCosts) {
-		this.bgCosts = bgCosts;
-		
-	}
-	
-	/**
-	 * Default background option costs.
-	 *  
-	 * @return background option costs
-	 */
-	public int getBGCost() {
-		return bgCosts;
+	public UTSkill(int id) {
+		setId(Integer.valueOf(id));
 	}
 }

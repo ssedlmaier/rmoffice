@@ -114,6 +114,7 @@ import net.sf.rmoffice.ui.panels.ProgressGlassPane;
 import net.sf.rmoffice.ui.panels.StatPanel;
 import net.sf.rmoffice.ui.panels.TalentFlawPanel;
 import net.sf.rmoffice.ui.panels.TodoPanel;
+import net.sf.rmoffice.ui.renderer.BonusFormatTableCellRenderer;
 import net.sf.rmoffice.ui.renderer.ColoredBooleanRenderer;
 import net.sf.rmoffice.ui.renderer.NumberSpinnerTableRenderer;
 import net.sf.rmoffice.ui.renderer.SkillTreeRenderer;
@@ -398,6 +399,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		skillModel = new SkillsTableModel();
 		skillModel.setSheet(sheet);
 		skillsTable = new JTable(skillModel);
+		skillsTable.getTableHeader().setReorderingAllowed(false);
 		skillsTable.setSelectionBackground(UIConstants.COLOR_SELECTION_BG);
 		skillsTable.setSelectionForeground(UIConstants.COLOR_SELECTION_FG);
 		skillsTable.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
@@ -415,14 +417,19 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		rankCol.setCellRenderer(spinnRenderer);
 		/* cost */
 		skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_COST).setPreferredWidth(50);
-		/* special bonus col */
+		/* calculated special bonus */
+		TableColumn special2Col = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_SPECIAL2_BONUS);
+		special2Col.setCellRenderer(new BonusFormatTableCellRenderer(true));
+		/* user special bonus col */
 		TableColumn specialCol = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_SPECIAL_BONUS);
 		specialCol.setPreferredWidth(50);
 		NumberSpinnerTableCellEditor specialBonusSpinner2 = new NumberSpinnerTableCellEditor(1, true, -9999);
 		specialCol.setCellEditor(specialBonusSpinner2);
 		NumberSpinnerTableRenderer spinnRenderer2 = new NumberSpinnerTableRenderer();
 		specialCol.setCellRenderer(spinnRenderer2);
-		skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_TOTAL_BONUS).setPreferredWidth(50);
+		TableColumn totalBonus = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_TOTAL_BONUS);
+		totalBonus.setPreferredWidth(50);
+		totalBonus.setCellRenderer(new BonusFormatTableCellRenderer(false));
 		skillsTable.setAutoCreateRowSorter(true);
 		
 		/* Button Panel*/
@@ -588,6 +595,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		JMenu file = new JMenu(RESOURCE.getString("ui.menu.file"));
 		bar.add(file);
 		
+		/* ---- NEW -----*/
 		JMenuItem menuNew = new JMenuItem(RESOURCE.getString("ui.menu.new"), UIConstants.ICON_NEW_SHEET);
 		menuNew.addActionListener(new ActionListener() {
 			@Override
@@ -603,11 +611,9 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 				sheet.init();				
 				skillModel.setSheet(sheet);
 				skillcatModel.setSheet(sheet);
+				sheet2ui();
 				tabbedPane.setSelectedIndex(0);
 				RMFrame.this.setTitle(TITLE);
-				refreshing = true;
-				clearUi();
-				refreshing = false;
 			}
 		});
 		file.add(menuNew);
@@ -646,7 +652,6 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 						skillModel.setSheet(sheet);
 						skillcatModel.setSheet(sheet);
 						if (RMSheet.State.NORMAL.equals(sheet.getState())) {
-							clearUi();
 							sheet2ui();
 						}
 					}
@@ -748,14 +753,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		
 		setJMenuBar(bar);
 	}
-	
-	private void clearUi() {
-		/* */
-//		int rowCount = skillgroupTable.getRowCount();
-//		for(int row=0; row < rowCount; row++) {
-//			skillgroupTable.setValueAt(Integer.valueOf(0), row, SkillcategoryTableModel.SKILLCAT_TABLE_COL_RANKS);
-//		}
-	}
+
 	/*
 	 * We have to fill the complete UI otherwise old values would be visible after loading an sheet.
 	 **/

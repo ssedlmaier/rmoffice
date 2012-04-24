@@ -35,7 +35,8 @@ public class TalentFlawPresetTableAdapter extends AbstractTableAdapter<TalentFla
 
 	public TalentFlawPresetTableAdapter(ListModel listModel) {
 		super(listModel, RESOURCE.getString("ui.talentflaw.tablecol.name"),
-				RESOURCE.getString("ui.talentflaw.tablecol.type"));
+				         RESOURCE.getString("ui.talentflaw.tablecol.type"),
+				         RESOURCE.getString("ui.talentflaw.tablecol.source"));
 	}
 	
 	@Override
@@ -43,7 +44,8 @@ public class TalentFlawPresetTableAdapter extends AbstractTableAdapter<TalentFla
 		TalentFlawPreset tfp = getRow(rowIndex);
 		switch (columnIndex) {
 		case 0: return tfp.getName();
-		case 1: return tfp.getType();
+		case 1: return RESOURCE.getString("TalentFlawType."+tfp.getType().name());
+		case 2: return RESOURCE.getString("rolemaster.source." + tfp.getSource());
 		}
 		return null;
 	}

@@ -43,17 +43,16 @@ import net.sf.rmoffice.meta.enums.SpelllistType;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
 import net.sf.rmoffice.meta.enums.TalentFlawType;
+import net.sf.rmoffice.meta.talentflaw.ITalentFlawPart;
+import net.sf.rmoffice.meta.talentflaw.TalentFlawFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
-
 /**
- * 
+ * The meta data loader reads all configuration files and parses them.
  */
 public class MetaDataLoader {
 	private static final String CONF_SKILLCOSTS = "/conf/skillcosts.csv";
@@ -73,10 +72,9 @@ public class MetaDataLoader {
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	private static final Charset CHARSET = Charset.forName("UTF-8");
 
-	private static final String CATEGORY_CHAR = "C";
-	private static final String SKILL_CHAR = "S";
-	private static final String INI = "INI=";
-	private static final String DESCR = "DESCR=";
+	public static final String CATEGORY_CHAR = "C";
+	public static final String SKILL_CHAR = "S";
+	public static final String DESCR = "DESCR=";
 	
 	public MetaDataLoader() {
 	}
@@ -124,13 +122,15 @@ public class MetaDataLoader {
 							talentFlaw.setName(RESOURCE.getString(StringUtils.trimToEmpty("talentflaw."+id)));
 						}
 						// read the sub values
-						TalentFlawPresetValue subVal = new TalentFlawPresetValue();
-						subVal.setLevel(TalentFlawLevel.valueOf(StringUtils.trimToEmpty(split[3])));
-						subVal.setCosts(Integer.parseInt(StringUtils.trimToEmpty(split[4])));
+						TalentFlawPresetLevel presetLevel = new TalentFlawPresetLevel();
+						presetLevel.setLevel(TalentFlawLevel.valueOf(StringUtils.trimToEmpty(split[3])));
+						presetLevel.setCosts(Integer.parseInt(StringUtils.trimToEmpty(split[4])));
+						TalentFlawFactory factory = new TalentFlawFactory(metaData); 
 						for (int i=5; i<split.length; i++) {
-							parseTalentFlawValue(subVal, StringUtils.trimToEmpty(split[i]), metaData);
+							ITalentFlawPart tfPart = factory.parseTalentFlawPart(split[i]);
+							presetLevel.addTalentFlawPart(tfPart);
 						}
-						talentFlaw.addValues(subVal);
+						talentFlaw.addValues(presetLevel);
 					}
 				} catch (Exception e) {
 					log.error(CONF_TALENT_FLAW+": Could not decode lineNo "+lineNo, e);
@@ -142,47 +142,7 @@ public class MetaDataLoader {
 		}
 	}
 
-	/* package for test */ void parseTalentFlawValue(TalentFlawPresetValue talFlawVal, String param, MetaData metaData) throws Exception {
-		if (param.startsWith("CHOOSE=")) {
-			
-		} else if (param.startsWith(CATEGORY_CHAR) || param.startsWith(SKILL_CHAR)) {
-			String[] parts = StringUtils.splitPreserveAllTokens(param.substring(1), "=");
-			Integer id = Integer.valueOf(parts[0]);
-			try {
-				SkillType type = SkillType.valueOf(parts[1]);
-				// it is a skill type
-				if (param.startsWith(CATEGORY_CHAR)) {
-					SkillCategory category = metaData.getSkillCategory(id);
-					if (category != null) {
-						talFlawVal.putSkillCatType(category,type);
-					}
-				} else if (param.startsWith(SKILL_CHAR)) {
-					ISkill skill = metaData.getSkill(id);
-					if (skill != null) {
-						talFlawVal.putSkillType(skill, type);
-					}
-				}
-			} catch (Exception e) {
-				// param is not a type. Parse as number --> skill(cat) bonus
-				Integer bonus = Integer.valueOf(parts[1]);
-				if (param.startsWith(CATEGORY_CHAR)) {
-					SkillCategory category = metaData.getSkillCategory(id);
-					if (category != null) {
-						talFlawVal.putSkillCatBonus(category, bonus);
-					}
-				} else if (param.startsWith(SKILL_CHAR)) {
-					ISkill skill = metaData.getSkill(id);
-					if (skill != null) {
-						talFlawVal.putSkillBonus(skill, bonus);
-					}
-				}
-			}
-		} else if (param.startsWith(INI)) {
-			talFlawVal.setInitiativeBonus(Integer.valueOf(param.substring(INI.length())));
-		} else if (param.startsWith(DESCR)){
-			talFlawVal.addDescriptions(RESOURCE.getString(param.substring(DESCR.length())));
-		}
-	}
+	
 
 	private void loadSkillcostPerLevel(MetaData metaData) throws IOException {
 		BufferedReader reader = getReader(CONF_SPELLCOSTS_BY_LEVEL);

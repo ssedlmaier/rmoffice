@@ -125,7 +125,7 @@ public class SkillcategoryTableModel extends DefaultTableModel implements IOverl
 				}
 			}
 			try {
-				sheet.setSkillgroupRank(gr, rank);
+				sheet.setSkillcategoryRank(gr, rank);
 				super.setValueAt(aValue, row, column);
 			} catch (LevelUpVetoException vetoEx) {
 				if (log.isDebugEnabled()) log.debug(vetoEx.getMessage());
@@ -134,7 +134,7 @@ public class SkillcategoryTableModel extends DefaultTableModel implements IOverl
 			SkillCategory gr = (SkillCategory) super.getValueAt(row, SKILLCAT_TABLE_COL_NAME);
 			/* special bonus is integer */
 			Integer bonus = (Integer) aValue;
-			sheet.setSkillgroupSpecialBonus(gr, (bonus == null ? 0 : bonus.intValue()) );
+			sheet.setSkillcategorySpecialBonus(gr, (bonus == null ? 0 : bonus.intValue()) );
 			super.setValueAt(aValue, row, column);
 		} else {
 			super.setValueAt(aValue, row, column);

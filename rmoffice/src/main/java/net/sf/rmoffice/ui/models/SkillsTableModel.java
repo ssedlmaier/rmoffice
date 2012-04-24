@@ -215,7 +215,7 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 		}
 		rowData[COL_SPECIAL_BONUS] = specialBonus;
 		/* talents, flaw special bonus */
-		rowData[COL_SPECIAL2_BONUS] = Integer.valueOf(0);
+		rowData[COL_SPECIAL2_BONUS] = Integer.valueOf(sheet.getSkillSpecialBonus(skill));
 		rowData[COL_TOTAL_BONUS] = Integer.valueOf(sheet.getSkillTotalBonus(skill));
 		rowData[COL_ITEM_BONUS] = sheet.getSkillItemBonus(skill);
 		addRow(rowData);
@@ -285,7 +285,9 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 			} else {
 				super.setValueAt(RESOURCE.getString("pdf.rank.notavailable.short"), row, COL_COST);
 			}
-			super.setValueAt("", row, COL_SPECIAL2_BONUS);
+			String newRankString = RESOURCE.getString("SkillType."+sheet.getSkillType(skill).name());
+			super.setValueAt(newRankString, row, COL_RANK_TYPE);
+			super.setValueAt(Integer.valueOf(sheet.getSkillSpecialBonus(skill)), row, COL_SPECIAL2_BONUS);
 			super.setValueAt(Integer.valueOf(sheet.getSkillTotalBonus(skill)), row, COL_TOTAL_BONUS);
 			super.setValueAt(sheet.getSkillItemBonus(skill), row, COL_ITEM_BONUS);
 		}

@@ -566,7 +566,7 @@ public class CharacterGenerator {
 				/* level up category */
 				Rank catRank = bean.getSkillcategoryRank(skillcategory);
 				try {
-					bean.setSkillgroupRank(skillcategory, catRank.getRank().add(BigDecimal.valueOf(1)));
+					bean.setSkillcategoryRank(skillcategory, catRank.getRank().add(BigDecimal.valueOf(1)));
 					devPoints -= costs.getCost(0);
 				} catch (LevelUpVetoException e) {
 					/* ignore */
@@ -597,7 +597,7 @@ public class CharacterGenerator {
 						if (isFavorite || DiceUtils.roll(1, 100) < chance) {
 							/* only if 100 - (cost*5)% chance to learn */
 							try {
-								bean.setSkillgroupRank(cat, rank.add(BigDecimal.valueOf(1)) );
+								bean.setSkillcategoryRank(cat, rank.add(BigDecimal.valueOf(1)) );
 								devPointForSkillcats -= cost.getCost(0);
 							} catch (LevelUpVetoException e) {
 								/* ignore */
@@ -645,7 +645,7 @@ public class CharacterGenerator {
 										Skillcost catCost = bean.getSkillcost(cat);
 										if (catCost.size() > 0 && devPoints > catCost.getCost(0)) {
 											try {
-												bean.setSkillgroupRank(cat, catRank.add(BigDecimal.valueOf(1)) );
+												bean.setSkillcategoryRank(cat, catRank.add(BigDecimal.valueOf(1)) );
 												devPoints -= catCost.getCost(0);
 											} catch (LevelUpVetoException e) {
 												/* ignore */

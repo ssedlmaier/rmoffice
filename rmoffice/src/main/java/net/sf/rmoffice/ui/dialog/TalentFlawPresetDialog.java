@@ -15,14 +15,16 @@
  */
 package net.sf.rmoffice.ui.dialog;
 
-import java.awt.Container;
+import java.awt.Component;
 import java.awt.Frame;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -37,7 +39,8 @@ import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.TalentFlawPreset;
-import net.sf.rmoffice.meta.TalentFlawPresetValue;
+import net.sf.rmoffice.meta.TalentFlawPresetLevel;
+import net.sf.rmoffice.meta.talentflaw.ITalentFlawPart;
 import net.sf.rmoffice.ui.UIConstants;
 import net.sf.rmoffice.ui.models.TalentFlawPresetTableAdapter;
 import net.sf.rmoffice.ui.models.TalentFlawPresetValueTableAdapter;
@@ -59,27 +62,53 @@ public class TalentFlawPresetDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	
-	private JOptionPane optionPane;
 	private final MetaData metaData;
 	private ValueHolder selectionHolder = new ValueHolder();
 	private final BeanAdapter<RMSheet> beanAdapter;
+	private JComponent panel;
+	private SelectionInList<TalentFlawPreset> listModel;
+	private final Frame owner;
 	
 	public TalentFlawPresetDialog(Frame owner, MetaData metaData, BeanAdapter<RMSheet> beanAdapter) {
 		super(owner, RESOURCE.getString("ui.talentflaw.dialog.title"), true);
+		this.owner = owner;
 		this.metaData = metaData;
 		this.beanAdapter = beanAdapter;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setContentPane( createContentPane() );
-		pack();
+		panel = createPanel();
+	}
+	
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible) {
+			// clear selection (for the second time)
+			listModel.getSelectionHolder().setValue(null);
+			JOptionPane optionPane = createContentPane();
+			setContentPane( optionPane );
+			pack();
+		}
+		super.setVisible(visible);
 	}
 
-	private Container createContentPane() {
-		JComponent panel = createPanel();
-		optionPane = new JOptionPane(
+	private JOptionPane createContentPane() {
+		final String okText = RESOURCE.getString("ui.talentflaw.dialog.addselected");
+		final String cancelText = RESOURCE.getString("ui.talentflaw.dialog.cancel");
+		Object[] options = new Object[] { okText, cancelText };
+		final JOptionPane optionPane = new JOptionPane(
                 panel,
                 JOptionPane.PLAIN_MESSAGE,
-                JOptionPane.OK_CANCEL_OPTION);
-		 optionPane.addPropertyChangeListener(
+                JOptionPane.OK_CANCEL_OPTION, null, options );
+		final JButton okButton = getOKButton(optionPane, okText);
+		okButton.setEnabled(false);
+		final PropertyChangeListener enabledChangeListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				okButton.setEnabled(evt.getNewValue() != null);
+			}
+		};
+		selectionHolder.addValueChangeListener(enabledChangeListener);
+        
+		optionPane.addPropertyChangeListener(
 			    new PropertyChangeListener() {
 			        @Override
 					public void propertyChange(PropertyChangeEvent e) {
@@ -92,17 +121,18 @@ public class TalentFlawPresetDialog extends JDialog {
 			                 * before closing the window, you'd do
 			                 * it here. */
 			                setVisible(false);
-			                int value = ((Integer)optionPane.getValue()).intValue();
-			                if (value == JOptionPane.YES_OPTION) {
+			                if (okText.equals(optionPane.getValue())) {
 			                	if (selectionHolder.getValue() != null) {
 			                		SelectionHolder selection = (SelectionHolder) selectionHolder.getValue();
 			                		// convert to TalentFlaw (incl. ask for options)
 			                		TalentFlaw tf = createTalentFlaw(selection);
-			                		List<TalentFlaw> talentsFlaws = beanAdapter.getBean().getTalentsFlaws();
+			                		List<TalentFlaw> talentsFlaws = new ArrayList<TalentFlaw>();
+			                		talentsFlaws.addAll(beanAdapter.getBean().getTalentsFlaws());
 			                		talentsFlaws.add(tf);
 			                		beanAdapter.getBean().setTalentsFlaws(talentsFlaws);
 			                	}
 			                }
+			                selectionHolder.removeValueChangeListener(enabledChangeListener);
 			            }
 			        }
 			    });
@@ -110,15 +140,16 @@ public class TalentFlawPresetDialog extends JDialog {
 	}
 
 	private JComponent createPanel() {
-		FormLayout layout = new FormLayout("400dlu", "fill:100dlu, 5dlu, fill:80dlu");
+		FormLayout layout = new FormLayout("550dlu", "fill:100dlu, 5dlu, fill:80dlu");
 
 		JPanel panel = new JPanel(layout);
-		SelectionInList<TalentFlawPreset> listModel = new SelectionInList<TalentFlawPreset>(metaData.getTalentFlaws());
+		listModel = new SelectionInList<TalentFlawPreset>(metaData.getTalentFlaws());
 		TalentFlawPresetTableAdapter adapter = new TalentFlawPresetTableAdapter(listModel);
 		JTable table = new JTable(adapter);
 		table.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
 		table.setSelectionForeground(UIConstants.COLOR_SELECTION_FG);
 		table.setSelectionBackground(UIConstants.COLOR_SELECTION_BG);
+		table.getTableHeader().setReorderingAllowed(false);
 		SingleListSelectionAdapter selectionModel = new SingleListSelectionAdapter(listModel.getSelectionIndexHolder());
 		table.setSelectionModel(selectionModel);
 		panel.add(new JScrollPane(table), CC.xy(1, 1));
@@ -161,6 +192,7 @@ public class TalentFlawPresetDialog extends JDialog {
 		detailTable.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
 		detailTable.setSelectionForeground(UIConstants.COLOR_SELECTION_FG);
 		detailTable.setSelectionBackground(UIConstants.COLOR_SELECTION_BG);
+		detailTable.getTableHeader().setReorderingAllowed(false);
 		panel.add(new JScrollPane(detailTable), CC.xy(1, 3) );
 		
 		return panel;
@@ -168,18 +200,45 @@ public class TalentFlawPresetDialog extends JDialog {
 
 	/* called in EDT, will ask the user about options */
 	private TalentFlaw createTalentFlaw(SelectionHolder selection) {
-		TalentFlaw tf = new TalentFlaw();
-		TalentFlawPreset tfp = selection.getTalentFlaw();
-		TalentFlawPresetValue tfpv = selection.getTalenFlawValue();
+		TalentFlaw talFlaw = new TalentFlaw();
+		TalentFlawPreset tfPreset = selection.getTalentFlaw();
+		TalentFlawPresetLevel tfpLevel = selection.getTalenFlawLevel();
 		// copy basics values
-		tf.setId(tfp.getId());
-		tf.setType(tf.getType());
-		tf.setName(tfp.getName());
-		tf.setLevel(tfpv.getLevel());
-		tf.setCosts(tfpv.getCosts());
-		// values
-		tf.setDescriptions(tfpv.getDescriptions());
-		tf.setInitiativeBonus(tfpv.getInitiativeBonus());
-		return tf;
+		talFlaw.setId(tfPreset.getId());
+		talFlaw.setType(talFlaw.getType());
+		talFlaw.setSource(talFlaw.getSource());
+		talFlaw.setName(tfPreset.getName());
+		talFlaw.setLevel(tfpLevel.getLevel());
+		talFlaw.setCosts(tfpLevel.getCosts());
+		// add the dynamic parts
+		for (ITalentFlawPart part : tfpLevel.getTalentFlawParts() ) {
+			part.addToTalentFlaw(owner, talFlaw);
+		}
+		return talFlaw;
 	}
+	
+	/*
+	 * Returns the OK button from the dialog.
+	 */
+	private static JButton getOKButton(JComponent comp, String text) {
+	        if (comp == null) {
+	            return null;     
+	        }
+
+	        for (Component c : comp.getComponents()) {
+	            if (c instanceof JButton) {
+	            	JButton bt = (JButton)c;
+	            	if (text.equals(bt.getText())) {
+	            		return bt;
+	            	}
+	            } else if (c instanceof JComponent) {
+	                JButton bt = getOKButton((JComponent) c, text);
+	                if (bt != null) {
+	                	return bt;
+	                }
+	            }
+	        }
+	        return null;
+	    }
+
 }

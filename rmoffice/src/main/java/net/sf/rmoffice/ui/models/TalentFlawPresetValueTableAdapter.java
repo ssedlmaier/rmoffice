@@ -17,6 +17,7 @@ package net.sf.rmoffice.ui.models;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -24,17 +25,22 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 import net.sf.rmoffice.meta.TalentFlawPreset;
-import net.sf.rmoffice.meta.TalentFlawPresetValue;
+import net.sf.rmoffice.meta.TalentFlawPresetLevel;
+import net.sf.rmoffice.meta.talentflaw.ITalentFlawPart;
+import net.sf.rmoffice.meta.talentflaw.TalentFlawFactory;
 
 import com.jgoodies.binding.value.ValueModel;
 
 /**
- * Table shows the details, values and levels ({@link TalentFlawPresetValue}s) of
+ * Table shows the details, values and levels ({@link TalentFlawPresetLevel}s) of
  * a selected {@link TalentFlawPreset}.
  */
 public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 	private static final long serialVersionUID = 1L;
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
+	private static final String COSTS = "costs";
+	private static final String BGO = "bgo";
+	
 	private final ValueModel beanChannel;
 	private final ValueModel selectionHolder;
 
@@ -51,7 +57,7 @@ public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 		if (row == 0 && column > 0) {
 			if (Boolean.TRUE.equals(aValue)) {
 				TalentFlawPreset tf = (TalentFlawPreset)beanChannel.getValue();
-				TalentFlawPresetValue talentFlawPresetValue = tf.getValues().get(column - 1);
+				TalentFlawPresetLevel talentFlawPresetValue = tf.getValues().get(column - 1);
 				selectionHolder.setValue(new SelectionHolder(tf, talentFlawPresetValue));
 				for (int i=1; i<getColumnCount(); i++) {
 					if (i != column) {
@@ -66,6 +72,7 @@ public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 	}
 	
 	private void updateData() {
+		selectionHolder.setValue(null);
 		TalentFlawPreset tf = (TalentFlawPreset)beanChannel.getValue();
 		if (tf == null) {
 			setDataVector(new String[0][0], new Object[0]);
@@ -73,31 +80,34 @@ public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 			Vector<Object> colsName = new Vector<Object>();
 			Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 			colsName.add(""); // empty 1,1 col
-			List<TalentFlawPresetValue> values = tf.getValues();
+			List<TalentFlawPresetLevel> values = tf.getValues();
 			for (int columnIdx=0; columnIdx < values.size(); columnIdx++) {
 				colsName.add(RESOURCE.getString("TalentFlawLevel."+values.get(columnIdx).getLevel().name()));
 			}
 			// create the selection row with the checkbox
 			Vector<Object> row = new Vector<Object>();
 			data.add(row);
-			// create the line
+			// create the first line
 			row.add("");
 			for (int columnIdx=1; columnIdx <= values.size(); columnIdx++) {
 				row.add(Boolean.FALSE);
 			}
 			// create for data
-			createDataLine(data, values, "costs");
-			createDataLine(data, values, "ini");
-			createDataLine(data, values, "descr");
+			createDataLine(data, values, COSTS);
+			createDataLine(data, values, BGO);
+			// dynamic data
+			for (String partID : TalentFlawFactory.getPartIDs()) {
+				createDataLine(data, values, partID);
+			}
 			setDataVector(data, colsName);
 		}
 	}
 
-	private void createDataLine(Vector<Vector<Object>> data, List<TalentFlawPresetValue> values, String prop) {
+	private void createDataLine(Vector<Vector<Object>> data, List<TalentFlawPresetLevel> levels, String prop) {
 		// check if there is a value
 		boolean found = false;
-		for (int columnIdx=0; columnIdx < values.size(); columnIdx++) {
-			TalentFlawPresetValue val = values.get(columnIdx);
+		for (int columnIdx=0; columnIdx < levels.size(); columnIdx++) {
+			TalentFlawPresetLevel val = levels.get(columnIdx);
 			if (getValue(val, prop) != null) {
 				found = true;
 			}
@@ -107,35 +117,39 @@ public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 			Vector<Object> row = new Vector<Object>();
 			data.add(row);
 			// create the line
-			row.add(prop);
-			for (int columnIdx=1; columnIdx <= values.size(); columnIdx++) {
-				TalentFlawPresetValue val = values.get(columnIdx-1);
+			row.add(RESOURCE.getString("ui.talentflaw.value."+prop));
+			for (int columnIdx=1; columnIdx <= levels.size(); columnIdx++) {
+				TalentFlawPresetLevel val = levels.get(columnIdx-1);
 				row.add(getValue(val, prop));
 			}
 		}
 	}
 
-	private Object getValue(TalentFlawPresetValue val, String prop) {
-		if ("costs".equals(prop)) {
+	private Object getValue(TalentFlawPresetLevel val, String id) {
+		if (COSTS.equals(id)) {
 			return ""+val.getCosts();
-		} else if ("ini".equals(prop)) {
-			return val.getInitiativeBonus() == null ? null : "" + val.getInitiativeBonus();
-		} else if ("descr".equals(prop)) {
-			if (val.getDescriptions() != null) {
-				return val.getDescriptions().toArray(new Object[val.getDescriptions().size()]);
+		} else if (BGO.equals(id)) {
+			return ""+val.getLevel().getBGCost();
+		}
+		// search through all the parts
+		List<String> values = new ArrayList<String>();
+		for (ITalentFlawPart part : val.getTalentFlawParts()) {
+			if (part.getId().equals(id)) {
+				values.add(part.asText());
 			}
 		}
 		return null;
 	}
-	
+
+
 	/**
 	 * 
 	 */
 	public static class SelectionHolder {
 		private TalentFlawPreset talentFlaw;
-		private TalentFlawPresetValue talenFlawValue;
+		private TalentFlawPresetLevel talenFlawValue;
 		
-		public SelectionHolder(TalentFlawPreset talentFlaw, TalentFlawPresetValue talenFlawValue) {
+		public SelectionHolder(TalentFlawPreset talentFlaw, TalentFlawPresetLevel talenFlawValue) {
 			super();
 			this.talentFlaw = talentFlaw;
 			this.talenFlawValue = talenFlawValue;
@@ -143,7 +157,7 @@ public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 		public TalentFlawPreset getTalentFlaw() {
 			return talentFlaw;
 		}
-		public TalentFlawPresetValue getTalenFlawValue() {
+		public TalentFlawPresetLevel getTalenFlawLevel() {
 			return talenFlawValue;
 		}
 		

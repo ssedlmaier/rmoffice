@@ -25,8 +25,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
-import net.sf.rmoffice.ui.UIConstants;
-
 /**
  * Table cell renderer that displays the text in multiple lines
  * and modifies the row height.
@@ -38,6 +36,9 @@ public class MultiLineTableCellRenderer extends JTextArea implements TableCellRe
 	public MultiLineTableCellRenderer() {
 		setLineWrap(true);
 		setWrapStyleWord(false);
+		/* getPreferredSize() initializes something internally in the JTextArea, otherwise the first time rendering 
+		 * will result in a very high table row height. */
+		getPreferredSize();
 	}
 
 	@Override
@@ -78,10 +79,12 @@ public class MultiLineTableCellRenderer extends JTextArea implements TableCellRe
 		setForeground(cellForeground);
 		setBackground(cellBackground);
 		
-		// set height
-		if (UIConstants.TABLE_ROW_HEIGHT < getMinimumSize().height) { 
+		// set row height
+		int minHeight = table.getRowHeight(row);
+		if (minHeight < getMinimumSize().height) { 
 			table.setRowHeight(row, getMinimumSize().height);
 		}
+		
 		return this;
 	}
 }

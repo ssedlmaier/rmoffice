@@ -634,7 +634,7 @@ public class PDFCreator extends AbstractPDFCreator {
 	/**
 	 * skill categories
 	 */
-	private void drawSkillcategories(PdfContentByte canvas) {
+	private void page2drawSkillcategories(PdfContentByte canvas) {
 		float[] xVal = new float[] {60,215,261,299,331,363,406,454,498,538};
 		float y = 0;
 		for (int col=0; col < xVal.length; col++) {
@@ -690,7 +690,7 @@ public class PDFCreator extends AbstractPDFCreator {
 							str = ""; 
 						}
 						 break;
-					case 6: str = format(sheet.getSkillcategoryStatBonus(sg), false);break; /* attribute bonus */
+					case 6: str = format(sheet.getSkillcategoryStatBonus(sg), false);break; /* stat bonus */
 					case 7: str = format(sheet.getProfession().getSkillgroupBonus(sg.getId().intValue()), true);break; /* prof bonus */
 					case 8: /* special (user special bonus) */
 						Integer specialBonus = sheet.getSkillcategoryRank(sg).getSpecialBonus();
@@ -698,7 +698,7 @@ public class PDFCreator extends AbstractPDFCreator {
 						if (specialBonus != null) {
 							specialBonusInt += specialBonus.intValue();
 						} 
-						/* body development */
+						/* calculated special bonus (e.g. body development, talents, flaws) */
 						specialBonusInt += sheet.getSkillcategorySpecial1Bonus(sg);
 						/* user */
 						str = format(specialBonusInt, true);
@@ -782,7 +782,7 @@ public class PDFCreator extends AbstractPDFCreator {
 			if (skill != null) {
 				type = sheet.getSkillType(skill);
 			} else {
-				type = sheet.getSkillgroupType(skillgroup);
+				type = sheet.getSkillcategoryType(skillgroup);
 			}
 			if (type != null) {
 				switch (type) {
@@ -1006,7 +1006,7 @@ public class PDFCreator extends AbstractPDFCreator {
 
 	private void createPage2(PdfContentByte canvas) throws BadElementException, MalformedURLException, IOException, DocumentException {
 		header2(canvas, 2);
-        drawSkillcategories(canvas);
+        page2drawSkillcategories(canvas);
 		footer(canvas);
 	}
 

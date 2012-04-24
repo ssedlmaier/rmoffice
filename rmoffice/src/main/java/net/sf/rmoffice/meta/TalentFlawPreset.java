@@ -29,7 +29,7 @@ public class TalentFlawPreset {
 	private String name;
 	private String source;
 	private TalentFlawType type;
-	private List<TalentFlawPresetValue> values;
+	private List<TalentFlawPresetLevel> values;
 
 	/* package */TalentFlawPreset(Integer id) {
 		this.id = id;
@@ -63,13 +63,13 @@ public class TalentFlawPreset {
 		this.type = type;
 	}
 
-	public List<TalentFlawPresetValue> getValues() {
+	public List<TalentFlawPresetLevel> getValues() {
 		return values;
 	}
 
-	/* package */void addValues(TalentFlawPresetValue value) {
+	/* package */void addValues(TalentFlawPresetLevel value) {
 		if (this.values == null) {
-			this.values = new ArrayList<TalentFlawPresetValue>();
+			this.values = new ArrayList<TalentFlawPresetLevel>();
 		}
 		this.values.add(value);
 	}

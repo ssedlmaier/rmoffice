@@ -15,15 +15,19 @@
  */
 package net.sf.rmoffice.core;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jgoodies.binding.beans.Model;
-
+import net.sf.rmoffice.meta.ISkill;
+import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
 import net.sf.rmoffice.meta.enums.TalentFlawTransform;
 import net.sf.rmoffice.meta.enums.TalentFlawType;
+
+import com.jgoodies.binding.beans.Model;
 
 /**
  * Sheet data: Talent or flaw with one level of the talent.
@@ -114,41 +118,70 @@ public class TalentFlaw extends Model {
 	public List<String> getDescriptions() {
 		return descriptions;
 	}
-
-	public void setDescriptions(List<String> descriptions) {
-		this.descriptions = descriptions;
+	
+	public void addDescription(String description) {
+		if (descriptions == null) {
+			descriptions = new ArrayList<String>();
+		}
+		descriptions.add(description);
 	}
 
 	public Map<Integer, Integer> getSkillCatBonus() {
 		return skillCatBonus;
 	}
 
-	public void setSkillCatBonus(Map<Integer, Integer> skillCatBonus) {
-		this.skillCatBonus = skillCatBonus;
+	public void addSkillCatBonus(SkillCategory category, Integer value) {
+		if (skillCatBonus == null) {
+			skillCatBonus = new HashMap<Integer, Integer>();
+		}
+		if (category != null && value != null) {
+			skillCatBonus.put(category.getId(), value);
+		}
 	}
 
 	public Map<Integer, SkillType> getSkillCatType() {
 		return skillCatType;
 	}
 
-	public void setSkillCatType(Map<Integer, SkillType> skillCatType) {
-		this.skillCatType = skillCatType;
+	public void addSkillCatType(SkillCategory category, SkillType value) {
+		if (skillCatType == null) {
+			skillCatType = new HashMap<Integer, SkillType>();
+		}
+		if (category != null && value != null) {
+			skillCatType.put(category.getId(), value);
+		}
 	}
 
+	/**
+	 * Returns the skill bonus map with all bonus.
+	 * 
+	 * @return the skill bonus map or {@code null}
+	 */
 	public Map<Integer, Integer> getSkillBonus() {
 		return skillBonus;
 	}
 
-	public void setSkillBonus(Map<Integer, Integer> skillBonus) {
-		this.skillBonus = skillBonus;
+	public void addSkillBonus(ISkill skill, Integer rank) {
+		if (skillBonus == null) {
+			skillBonus = new HashMap<Integer, Integer>();
+		}
+		if (skill != null && rank != null) {
+			skillBonus.put(skill.getId(), rank);
+		}
 	}
 
 	public Map<Integer, SkillType> getSkillType() {
 		return skillType;
 	}
 
-	public void setSkillType(Map<Integer, SkillType> skillType) {
-		this.skillType = skillType;
+
+	public void addSkillType(ISkill skill, SkillType value) {
+		if (skillType == null) {
+			skillType = new HashMap<Integer, SkillType>();
+		}
+		if (skill != null && value != null) {
+			skillType.put(skill.getId(), value);
+		}
 	}
 
 	public Map<Integer, TalentFlawTransform> getTransformedSkillCategories() {
@@ -159,6 +192,5 @@ public class TalentFlaw extends Model {
 			Map<Integer, TalentFlawTransform> transformedSkillCategories) {
 		this.transformedSkillCategories = transformedSkillCategories;
 	}
-	
 
 }

@@ -289,9 +289,13 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			fatepoints = Long.valueOf(0);
 		}
 		if (gracepoints == null) {
-			gracepoints = Long.valueOf(0);
+			setGracepoints(Long.valueOf(0));
+		} else {
+			/* we need to update all possible events */
+			Long stored = this.gracepoints;
+			gracepoints = null;
+			setGracepoints(stored);
 		}
-		setGracepoints(gracepoints);
 		firePropertyChange(PROPERTY_PRINT_OUTLINE_IMG, null, this.printOutlineImage);
 		/* refresh todos */
 		firePropertyChange(PROPERTY_TODO_CHANGED, null, null);
@@ -723,13 +727,13 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	/**
 	 * Fires {@link #PROPERTY_SKILLCATEGORY_CHANGED} and {@link #PROPERTY_SKILLS_CHANGED} property change event.
 	 * 
-	 * @param group the group to set the new rank for, not {@code null}
+	 * @param category the category to set the new rank for, not {@code null}
 	 * @param rank
 	 * @throws LevelUpVetoException if skill group rank operation is not allowed
 	 */
-	public void setSkillgroupRank(SkillCategory group, BigDecimal rank) throws LevelUpVetoException {
-		levelUp.modifySkillcategoryRank(group, rank);
-		internalSetSkillcategoryRank(group, rank);
+	public void setSkillcategoryRank(SkillCategory category, BigDecimal rank) throws LevelUpVetoException {
+		levelUp.modifySkillcategoryRank(category, rank);
+		internalSetSkillcategoryRank(category, rank);
 	}
 
 	/**
@@ -892,8 +896,10 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	}
 
 	/**
-	 * Returns the sum of rank bonus, skillgroup total bonus, special skill bonus,
-	 * without item skill bonus.
+	 * Returns the sum of rank bonus, skillgroup total bonus, special skill bonus.
+	 * Bonus does not include item skill bonus because the magical items will be
+	 * printed under the skill. Example: Character will not get bonus of 
+	 * two 2h-weapons.
 	 * 
 	 * @param skill the skill
 	 * @return the total bonus of the given skill 
@@ -901,11 +907,32 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	public int getSkillTotalBonus(ISkill skill) {
 		int bonus = getSkillRankBonus(skill);
 		bonus += getSkillcategoryTotalBonus(getSkillcategory(skill));
-		/* special bonus and magicalitems */
+		/* special bonus */
 		if (skillRanks.containsKey(skill.getId())) {
 			Rank rank = skillRanks.get(skill.getId());
 			if (rank.getSpecialBonus() != null) {
 				bonus += rank.getSpecialBonus().intValue();
+			}
+		}
+		bonus += getSkillSpecialBonus(skill);
+		return bonus;
+	}
+	
+	/**
+	 * Returns the calculated bonus for the given skill. The bonus is
+	 * calculated from all talents and flaws.
+	 * 
+	 * @param skill the skill, not {@code null}
+	 * @return the calculated bonus
+	 */
+	public int getSkillSpecialBonus(ISkill skill) {
+		int bonus = 0;
+		/* Talent/Flaw special bonus */
+		for (TalentFlaw tf : getTalentsFlaws()) {
+			if (tf.getSkillBonus() != null) {
+				if (tf.getSkillBonus().containsKey(skill.getId())) {
+					bonus += tf.getSkillBonus().get(skill.getId()).intValue();
+				}
 			}
 		}
 		return bonus;
@@ -945,10 +972,8 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (userDefinedSpecialBonus != null) {
 			bonus += userDefinedSpecialBonus.intValue();
 		}
-		/* Körperentwicklung +10 */
-		if (category.getRankType().isProgressionBody()) {
-			bonus += 10;
-		}
+		/* Special bonus (calculated) */
+		bonus += getSkillcategorySpecial1Bonus(category);
 		return bonus;
 	}
 
@@ -1750,26 +1775,36 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	}
 
 	/**
+	 * Sets the user defined special bonus.
 	 * 
-	 * @param group the skill group
+	 * @param category the skill category, not {@code null}
 	 * @param bonus the new bonus
 	 */
-	public void setSkillgroupSpecialBonus(SkillCategory group, int bonus) {
-		Rank rankObj = getSkillcategoryRank(group);
+	public void setSkillcategorySpecialBonus(SkillCategory category, int bonus) {
+		Rank rankObj = getSkillcategoryRank(category);
 		rankObj.setSpecialBonus(Integer.valueOf(bonus));
 		firePropertyChange(PROPERTY_SKILLCATEGORY_CHANGED, null, rankObj);
 		firePropertyChange(PROPERTY_SKILLS_CHANGED, null, null);
 	}
 
 	/**
-	 * Returns the body development bonus without user defined bonus.
+	 * Returns the calculated bonus without user defined bonus,
+	 * e.g. body development, talent and flaws.
 	 * 
 	 * @param category the skill category
-	 * @return the sum 
+	 * @return the sum of special bonus
 	 */
 	public int getSkillcategorySpecial1Bonus(SkillCategory category) {
 		/* body development */
 		int bonus = category.getRankType().isProgressionBody() ? 10 : 0;
+		/* talent and flaws */
+		for (TalentFlaw tf : getTalentsFlaws()) {
+			if (tf.getSkillCatBonus() != null) {
+				if (tf.getSkillCatBonus().containsKey(category.getId())) {
+					bonus += tf.getSkillCatBonus().get(category.getId()).intValue();
+				}
+			}
+		}
 		return bonus;
 	}
 
@@ -1845,6 +1880,8 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	
 	/**
 	 * Returns the {@link SkillType} for the given skill.
+	 * If any talent or flaw provides a type for the given skill this is used. If different 
+	 * talents and flaws provides a {@link SkillType} the restricted or the best is used.
 	 * If the profession provides a {@link SkillType} this is used. Otherwise the {@link Race} is
 	 * checked and after that the custom {@link SkillType}s from training packs.
 	 * 
@@ -1863,6 +1900,35 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			skillId = ((CustomSkill)skill).getActualSkillId().intValue();
 		} else {
 			skillId = skill.getId().intValue();
+		}
+		/* check talent and flaws (skills types) */
+		if (retVal == null) {
+			for (TalentFlaw tf : getTalentsFlaws()) {
+				if (tf.getSkillType() != null && tf.getSkillType().containsKey(skill.getId())) {
+					SkillType newType = tf.getSkillType().get(skill.getId());
+					if (SkillType.RESTRICTED.equals(newType)) {
+						retVal = SkillType.RESTRICTED; // this is always stronger
+						break;
+					} else if (retVal == null || newType.ordinal() > retVal.ordinal() ){
+						retVal = newType;
+					}
+				}
+			}
+		}
+		/* check talent and flaws (skill category types) */
+		if (retVal == null) {
+			SkillCategory skillCat = getSkillcategory(skill);
+			for (TalentFlaw tf : getTalentsFlaws()) {
+				if (tf.getSkillCatType() != null && tf.getSkillCatType().containsKey(skillCat.getId())) {
+					SkillType newType = tf.getSkillCatType().get(skillCat.getId());
+					if (SkillType.RESTRICTED.equals(newType)) {
+						retVal = SkillType.RESTRICTED; // this is always stronger
+						break;
+					} else if (retVal == null || newType.ordinal() > retVal.ordinal() ){
+						retVal = newType;
+					}
+				}
+			}
 		}
 		if (retVal == null) {
 			retVal = getProfession().getSkillType(skillId);
@@ -1891,22 +1957,32 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	}
 	
 	/**
-	 * Returns the {@link SkillType} for the given skill group.
+	 * Returns the {@link SkillType} for the given skill category.
 	 * The {@link SkillType#RESTRICTED_IF_NOT_CHANNELING} will be translated
 	 * to {@link SkillType#DEFAULT} or {@link SkillType#RESTRICTED} depending
 	 * on the realm. 
 	 * 
-	 * @param sg the skill group
+	 * @param skillCat the skill category
 	 * @return the skill type, not {@code null}
 	 */
-	public SkillType getSkillgroupType(SkillCategory sg) {
-		if (sg == null || getProfession() == null) {
+	public SkillType getSkillcategoryType(SkillCategory skillCat) {
+		if (skillCat == null || getProfession() == null) {
 			return SkillType.DEFAULT;
 		}
 		SkillType retVal = null;
-		retVal = getProfession().getSkillGroupType(sg.getId().intValue());
+		for (TalentFlaw tf : getTalentsFlaws()) {
+			if (tf.getSkillCatType() != null && tf.getSkillCatType().containsKey(skillCat.getId())) {
+				SkillType newType = tf.getSkillCatType().get(skillCat.getId());
+				if (SkillType.RESTRICTED.equals(newType)) {
+					retVal = SkillType.RESTRICTED; // this is always stronger
+					break;
+				} else if (retVal == null || newType.ordinal() > retVal.ordinal() ){
+					retVal = newType;
+				}
+			}
+		}
 		if (retVal == null) {
-			retVal = SkillType.DEFAULT;
+			retVal = getProfession().getSkillGroupType(skillCat.getId().intValue());
 		}
 		if (SkillType.RESTRICTED_IF_NOT_CHANNELING.equals(retVal)) {
 			if (!getMagicRealm().contains(StatEnum.INTUITION)) {
@@ -2262,10 +2338,13 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * Returns the list of talent and flaws. If you want to modify the list, you have
 	 * to set the list again in {{@link #setTalentsFlaws(List)} to notify about changes.
 	 * 
-	 * @return list of talent and flaws, not {@code null}
+	 * @return unmodifiable list of talent and flaws, not {@code null}
 	 */
 	public List<TalentFlaw> getTalentsFlaws() {
-		return talentsFlaws;
+		if (talentsFlaws == null) {
+			return Collections.unmodifiableList(new ArrayList<TalentFlaw>());
+		}
+		return Collections.unmodifiableList(talentsFlaws);
 	}
 
 	/**
@@ -2275,8 +2354,14 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 */
 	public void setTalentsFlaws(List<TalentFlaw> talentsFlaws) {
 		Object oldValue = this.talentsFlaws;
-		this.talentsFlaws = talentsFlaws;
+		this.talentsFlaws = new ArrayList<TalentFlaw>();
+		if (talentsFlaws != null) {
+			this.talentsFlaws.addAll(talentsFlaws);
+		}
 		firePropertyChange(TALENTSFLAWS_PROP, oldValue, this.talentsFlaws);
+		firePropertyChange(PROPERTY_SKILLCATEGORY_CHANGED, null, null);
+		firePropertyChange(PROPERTY_SKILL_CATEGORIES, null, null);
+		firePropertyChange(PROPERTY_SKILLS_CHANGED, null, null);
 	}
 
 	/**
