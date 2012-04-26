@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.sf.rmoffice.meta.MetaData;
-import net.sf.rmoffice.meta.talentflaw.parser.ChooseBonusParser;
+import net.sf.rmoffice.meta.talentflaw.parser.ChooseParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DescriptionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ITalentFlawPartParser;
 import net.sf.rmoffice.meta.talentflaw.parser.InitiativeParser;
@@ -73,7 +73,7 @@ public class TalentFlawFactory {
 		parsers.add(new DescriptionParser());
 		parsers.add(new BonusParser(metaData)); 
 		parsers.add(new SkillTypeParser(metaData)); 
-		parsers.add(new ChooseBonusParser(metaData));
+		parsers.add(new ChooseParser(metaData));
 	}
 
 	/**

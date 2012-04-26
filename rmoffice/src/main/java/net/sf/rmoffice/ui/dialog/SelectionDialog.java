@@ -44,7 +44,7 @@ public class SelectionDialog<T> extends JDialog {
 	private List<T> checkedItems;
 	
 
-	public SelectionDialog(Frame owner, int amount, T... selectables) {
+	public SelectionDialog(Frame owner, int amount, Object... selectables) {
 		super(owner, RESOURCE.getString("ui.trainpack.add"), true);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		setContentPane( createContentPane(amount, selectables) );

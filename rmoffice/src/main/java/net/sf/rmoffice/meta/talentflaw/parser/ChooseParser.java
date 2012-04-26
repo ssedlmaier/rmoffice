@@ -23,17 +23,18 @@ import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.MetaDataLoader;
 import net.sf.rmoffice.meta.SkillCategory;
-import net.sf.rmoffice.meta.talentflaw.ChooseBonusPart;
+import net.sf.rmoffice.meta.enums.SkillType;
+import net.sf.rmoffice.meta.talentflaw.ChoosePart;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ChooseBonusParser implements ITalentFlawPartParser<ChooseBonusPart> {
+public class ChooseParser implements ITalentFlawPartParser<ChoosePart> {
 
-	private static final String PATTERN = "CHOOSE[0-9]+=[CS0-9;]+=[0-9-]+";
+	private static final String PATTERN = "CHOOSE[0-9]+=[CS0-9;]+=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING)";
 	private final MetaData metaData;
 	private final Pattern pattern;
 
-	public ChooseBonusParser(MetaData metaData) {
+	public ChooseParser(MetaData metaData) {
 		this.metaData = metaData;
 		pattern = Pattern.compile(PATTERN);
 	}
@@ -48,12 +49,18 @@ public class ChooseBonusParser implements ITalentFlawPartParser<ChooseBonusPart>
 	}
 
 	@Override
-	public ChooseBonusPart parse(String parseableString) {
+	public ChoosePart parse(String parseableString) {
 		String trimmed = StringUtils.trim(parseableString);
 		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(6), "=");
 
 		int amount = Integer.parseInt(parts[0]);
-		int bonus = Integer.parseInt(parts[2]);
+		int bonus = 0;
+		SkillType type = null;
+		try {
+			bonus = Integer.parseInt(parts[2]);
+		} catch (NumberFormatException e) {
+			type = SkillType.valueOf(parts[2]);
+		}
 		// values
 		List<SkillCategory> cats = new ArrayList<SkillCategory>();
 		List<ISkill> skills = new ArrayList<ISkill>();
@@ -69,14 +76,26 @@ public class ChooseBonusParser implements ITalentFlawPartParser<ChooseBonusPart>
 				skills.add(skill);
 			}
 		}
-		return createChooseBonusPart(amount, bonus, cats, skills);
+		if (type != null) {
+			return createChooseBonusPart(amount, type, cats, skills);
+		} else {
+			return createChooseBonusPart(amount, bonus, cats, skills);
+		}
 	}
 
-	/* for test */ ChooseBonusPart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills) {
+	/* for test */ ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills) {
 		if (cats.size() > 0) {
-			return new ChooseBonusPart(bonus, amount, cats.toArray(new SkillCategory[cats.size()]));
+			return new ChoosePart(bonus, amount, false, cats.toArray());
 		} else {
-			return new ChooseBonusPart(bonus, amount, skills.toArray(new ISkill[skills.size()]));
+			return new ChoosePart(bonus, amount, true, skills.toArray());
+		}
+	}
+	
+	/* for test */ ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills) {
+		if (cats.size() > 0) {
+			return new ChoosePart(type, amount, false, cats.toArray());
+		} else {
+			return new ChoosePart(type, amount, true, skills.toArray());
 		}
 	}
 	
