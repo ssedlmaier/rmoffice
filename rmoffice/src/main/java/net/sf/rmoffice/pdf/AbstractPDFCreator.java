@@ -40,6 +40,7 @@ import net.sf.rmoffice.core.Equipment;
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.core.Rank;
 import net.sf.rmoffice.core.items.MagicalItem;
+import net.sf.rmoffice.meta.INamed;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.Shield;
@@ -433,7 +434,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 				/* skills and ranks */
 				List<Object> line = favs.get(idx);
 				for (int col = 0; col < 3; col++) {
-					String text =  (col == 0 ) ? ((ISkill)line.get(col)).getName() : (String) line.get(col) ;
+					String text =  (col == 0 ) ? ((INamed)line.get(col)).getName() : (String) line.get(col) ;
 					int align = (col == 0) ? Element.ALIGN_LEFT : Element.ALIGN_CENTER;
 					showUserText(canvas, 7, xVal[col + c], y0, text, align);
 					if (col == 0) {
@@ -489,7 +490,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 				for (int col = 0; col < xVal.length; col++) {
 					String str = "";
 					if (col == 0) {
-						str = ((ISkill)weaponSkillArr.get(col)).getName();
+						str = ((INamed)weaponSkillArr.get(col)).getName();
 					} else if (col < weaponSkillArr.size()) {
 						str = (String) weaponSkillArr.get(col);
 					}

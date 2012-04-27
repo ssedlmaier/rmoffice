@@ -36,6 +36,7 @@ import net.sf.rmoffice.core.items.MagicalFeature;
 import net.sf.rmoffice.core.items.MagicalItem;
 import net.sf.rmoffice.meta.Culture;
 import net.sf.rmoffice.meta.DivineStatus;
+import net.sf.rmoffice.meta.INamed;
 import net.sf.rmoffice.meta.IProgression;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
@@ -1871,7 +1872,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * @param skill
 	 * @return the customs skills type
 	 */
-	public SkillType getSkillTypeCustom(ISkill skill) {
+	public SkillType getSkillTypeCustom(INamed skill) {
 		if (skill instanceof CustomSkill) {
 			return ((CustomSkill)skill).getType();
 		}

@@ -17,6 +17,7 @@ package net.sf.rmoffice.ui.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -43,13 +44,21 @@ public class MultiLineTableCellRenderer extends JTextArea implements TableCellRe
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		if (value != null && value.getClass().isArray()) {
+		if (value != null && (value.getClass().isArray() || value instanceof List<?>)) {
 			StringBuilder sb = new StringBuilder();
-			for (Object line : (Object[])value) {
-				if (sb.length() > 0) {
-					sb.append("\n");
+			Object[] arr = null;
+			if (value instanceof List<?>) {
+				arr = ((List<?>)value).toArray();
+			} else {
+				arr = (Object[]) value;
+			}
+			for (Object line : arr) {
+				if (line != null) {
+					if (sb.length() > 0) {
+						sb.append("\n");
+					}
+					sb.append(line.toString());
 				}
-				sb.append(line.toString());				
 			}
 			setText(sb.toString());
 		} else {

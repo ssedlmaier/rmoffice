@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import net.sf.rmoffice.LevelUpVetoException;
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.core.Rank;
+import net.sf.rmoffice.meta.INamed;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.enums.SkillType;
@@ -128,7 +129,7 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 	@Override
 	public Object getValueAt(int row, int column) {
 		if (column == COL_SKILL) {
-			ISkill skill = (ISkill)super.getValueAt(row, column);
+			INamed skill = (INamed)super.getValueAt(row, column);
 			if (skill != null) {
 				return skill.getName();
 			} else {

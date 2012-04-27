@@ -38,6 +38,7 @@ import com.jgoodies.binding.value.ValueModel;
 public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 	private static final long serialVersionUID = 1L;
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
+	
 	private static final String COSTS = "costs";
 	private static final String BGO = "bgo";
 	
@@ -81,23 +82,27 @@ public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 			Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 			colsName.add(""); // empty 1,1 col
 			List<TalentFlawPresetLevel> values = tf.getValues();
-			for (int columnIdx=0; columnIdx < values.size(); columnIdx++) {
-				colsName.add(RESOURCE.getString("TalentFlawLevel."+values.get(columnIdx).getLevel().name()));
+			if (values != null) {
+				for (int columnIdx=0; columnIdx < values.size(); columnIdx++) {
+					colsName.add(RESOURCE.getString("TalentFlawLevel."+values.get(columnIdx).getLevel().name()));
+				}
 			}
 			// create the selection row with the checkbox
 			Vector<Object> row = new Vector<Object>();
 			data.add(row);
 			// create the first line
 			row.add("");
-			for (int columnIdx=1; columnIdx <= values.size(); columnIdx++) {
-				row.add(Boolean.FALSE);
-			}
-			// create for data
-			createDataLine(data, values, COSTS);
-			createDataLine(data, values, BGO);
-			// dynamic data
-			for (String partID : TalentFlawFactory.getPartIDs()) {
-				createDataLine(data, values, partID);
+			if (values != null) {
+				for (int columnIdx=1; columnIdx <= values.size(); columnIdx++) {
+					row.add(Boolean.FALSE);
+				}
+				// create for data
+				createDataLine(data, values, COSTS);
+				createDataLine(data, values, BGO);
+				// dynamic data
+				for (String partID : TalentFlawFactory.getPartIDs()) {
+					createDataLine(data, values, partID);
+				}
 			}
 			setDataVector(data, colsName);
 		}
@@ -137,6 +142,9 @@ public class TalentFlawPresetValueTableAdapter extends DefaultTableModel {
 			if (part.getId().equals(id)) {
 				values.add(part.asText());
 			}
+		}
+		if (values.size() > 0) {
+			return values;
 		}
 		return null;
 	}

@@ -26,7 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import net.sf.rmoffice.meta.ISkill;
+import net.sf.rmoffice.meta.INamed;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.ui.renderer.ComboboxSkillTypeRenderer;
 
@@ -46,7 +46,7 @@ public class ModifySkillDialog extends JPanel {
 	 * @param rankType the skills rank type or {@code null} for new skills
 	 * 
 	 */
-	public ModifySkillDialog(ISkill skill, SkillType rankType) {
+	public ModifySkillDialog(INamed skill, SkillType rankType) {
 		initComponents(skill, rankType);
 	}
 
@@ -69,7 +69,7 @@ public class ModifySkillDialog extends JPanel {
 	/**
 	 * 
 	 */
-	private void initComponents(ISkill skill, SkillType rankType) {
+	private void initComponents(INamed skill, SkillType rankType) {
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;c.gridy = 0;c.fill = GridBagConstraints.BOTH;

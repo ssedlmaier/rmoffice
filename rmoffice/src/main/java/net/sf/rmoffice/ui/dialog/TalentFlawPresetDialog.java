@@ -140,7 +140,7 @@ public class TalentFlawPresetDialog extends JDialog {
 	}
 
 	private JComponent createPanel() {
-		FormLayout layout = new FormLayout("550dlu", "fill:100dlu, 5dlu, fill:80dlu");
+		FormLayout layout = new FormLayout("550dlu", "fill:100dlu, 5dlu, fill:150dlu");
 
 		JPanel panel = new JPanel(layout);
 		listModel = new SelectionInList<TalentFlawPreset>(metaData.getTalentFlaws());

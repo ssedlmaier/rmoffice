@@ -28,7 +28,7 @@ import net.sf.rmoffice.meta.enums.StatEnum;
 /**
  * skill category (skill group is wrong translation).
  */
-public class SkillCategory {
+public class SkillCategory implements INamed {
 	private Integer id;
 	private String name;
 	private RankType rankType;
@@ -47,6 +47,7 @@ public class SkillCategory {
 		this.id = id;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

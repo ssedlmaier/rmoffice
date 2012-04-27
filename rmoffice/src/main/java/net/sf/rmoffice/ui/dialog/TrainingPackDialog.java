@@ -36,7 +36,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.sf.rmoffice.core.RMSheet;
-import net.sf.rmoffice.meta.ISkill;
+import net.sf.rmoffice.meta.INamed;
 import net.sf.rmoffice.meta.TrainPack;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.SkillCategory;
@@ -148,7 +148,7 @@ public class TrainingPackDialog extends JDialog implements ListSelectionListener
 			/* skills */
 			Map<Integer, Integer> skills = trainPack.getSkills();
 			for (Integer skillId : skills.keySet()) {
-				ISkill sk = sheet.getSkill(skillId);
+				INamed sk = sheet.getSkill(skillId);
 				sb.append(""+skills.get(skillId)).append(" ");
 				sb.append(RESOURCE.getString("ui.trainpack.todo.rankskill")).append(" ");
 				sb.append(sk.getName()).append("\n");

@@ -16,18 +16,21 @@
 package net.sf.rmoffice.meta.talentflaw;
 
 import java.awt.Frame;
+import java.text.MessageFormat;
 
 import net.sf.rmoffice.core.TalentFlaw;
+import net.sf.rmoffice.meta.INamed;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.enums.SkillType;
+import net.sf.rmoffice.pdf.PDFCreator;
 import net.sf.rmoffice.ui.dialog.SelectionDialog;
 
 public class ChoosePart extends AbstractTalentFlawPart {
-	public static final String CHOOSE_SKILLBONUS = TalentFlawFactory.registerID("chooseskillbonus");
-	public static final String CHOOSE_CATBONUS = TalentFlawFactory.registerID("choosecategorybonus");
-	public static final String CHOOSE_SKILLTYPE = TalentFlawFactory.registerID("chooseskilltype");
-	public static final String CHOOSE_CATTYPE = TalentFlawFactory.registerID("choosecategorytype");
+	private static final String CHOOSE_SKILLBONUS = TalentFlawFactory.registerID("chooseskillbonus");
+	private static final String CHOOSE_CATBONUS = TalentFlawFactory.registerID("choosecategorybonus");
+	private static final String CHOOSE_SKILLTYPE = TalentFlawFactory.registerID("chooseskilltype");
+	private static final String CHOOSE_CATTYPE = TalentFlawFactory.registerID("choosecategorytype");
 	
 	protected final Object[] selectables;
 	protected final Integer bonus;
@@ -89,7 +92,18 @@ public class ChoosePart extends AbstractTalentFlawPart {
 
 	@Override
 	public String asText() {
-		return null;
+		String what = RESOURCE.getString(type != null ? "SkillType."+type.name() : PDFCreator.format(bonus.intValue(), false));
+		StringBuilder from = new StringBuilder();
+		for (Object val : selectables) {
+			if (from.length() > 0) {
+				from.append(", ");
+			}
+			if (val instanceof INamed) {
+				from.append(((INamed)val).getName());
+			}
+		}
+		return MessageFormat.format(RESOURCE.getString("ui.talentflaw.value.choosefrom"), ""+amount, from.toString(), what );
+		//String name = skill != null ? skill.getName() : skillCategory.getName();
 	}
 
 }
