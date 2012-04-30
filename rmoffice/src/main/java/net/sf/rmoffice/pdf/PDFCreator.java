@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -822,8 +823,9 @@ public class PDFCreator extends AbstractPDFCreator {
     	labeledUserText(canvas, RESOURCE.getString("pdf.page1.charactername"), sheet.getCharacterName(), 276, 769, 0, fontHeadline, 8);
     	labeledUserText(canvas, RESOURCE.getString("pdf.page1.playername"), sheet.getPlayerName(), 276, 755, 0, fontHeadline, 8);
     	
-		/* EP*/
-		showUserText(canvas, 18, 110, 754, ""+sheet.getEp(), Element.ALIGN_CENTER);
+		/* EP */
+    	String formattedEP = NumberFormat.getInstance().format(sheet.getEp());
+		showUserText(canvas, 18, 110, 754, formattedEP, Element.ALIGN_CENTER);
 		/* Level */
 		showUserText(canvas, 18, 220, 754, ""+sheet.getLevel(), Element.ALIGN_CENTER);
 	}

@@ -397,7 +397,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	/**
 	 * Returns the experience points.
 	 * 
-	 * @return the experience
+	 * @return the experience, not {@code null}
 	 */
 	public Long getEp() {
 		if (ep == null) return Long.valueOf(10000);
