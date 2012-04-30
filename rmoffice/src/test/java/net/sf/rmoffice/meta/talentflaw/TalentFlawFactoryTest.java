@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
-import net.sf.rmoffice.meta.Skill;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.UTSkill;
 import net.sf.rmoffice.meta.UTSkillCategory;
@@ -34,8 +33,6 @@ public class TalentFlawFactoryTest {
 	@Test
 	public void testParseTalentFlawValue() throws Exception {
 	    // prepare test data
-		Skill s1 = new UTSkill(1);
-		SkillCategory c1 = new UTSkillCategory(1);
 		MetaData meta = new MetaData() {
 			@Override
 			public ISkill getSkill(Integer id) {
@@ -51,22 +48,22 @@ public class TalentFlawFactoryTest {
 		TalentFlaw talFlawVal = callFactory(factory, "C1=5");
 		assertNotNull(talFlawVal.getSkillCatBonus());
 		assertEquals(1, talFlawVal.getSkillCatBonus().size());
-		assertTrue(talFlawVal.getSkillCatBonus().containsKey(c1));
+		assertTrue(talFlawVal.getSkillCatBonus().containsKey(Integer.valueOf(1)));
 
 		talFlawVal = callFactory(factory, "C1=RESTRICTED");
 		assertNotNull(talFlawVal.getSkillCatType());
 		assertEquals(1, talFlawVal.getSkillCatType().size());
-		assertEquals(SkillType.RESTRICTED, talFlawVal.getSkillCatType().get(c1));
+		assertEquals(SkillType.RESTRICTED, talFlawVal.getSkillCatType().get(Integer.valueOf(1)));
 		
-		talFlawVal = callFactory(factory, "S1=15");
+		talFlawVal = callFactory(factory, "S2=15");
 		assertNotNull(talFlawVal.getSkillBonus());
 		assertEquals(1, talFlawVal.getSkillBonus().size());
-		assertTrue(talFlawVal.getSkillBonus().containsKey(s1));
+		assertTrue(talFlawVal.getSkillBonus().containsKey(Integer.valueOf(2)));
 
-		talFlawVal = callFactory(factory, "S1=EVERYMAN");
+		talFlawVal = callFactory(factory, "S3=EVERYMAN");
 		assertNotNull(talFlawVal.getSkillType());
 		assertEquals(1, talFlawVal.getSkillType().size());
-		assertEquals(SkillType.EVERYMAN, talFlawVal.getSkillType().get(s1));
+		assertEquals(SkillType.EVERYMAN, talFlawVal.getSkillType().get(Integer.valueOf(3)));
 		
 		// INI
 		talFlawVal = callFactory(factory, "INI=3");
