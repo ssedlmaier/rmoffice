@@ -16,6 +16,7 @@
 package net.sf.rmoffice.meta;
 
 
+
 /**
  * 
  */
@@ -74,5 +75,14 @@ public class Progression implements IProgression {
 			sb.append(""+(int)getDigit(i));
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public IProgression modify(IProgression progression) {
+		float[] newBonus = new float[bonus.length];
+		for (int step = 0; step < bonus.length; step++) {
+			newBonus[step] = bonus[step] + progression.getDigit(step);
+		}
+		return new Progression(newBonus[0], newBonus[1], newBonus[2], newBonus[3], newBonus[4]);
 	}
 }

@@ -63,4 +63,24 @@ public class ProgressionTest {
 		assertTrue( p3.compareTo(p4) > 0 );
 		assertTrue( p4.compareTo(p3) < 0 );
 	}
+	
+	@Test 
+	public void testModify() {
+		Progression p1 = new Progression(1, 2, 3, 4, 5);
+		Progression p2 = new Progression(1, 2, 3, 4, 5);
+		IProgression pRes = p1.modify(p2);
+		assertEquals(2f, pRes.getDigit(0), 0.001f);
+		assertEquals(4f, pRes.getDigit(1), 0.001f);
+		assertEquals(6f, pRes.getDigit(2), 0.001f);
+		assertEquals(8f, pRes.getDigit(3), 0.001f);
+		assertEquals(10f, pRes.getDigit(4), 0.001f);
+		
+		Progression p3 = new Progression(0, 0, 0, -1, -5);
+		pRes = p1.modify(p3);
+		assertEquals(1f, pRes.getDigit(0), 0.001f);
+		assertEquals(2f, pRes.getDigit(1), 0.001f);
+		assertEquals(3f, pRes.getDigit(2), 0.001f);
+		assertEquals(3f, pRes.getDigit(3), 0.001f);
+		assertEquals(0f, pRes.getDigit(4), 0.001f);
+	}
 }

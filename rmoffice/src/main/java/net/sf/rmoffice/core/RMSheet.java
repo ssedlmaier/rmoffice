@@ -568,16 +568,27 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * 
 	 */
 	public IProgression getProgressionBody() {
+		IProgression prog = null;
 		if (progressionBody == null) {
-			return new Progression(0, 0, 0, 0, 0);
+			prog = new Progression(0, 0, 0, 0, 0);
+		} else {
+			prog = progressionBody;
 		}
-		return progressionBody;
+		/* search in talent flaw */
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getProgressionBody() != null) {
+					prog = prog.modify(tf.getProgressionBody());
+				}
+			}
+		}
+		return prog;
 	}
 
 	private void setProgressionBody(IProgression progressionBody) {
 		IProgression old = this.progressionBody;
 		this.progressionBody = progressionBody;
-		firePropertyChange(PROPERTY_PROGRESSION_BODY, old, this.progressionBody);
+		firePropertyChange(PROPERTY_PROGRESSION_BODY, old, getProgressionBody());
 	}
 
 	/**
@@ -588,17 +599,28 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * 
 	 */
 	public IProgression getProgressionPower() {
+		IProgression prog = null;
 		if (progressionPower == null) {
-			return new Progression(0, 0, 0, 0, 0);
+			prog = new Progression(0, 0, 0, 0, 0);
+		} else {
+			prog = progressionPower;
 		}
-		return progressionPower;
+		/* search in talent flaw */
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getProgressionPower() != null) {
+					prog = prog.modify(tf.getProgressionPower());
+				}
+			}
+		}
+		return prog;
 	}
 
 	private void setProgressionPower(Progression progressionPower) {
 		Progression oldVal = this.progressionPower;
 		this.progressionPower = progressionPower;
-		if (oldVal == null || this.progressionPower == null || this.progressionPower.compareTo(oldVal) != 0) {
-			firePropertyChange(PROPERTY_PROGRESSION_POWER, oldVal, progressionPower);
+		if (oldVal == null || this.progressionPower == null || getProgressionPower().compareTo(oldVal) != 0) {
+			firePropertyChange(PROPERTY_PROGRESSION_POWER, oldVal, getProgressionPower());
 		}
 	}
 
@@ -2363,6 +2385,8 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		firePropertyChange(PROPERTY_SKILLCATEGORY_CHANGED, null, null);
 		firePropertyChange(PROPERTY_SKILL_CATEGORIES, null, null);
 		firePropertyChange(PROPERTY_SKILLS_CHANGED, null, null);
+		firePropertyChange(PROPERTY_PROGRESSION_BODY, null, getProgressionBody());
+		firePropertyChange(PROPERTY_PROGRESSION_POWER, null, getProgressionPower());
 	}
 
 	/**

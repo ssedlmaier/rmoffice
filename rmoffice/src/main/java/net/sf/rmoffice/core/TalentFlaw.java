@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.rmoffice.meta.IProgression;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.enums.SkillType;
@@ -51,7 +52,9 @@ public class TalentFlaw extends Model {
 	private Map<Integer, SkillType> skillType;
 	/* Ex: open-arcane is now open-own-realm */
 	private Map<Integer, TalentFlawTransform> transformedSkillCategories;
-
+    private IProgression progressionBody;
+    private IProgression progressionPower;
+	
 	public TalentFlaw() {
 	}
 
@@ -191,6 +194,22 @@ public class TalentFlaw extends Model {
 	public void setTransformedSkillCategories(
 			Map<Integer, TalentFlawTransform> transformedSkillCategories) {
 		this.transformedSkillCategories = transformedSkillCategories;
+	}
+
+	public IProgression getProgressionBody() {
+		return progressionBody;
+	}
+
+	public void setProgressionBody(IProgression progressionBody) {
+		this.progressionBody = progressionBody;
+	}
+
+	public IProgression getProgressionPower() {
+		return progressionPower;
+	}
+
+	public void setProgressionPower(IProgression progressionPower) {
+		this.progressionPower = progressionPower;
 	}
 
 }

@@ -36,4 +36,12 @@ public interface IProgression extends Comparable<IProgression>{
 	 */
 	public String getFormattedString();
 
+	/**
+	 * Creates a new {@link IProgression} with modified values.
+	 * 
+	 * @param progression the progression modifier, may be {@code null}
+	 * @return a new instance of {@link IProgression}
+	 */
+	public IProgression modify(IProgression progression);
+
 }
