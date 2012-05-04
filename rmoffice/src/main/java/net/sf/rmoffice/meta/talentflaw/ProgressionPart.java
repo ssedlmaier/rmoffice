@@ -15,8 +15,6 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import java.awt.Frame;
-
 import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.Progression;
 import net.sf.rmoffice.pdf.PDFCreator;
@@ -39,7 +37,7 @@ public class ProgressionPart extends AbstractTalentFlawPart {
 	}
 
 	@Override
-	public void addToTalentFlaw(Frame owner, TalentFlaw talentFlaw) {
+	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
 		if (bodyOrPower) {
 			talentFlaw.setProgressionBody(new Progression(progModifier[0], progModifier[1], progModifier[2], progModifier[3], progModifier[4]));
 		} else {

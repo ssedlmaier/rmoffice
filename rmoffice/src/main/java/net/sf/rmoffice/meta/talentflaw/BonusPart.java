@@ -15,8 +15,6 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import java.awt.Frame;
-
 import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.SkillCategory;
@@ -50,7 +48,7 @@ public class BonusPart extends AbstractTalentFlawPart {
 	}
 	
 	@Override
-	public void addToTalentFlaw(Frame owner, TalentFlaw talentFlaw) {
+	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
 		if (skillCategory != null) {
 			talentFlaw.addSkillCatBonus(skillCategory, bonus);
 		} else if (skill != null) {

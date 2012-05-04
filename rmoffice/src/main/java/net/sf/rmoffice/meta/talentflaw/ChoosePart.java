@@ -15,7 +15,6 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import java.awt.Frame;
 import java.text.MessageFormat;
 
 import net.sf.rmoffice.core.TalentFlaw;
@@ -27,10 +26,10 @@ import net.sf.rmoffice.pdf.PDFCreator;
 import net.sf.rmoffice.ui.dialog.SelectionDialog;
 
 public class ChoosePart extends AbstractTalentFlawPart {
-	private static final String CHOOSE_SKILLBONUS = TalentFlawFactory.registerID("chooseskillbonus");
-	private static final String CHOOSE_CATBONUS = TalentFlawFactory.registerID("choosecategorybonus");
-	private static final String CHOOSE_SKILLTYPE = TalentFlawFactory.registerID("chooseskilltype");
-	private static final String CHOOSE_CATTYPE = TalentFlawFactory.registerID("choosecategorytype");
+	private static final String CHOOSE_SKILLBONUS = TalentFlawFactory.registerID("choose_skillbonus");
+	private static final String CHOOSE_CATBONUS = TalentFlawFactory.registerID("choose_categorybonus");
+	private static final String CHOOSE_SKILLTYPE = TalentFlawFactory.registerID("choose_skilltype");
+	private static final String CHOOSE_CATTYPE = TalentFlawFactory.registerID("choose_categorytype");
 	
 	protected final Object[] selectables;
 	protected final Integer bonus;
@@ -66,9 +65,9 @@ public class ChoosePart extends AbstractTalentFlawPart {
 	}
 
 	@Override
-	public void addToTalentFlaw(Frame owner, TalentFlaw talentFlaw) {
+	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
 		if (isSkill) {
-			SelectionDialog<ISkill> dialog = new SelectionDialog<ISkill>(owner, amount, selectables);
+			SelectionDialog<ISkill> dialog = new SelectionDialog<ISkill>(context.getOwner(), amount, selectables);
 			dialog.setVisible(true);
 			for (ISkill skill : dialog.getCheckedItems()) {
 				if (type != null) {
@@ -78,7 +77,7 @@ public class ChoosePart extends AbstractTalentFlawPart {
 				}
 			}
 		} else {
-			SelectionDialog<SkillCategory> dialog = new SelectionDialog<SkillCategory>(owner, amount, selectables);
+			SelectionDialog<SkillCategory> dialog = new SelectionDialog<SkillCategory>(context.getOwner(), amount, selectables);
 			dialog.setVisible(true);
 			for (SkillCategory cat : dialog.getCheckedItems()) {
 				if (type != null) {

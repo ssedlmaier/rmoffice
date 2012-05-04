@@ -15,32 +15,35 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import net.sf.rmoffice.core.TalentFlaw;
+import java.awt.Frame;
 
-/**
- * Stores one description to be added to the TalentFlaw.
- */
-public class DescriptionPart implements ITalentFlawPart {
-	public static final String ID = TalentFlawFactory.registerID("descr");
-	
-    private final String description;
-	
-    public DescriptionPart(String description) {
-		this.description = description;
-	}
-    
-    @Override
-    public String getId() {
-    	return ID;
-    }
-    
-	@Override
-	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
-		talentFlaw.addDescription(description);
-	}
+import net.sf.rmoffice.core.RMSheet;
 
-	@Override
-	public String asText() {
-		return description;
+public class TalentFlawContext {
+	
+	private final Frame owner;
+	private final RMSheet sheet;
+
+	public TalentFlawContext(Frame owner, RMSheet sheet) {
+		this.owner = owner;
+		this.sheet = sheet;
+	}
+	
+	/**
+	 * Returns the UI owner for UI interactions.
+	 * 
+	 * @return owner for UI interactions, not {@code null}
+	 */
+	public Frame getOwner() {
+		return owner;
+	}
+	
+	/**
+	 * Returns the {@link RMSheet}.
+	 * 
+	 * @return the sheet, not {@code null}
+	 */
+	public RMSheet getSheet() {
+		return sheet;
 	}
 }

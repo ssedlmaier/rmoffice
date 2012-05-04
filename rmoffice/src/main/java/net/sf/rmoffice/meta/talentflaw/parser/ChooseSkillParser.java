@@ -24,17 +24,17 @@ import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.MetaDataLoader;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.enums.SkillType;
-import net.sf.rmoffice.meta.talentflaw.ChoosePart;
+import net.sf.rmoffice.meta.talentflaw.ChooseSkillPart;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ChooseParser implements ITalentFlawPartParser<ChoosePart> {
+public class ChooseSkillParser implements ITalentFlawPartParser<ChooseSkillPart> {
 
-	private static final String PATTERN = "CHOOSE[0-9]+=([C|S]{1}[;0-9]+)*=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING)";
+	private static final String PATTERN = "CHOOSESKILL[0-9]+=([C|S]{1}([0-9;]+))+=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING).*";
 	private final MetaData metaData;
 	private final Pattern pattern;
 
-	public ChooseParser(MetaData metaData) {
+	public ChooseSkillParser(MetaData metaData) {
 		this.metaData = metaData;
 		pattern = Pattern.compile(PATTERN);
 	}
@@ -49,9 +49,9 @@ public class ChooseParser implements ITalentFlawPartParser<ChoosePart> {
 	}
 
 	@Override
-	public ChoosePart parse(String parseableString) {
+	public ChooseSkillPart parse(String parseableString) {
 		String trimmed = StringUtils.trim(parseableString);
-		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(6), "=");
+		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(11), "=");
 
 		int amount = Integer.parseInt(parts[0]);
 		int bonus = 0;
@@ -76,27 +76,40 @@ public class ChooseParser implements ITalentFlawPartParser<ChoosePart> {
 				skills.add(skill);
 			}
 		}
+		// follow-up action
+		String followUpAction = "";
+		if (parts.length > 3) {
+			followUpAction = parts[3];
+		}
+		int followUpBonus = 0;
+		SkillType followUpType = null;
+		if (parts.length > 4) {
+			try {
+				followUpBonus = Integer.parseInt(parts[4]);
+			} catch (NumberFormatException e) {
+				followUpType = SkillType.valueOf(parts[4]);
+			}
+		}
+		// creation
 		if (type != null) {
-			return createChooseBonusPart(amount, type, cats, skills);
+			return createChooseSkillBonusPart(amount, type, cats, skills, followUpAction, followUpBonus, followUpType);
 		} else {
-			return createChooseBonusPart(amount, bonus, cats, skills);
+			return createChooseBonusPart(amount, bonus, cats, skills, followUpAction, followUpBonus, followUpType);
 		}
 	}
 
-	/* for test */ ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills) {
-		if (cats.size() > 0) {
-			return new ChoosePart(bonus, amount, false, cats.toArray());
-		} else {
-			return new ChoosePart(bonus, amount, true, skills.toArray());
-		}
+	/* for test */ ChooseSkillPart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills, String followUpAction, int followUpBonus, SkillType followUpType) {
+//		TODO collect skills		
+		ChooseSkillPart part = new ChooseSkillPart(bonus, amount, skills, cats);
+		part.setFollowup(followUpAction, followUpBonus, followUpType);
+		return part;
 	}
 	
-	/* for test */ ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills) {
-		if (cats.size() > 0) {
-			return new ChoosePart(type, amount, false, cats.toArray());
-		} else {
-			return new ChoosePart(type, amount, true, skills.toArray());
-		}
+	/* for test */ ChooseSkillPart createChooseSkillBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills, String followUpAction, int followUpBonus, SkillType followUpType) {
+//		TODO collect skills		
+		ChooseSkillPart part = new ChooseSkillPart(type, amount, skills, cats);
+		part.setFollowup(followUpAction, followUpBonus, followUpType);
+		return part;
 	}
 	
 }

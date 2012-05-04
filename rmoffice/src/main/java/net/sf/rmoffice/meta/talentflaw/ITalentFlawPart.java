@@ -15,8 +15,6 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import java.awt.Frame;
-
 import net.sf.rmoffice.core.TalentFlaw;
 
 /**
@@ -32,11 +30,11 @@ public interface ITalentFlawPart {
 	
 	/**
 	 * Adds the talent flaw part to the given {@link TalentFlaw}.
-	 * @param owner the UI owner for UI interactions, not {@code null}
 	 * 
-	 * @param talentFlaw the talent flaw to modify, not {@code null}
+	 * @param context the context for filling talentFlaw, not {@code null}
+	 * @param talentFlawConte the talent flaw to modify, not {@code null}
 	 */
-	public void addToTalentFlaw(Frame owner, TalentFlaw talentFlaw);
+	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw);
 	
 	/**
 	 * Returns the part content as text in a human readable and localized way.

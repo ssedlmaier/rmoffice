@@ -41,6 +41,7 @@ import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.TalentFlawPreset;
 import net.sf.rmoffice.meta.TalentFlawPresetLevel;
 import net.sf.rmoffice.meta.talentflaw.ITalentFlawPart;
+import net.sf.rmoffice.meta.talentflaw.TalentFlawContext;
 import net.sf.rmoffice.ui.UIConstants;
 import net.sf.rmoffice.ui.models.TalentFlawPresetTableAdapter;
 import net.sf.rmoffice.ui.models.TalentFlawPresetValueTableAdapter;
@@ -211,8 +212,9 @@ public class TalentFlawPresetDialog extends JDialog {
 		talFlaw.setLevel(tfpLevel.getLevel());
 		talFlaw.setCosts(tfpLevel.getCosts());
 		// add the dynamic parts
+		TalentFlawContext context = new TalentFlawContext(owner, beanAdapter.getBean());
 		for (ITalentFlawPart part : tfpLevel.getTalentFlawParts() ) {
-			part.addToTalentFlaw(owner, talFlaw);
+			part.addToTalentFlaw(context, talFlaw);
 		}
 		return talFlaw;
 	}

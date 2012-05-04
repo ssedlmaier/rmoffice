@@ -15,8 +15,6 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import java.awt.Frame;
-
 import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.pdf.PDFCreator;
 
@@ -37,7 +35,7 @@ public class InitiativePart implements ITalentFlawPart {
 	}
 	
 	@Override
-	public void addToTalentFlaw(Frame owner, TalentFlaw talentFlaw) {
+	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
 		talentFlaw.setInitiativeBonus(initiativeBonus);
 	}
 

@@ -64,7 +64,13 @@ public class ChooseParserTest {
 		assertFalse(parser.isParseable(" CHOOSE1=S48="));
 		assertFalse(parser.isParseable("  CHOOSE10=C48;C45=EVERYMA  "));
 		assertFalse(parser.isParseable("  CHOOSE10=C48;C45=EEVERYMAN  "));
+		assertFalse(parser.isParseable(" CHOOSE1=S48"));
+		assertFalse(parser.isParseable(" CHOOSE1=C48"));
+		assertFalse(parser.isParseable(" CHOOSE1=CS48=1"));
+		assertFalse(parser.isParseable(" CHOOSE1=CS48=EVERYMAN"));
+		assertFalse(parser.isParseable(" CHOOSE1=CS48;S56=5"));
 		
+		assertTrue(parser.isParseable(" CHOOSE1=S48;S56=5"));
 		assertTrue(parser.isParseable(" CHOOSE1=S48;S56=5"));
 		assertTrue(parser.isParseable(" CHOOSE2=S48;S56=10 "));
 		assertTrue(parser.isParseable("CHOOSE4=C48;C45=-4"));
@@ -75,7 +81,7 @@ public class ChooseParserTest {
 	}
 	
 	@Test
-	public void test() {
+	public void testParse() {
 		// prepare test data
 		MetaData meta = new MetaData() {
 			@Override

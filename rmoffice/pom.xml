@@ -3,7 +3,7 @@
   <groupId>net.sf.rmoffice</groupId>
   <artifactId>rmoffice</artifactId>
   <name>RoleMaster Office</name>
-  <version>4.2.5a</version>
+  <version>4.2.5a2</version>
   <scm>
   	<connection>https://rmoffice.svn.sourceforge.net/svnroot/rmoffice/trunk</connection>
   	<url>http://rmoffice.svn.sourceforge.net/viewvc/rmoffice/</url>
