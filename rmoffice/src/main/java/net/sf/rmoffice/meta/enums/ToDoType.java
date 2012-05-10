@@ -24,6 +24,7 @@ public enum ToDoType {
 	TRAINPACK,
 	SYSTEM,
 	USER,
+	TALENTFLAW,
 	/** use {{@link #TRAINPACK} instead*/
 	@Deprecated
 	DEVACK,

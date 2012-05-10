@@ -35,7 +35,7 @@ public class ToDo {
 	 * @param message
 	 * @param type
 	 */
-	/* package private */ ToDo(String message, ToDoType type) {
+	public ToDo(String message, ToDoType type) {
 		this.message = message;
 		this.type = type;
 	}
