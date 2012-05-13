@@ -15,8 +15,6 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import java.util.regex.Pattern;
-
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.MetaDataLoader;
 import net.sf.rmoffice.meta.enums.SkillType;
@@ -24,22 +22,13 @@ import net.sf.rmoffice.meta.talentflaw.SkillTypePart;
 
 import org.apache.commons.lang.StringUtils;
 
-public class SkillTypeParser implements ITalentFlawPartParser<SkillTypePart> {
+public class SkillTypeParser extends AbstractPatternParser<SkillTypePart> {
 	private final static String BONUS_FORMAT = "[0-9]+=[A-Z_]+";
 	private final MetaData metaData;
-	private final Pattern patternSkill;
-	private final Pattern patternSKillCat;
 
 	public SkillTypeParser(MetaData metaData) {
+		super(MetaDataLoader.SKILL_CHAR+BONUS_FORMAT, MetaDataLoader.CATEGORY_CHAR+BONUS_FORMAT);
 		this.metaData = metaData;
-		patternSkill = Pattern.compile(MetaDataLoader.SKILL_CHAR+BONUS_FORMAT);
-		patternSKillCat = Pattern.compile(MetaDataLoader.CATEGORY_CHAR+BONUS_FORMAT);
-	}
-	
-	@Override
-	public boolean isParseable(String toParse) {
-		String trimmed = StringUtils.trimToEmpty(toParse);
-		return patternSkill.matcher(trimmed).matches() || patternSKillCat.matcher(trimmed).matches();
 	}
 
 	@Override
@@ -48,7 +37,7 @@ public class SkillTypeParser implements ITalentFlawPartParser<SkillTypePart> {
 		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(1), "=");
 		Integer id = Integer.valueOf(StringUtils.trim(parts[0]));
 		SkillType skillType = SkillType.valueOf(StringUtils.trim(parts[1]));
-		if (patternSkill.matcher(trimmed).matches()) {
+		if (patternList[0].matcher(trimmed).matches()) {
 			return new SkillTypePart(metaData.getSkill(id), skillType);
 		} else {
 			return new SkillTypePart(metaData.getSkillCategory(id), skillType);

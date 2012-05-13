@@ -1885,7 +1885,16 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (fac < 1) {
 			fac = 1;
 		}
-		return -8 * (fac - 1);
+		// Talent Flaw Modifier
+		float tfModifier = 1;
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getWeightPenalty() != null) {
+					tfModifier *= tf.getWeightPenalty().floatValue(); 
+				}
+			}
+		}
+		return Math.round( tfModifier * (-8 * (fac - 1)) );
 	}
 	
 	/**

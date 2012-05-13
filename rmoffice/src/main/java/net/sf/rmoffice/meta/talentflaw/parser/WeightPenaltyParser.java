@@ -15,32 +15,23 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import net.sf.rmoffice.meta.MetaData;
-import net.sf.rmoffice.meta.MetaDataLoader;
-import net.sf.rmoffice.meta.talentflaw.BonusPart;
+import net.sf.rmoffice.meta.talentflaw.WeightPenaltyPart;
 
 import org.apache.commons.lang.StringUtils;
 
-public class BonusParser extends AbstractPatternParser<BonusPart> {
-	private final static String BONUS_FORMAT = "[0-9]+=[-]{0,1}[0-9]+";
-	private final MetaData metaData;
-
-	public BonusParser(MetaData metaData) {
-		super(MetaDataLoader.SKILL_CHAR+BONUS_FORMAT, MetaDataLoader.CATEGORY_CHAR+BONUS_FORMAT);
-		this.metaData = metaData;
+public class WeightPenaltyParser extends AbstractPatternParser<WeightPenaltyPart> {
+	private static final String PATTERN = "WEIGHTPENALTY=[0-9\\.-]+";
+	
+	public WeightPenaltyParser() {
+		super(PATTERN);
 	}
 
 	@Override
-	public BonusPart parse(String parseableString) {
+	public WeightPenaltyPart parse(String parseableString) {
 		String trimmed = StringUtils.trimToEmpty(parseableString);
 		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(1), "=");
-		Integer id = Integer.valueOf(StringUtils.trim(parts[0]));
-		int bonus = Integer.parseInt(StringUtils.trim(parts[1]));
-		if (patternList[0].matcher(trimmed).matches()) {
-			return new BonusPart(metaData.getSkill(id), bonus);
-		} else {
-			return new BonusPart(metaData.getSkillCategory(id), bonus);
-		}
+		float factor = Float.parseFloat(StringUtils.trim(parts[1]));
+		return new WeightPenaltyPart(factor);
 	}
 
 }

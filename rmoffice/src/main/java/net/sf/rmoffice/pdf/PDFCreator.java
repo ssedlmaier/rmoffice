@@ -37,6 +37,7 @@ import net.sf.rmoffice.core.Equipment;
 import net.sf.rmoffice.core.InfoPage;
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.core.Rank;
+import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.core.items.MagicalFeature;
 import net.sf.rmoffice.core.items.MagicalItem;
 import net.sf.rmoffice.meta.IProgression;
@@ -281,6 +282,15 @@ public class PDFCreator extends AbstractPDFCreator {
 		if (start < 1) {
 			start = 1;
 		}
+		// Talent Flaw Weight Penalty Modifiers
+		float tfModifier = 1;
+		if (sheet.getTalentsFlaws() != null) {
+			for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+				if (tf.getWeightPenalty() != null) {
+					tfModifier *= tf.getWeightPenalty().floatValue(); 
+				}
+			}
+		}
 		StringBuilder sb = new StringBuilder();
 		for (int i=start; i<(start+4); i++) {
 			if (sb.length() >0) {
@@ -291,7 +301,8 @@ public class PDFCreator extends AbstractPDFCreator {
 			}
 			float f1 = Math.round( 10f * ((float)i-1) * encumbr ) / 10f;
 			float f2 = Math.round( 10f *  i * encumbr ) / 10f;
-			sb.append(wu.getFormattedString(f1, false)).append(" - ").append(wu.getFormattedString(f2)).append(": ").append(""+((i-1)*-8));
+			int penalty = Math.round( tfModifier * ((i-1)*-8));
+			sb.append(wu.getFormattedString(f1, false)).append(" - ").append(wu.getFormattedString(f2)).append(": ").append(""+penalty);
 		}
 		canvas.beginText();
 		canvas.setFontAndSize(fontRegular, 7);

@@ -32,6 +32,7 @@ import net.sf.rmoffice.meta.talentflaw.parser.BonusParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ProgressionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.RankParser;
 import net.sf.rmoffice.meta.talentflaw.parser.SkillTypeParser;
+import net.sf.rmoffice.meta.talentflaw.parser.WeightPenaltyParser;
 
 /**
  * Factory for creating {@link ITalentFlawPart}.
@@ -80,6 +81,7 @@ public class TalentFlawFactory {
 		parsers.add(new ChooseSkillParser(metaData));
 		parsers.add(new ProgressionParser());
 		parsers.add(new RankParser());
+		parsers.add(new WeightPenaltyParser());
 	}
 
 	/**

@@ -109,7 +109,7 @@ public class ChooseSkillPart extends AbstractTalentFlawPart {
 
 	@Override
 	public String asText() {
-		String what = RESOURCE.getString(type != null ? "SkillType."+type.name() : PDFCreator.format(bonus.intValue(), false));
+		String what = type != null ? RESOURCE.getString("SkillType."+type.name()) : PDFCreator.format(bonus.intValue(), false);
 		StringBuilder from = new StringBuilder();
 		List<Object> selectables = new ArrayList<Object>();
 		selectables.addAll(selectableSkills);
@@ -124,7 +124,8 @@ public class ChooseSkillPart extends AbstractTalentFlawPart {
 		}
 		String followUpString = "";
 		if (! StringUtils.isEmpty(followUpAction)) {
-			String followUpWhat = RESOURCE.getString(followUpType != null ? "SkillType."+followUpType.name() : PDFCreator.format(followUpBonus, false));
+			String followUpWhat = "--> ";
+			followUpWhat += (followUpType != null ? RESOURCE.getString("SkillType."+followUpType.name()) : PDFCreator.format(followUpBonus, false));
 			followUpString = MessageFormat.format(RESOURCE.getString("ui.talentflaw.value.chooseskillfrom."+StringUtils.lowerCase(followUpAction)), followUpWhat);
 		}
 		return MessageFormat.format(RESOURCE.getString("ui.talentflaw.value.chooseskillfrom"), what, ""+amount, from.toString(), followUpString);

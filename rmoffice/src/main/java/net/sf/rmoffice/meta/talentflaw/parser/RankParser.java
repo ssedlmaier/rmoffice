@@ -17,28 +17,17 @@ package net.sf.rmoffice.meta.talentflaw.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import net.sf.rmoffice.meta.enums.TalentFlawSkillCategoryType;
 import net.sf.rmoffice.meta.talentflaw.RankPart;
 
 import org.apache.commons.lang.StringUtils;
 
-public class RankParser implements ITalentFlawPartParser<RankPart> {
+public class RankParser extends AbstractPatternParser<RankPart> {
 	private static final String PATTERN = "^RANK[0-9]+=(BASELIST|OPENLIST|CLOSEDLIST|OPENARCANELIST|CLOSEDARCANELIST|;)+$";
-	private Pattern pattern;
 	
 	public RankParser() {
-		this.pattern = Pattern.compile(PATTERN);
-	}
-	
-	@Override
-	public boolean isParseable(String toParse) {
-		if (StringUtils.isEmpty(toParse)) {
-			return false;
-		}
-		String trimmed = StringUtils.trim(toParse);
-		return pattern.matcher(trimmed).matches();
+		super(PATTERN);
 	}
 
 	@Override

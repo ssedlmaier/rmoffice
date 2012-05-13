@@ -91,7 +91,7 @@ public class ChoosePart extends AbstractTalentFlawPart {
 
 	@Override
 	public String asText() {
-		String what = RESOURCE.getString(type != null ? "SkillType."+type.name() : PDFCreator.format(bonus.intValue(), false));
+		String what = type != null ? RESOURCE.getString("SkillType."+type.name()) : PDFCreator.format(bonus.intValue(), false);
 		StringBuilder from = new StringBuilder();
 		for (Object val : selectables) {
 			if (from.length() > 0) {
@@ -102,7 +102,6 @@ public class ChoosePart extends AbstractTalentFlawPart {
 			}
 		}
 		return MessageFormat.format(RESOURCE.getString("ui.talentflaw.value.choosefrom"), ""+amount, from.toString(), what );
-		//String name = skill != null ? skill.getName() : skillCategory.getName();
 	}
 
 }

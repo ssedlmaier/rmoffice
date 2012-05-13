@@ -17,7 +17,6 @@ package net.sf.rmoffice.meta.talentflaw.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
@@ -28,26 +27,16 @@ import net.sf.rmoffice.meta.talentflaw.ChooseSkillPart;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ChooseSkillParser implements ITalentFlawPartParser<ChooseSkillPart> {
+public class ChooseSkillParser extends AbstractPatternParser<ChooseSkillPart> {
 
 	private static final String PATTERN = "CHOOSESKILL[0-9]+=([C|S]{1}([0-9;]+))+=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING).*";
 	private final MetaData metaData;
-	private final Pattern pattern;
-
+	
 	public ChooseSkillParser(MetaData metaData) {
+		super(PATTERN);
 		this.metaData = metaData;
-		pattern = Pattern.compile(PATTERN);
 	}
 	
-	@Override
-	public boolean isParseable(String toParse) {
-		if (StringUtils.isEmpty(toParse)) {
-			return false;
-		}
-		String trimmed = StringUtils.trim(toParse);
-		return pattern.matcher(trimmed).matches();
-	}
-
 	@Override
 	public ChooseSkillPart parse(String parseableString) {
 		String trimmed = StringUtils.trim(parseableString);

@@ -16,37 +16,23 @@
 package net.sf.rmoffice.meta.talentflaw.parser;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sf.rmoffice.meta.talentflaw.ProgressionPart;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ProgressionParser implements ITalentFlawPartParser<ProgressionPart> {
+public class ProgressionParser extends AbstractPatternParser<ProgressionPart> {
 	private static final String BODYDEV = "BODYDEV";
 	private static final String POWERDEV = "POWERDEV";
-	private static final String PARSEABLE_PATTERN = "(BODYDEV|POWERDEV)=([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+)";
-	private Pattern pattern;
+	private static final String PARSEABLE_PATTERN = "("+BODYDEV+"|"+POWERDEV+")=([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+)";
 	
 	public ProgressionParser() {
-		pattern = Pattern.compile(PARSEABLE_PATTERN);
-	}
-	
-	@Override
-	public boolean isParseable(String toParse) {
-		if (StringUtils.isEmpty(toParse)) {
-			return false;
-		}
-		String trimmed = StringUtils.trimToEmpty(toParse);
-		if ( trimmed.startsWith(BODYDEV) || trimmed.startsWith(POWERDEV)) {
-			return pattern.matcher(trimmed).matches();
-		}
-		return false;
+		super(PARSEABLE_PATTERN);
 	}
 
 	@Override
 	public ProgressionPart parse(String parseableString) {
-		Matcher matcher = pattern.matcher(StringUtils.trimToEmpty(parseableString));
+		Matcher matcher = patternList[0].matcher(StringUtils.trimToEmpty(parseableString));
 		if (! matcher.matches()) {
 			throw new IllegalArgumentException("parseableString must be parseable: "+parseableString);
 		}

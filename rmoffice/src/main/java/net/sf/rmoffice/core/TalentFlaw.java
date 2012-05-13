@@ -50,11 +50,12 @@ public class TalentFlaw extends Model {
 	private Map<Integer, SkillType> skillCatType;
 	private Map<Integer, Integer> skillBonus;
 	private Map<Integer, SkillType> skillType;
-	/* Ex: open-arcane is now open-own-realm */
+	/* Example: open-arcane is now open-own-realm */
 	private Map<Integer, TalentFlawTransform> transformedSkillCategories;
     private IProgression progressionBody;
     private IProgression progressionPower;
-	
+	private Float weightPenalty; 
+    
 	public TalentFlaw() {
 	}
 
@@ -212,4 +213,11 @@ public class TalentFlaw extends Model {
 		this.progressionPower = progressionPower;
 	}
 
+	public Float getWeightPenalty() {
+		return weightPenalty;
+	}
+
+	public void setWeightPenalty(Float weightPenalty) {
+		this.weightPenalty = weightPenalty;
+	}
 }
