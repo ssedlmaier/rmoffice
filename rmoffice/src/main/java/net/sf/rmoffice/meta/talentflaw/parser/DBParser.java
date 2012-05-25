@@ -15,18 +15,18 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import net.sf.rmoffice.meta.talentflaw.WeightPenaltyPart;
+import net.sf.rmoffice.meta.talentflaw.DBPart;
 
-public class WeightPenaltyParser extends AbstractKeyFloatValueParser<WeightPenaltyPart> {
-	private static final String KEY = "WEIGHTPENALTY";
+public class DBParser extends AbstractKeyFloatValueParser<DBPart> {
+	private static final String KEY = "DB";
 	
-	public WeightPenaltyParser() {
+	public DBParser() {
 		super(KEY);
 	}
 
 	@Override
-	protected WeightPenaltyPart createPart(float value) {
-		return new WeightPenaltyPart(value);
+	protected DBPart createPart(float value) {
+		return new DBPart(value);
 	}
 
 }

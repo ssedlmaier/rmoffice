@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import net.sf.rmoffice.meta.enums.LengthUnit;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -45,6 +47,7 @@ public class RMPreferences {
 	private File lastDir;
 	private int spelllistDPincreasing = 5;
 	private boolean printOutlineImage = true;
+	private LengthUnit lengthUnit = LengthUnit.CM;
 	private static String propertyFilePath;
 	
 	private RMPreferences() {
@@ -154,5 +157,15 @@ public class RMPreferences {
 	public boolean printOutlineImage() {
 		return printOutlineImage;
 	}
+
+	public LengthUnit getLengthUnit() {
+		if (lengthUnit == null) {
+			return LengthUnit.CM;
+		}
+		return lengthUnit;
+	}
 	
+	public void setLengthUnit(LengthUnit lengthUnit) {
+		this.lengthUnit = lengthUnit;
+	}
 }

@@ -31,12 +31,10 @@ public class RankParser extends AbstractPatternParser<RankPart> {
 	}
 
 	@Override
-	public RankPart parse(String parseableString) {
-		String trimmed = StringUtils.trim(parseableString);
-		String[] parts = StringUtils.split(trimmed, '=');
-		int amount = Integer.parseInt(parts[0].substring(4));
+	protected RankPart createPart(String key, String[] valueParts) {
+		int amount = Integer.parseInt(key.substring(4));
 		List<TalentFlawSkillCategoryType> types = new ArrayList<TalentFlawSkillCategoryType>();
-		String[] catTypeStrings = StringUtils.split(parts[1], ';');
+		String[] catTypeStrings = StringUtils.split(valueParts[0], ';');
 		for (String cts : catTypeStrings) {
 			types.add(TalentFlawSkillCategoryType.valueOf(cts));
 		}

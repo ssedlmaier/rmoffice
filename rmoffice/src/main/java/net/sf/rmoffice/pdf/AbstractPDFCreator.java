@@ -39,6 +39,7 @@ import net.sf.rmoffice.RMOffice;
 import net.sf.rmoffice.core.Equipment;
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.core.Rank;
+import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.core.items.MagicalItem;
 import net.sf.rmoffice.meta.INamed;
 import net.sf.rmoffice.meta.ISkill;
@@ -321,9 +322,33 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 						String[] split = StringUtils.split(skill.getDescription(sheet.getLengthUnit()), ',');
 						if (split != null) {
 							if (split.length > 0) {
-								line.add( StringUtils.trimToEmpty(split[0]) );
+								// fumble
+								String fumble = StringUtils.trimToEmpty(split[0]);
+								try {
+									int fumbleInt = Integer.parseInt(fumble);
+									// check talents and flaws
+									if (sheet.getTalentsFlaws() != null) {
+										for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+											if (tf.getFumbleRange() != null) {
+												fumbleInt += tf.getFumbleRange().intValue();
+											}
+										}
+									}
+									fumble = "01";
+									if (fumbleInt > 1) {
+										fumble += "-";
+									}
+									if (fumbleInt < 10) {
+										fumble += "0";
+									}
+									fumble += fumbleInt;
+								} catch (NumberFormatException e) {
+									// ignore
+								}
+								line.add( fumble );
 							}
 							if (split.length > 1) {
+								// range or critical modifier
 								line.add( StringUtils.trimToEmpty(split[1]) );
 							}
 						}
@@ -826,9 +851,11 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 				(shield.getCloseBonus() > 0 || shield.getRangeBonus() > 0) ) {
 			
 			sb.append(shield.getName());
-			sb.append(" (+"+shield.getCloseBonus());
-			if (shield.getCloseBonus() != shield.getRangeBonus()) {
-				sb.append("/+"+shield.getRangeBonus());
+			int closeBonus = shield.getCloseBonus() + sheet.getShieldDbBonusSpecial();
+			int rangeBonus = shield.getRangeBonus() + sheet.getShieldDbBonusSpecial();
+			sb.append(" (+"+closeBonus);
+			if (closeBonus != rangeBonus) {
+				sb.append("/+"+rangeBonus);
 			}
 			sb.append(")");
 		}
@@ -837,7 +864,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.magic")+":", "", x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.special")+":", "", x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.special")+":", format(sheet.getDefensiveBonusSpecial(), true), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* defensive bonus */
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.total")+":", format(sheet.getDefensiveBonus(), false), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
@@ -917,10 +944,20 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 			}
 			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		}
-		/* additional resistance lines */
-		for (String lineStr : sheet.getRace().getAdditionalResistenceLines()) {
+		/* additional resistance lines (race and talents) */
+		for (String lineStr : sheet.getRace().getAdditionalResistanceLines()) {
 			showUserText(canvas, 7,  60.0f, y, lineStr);
 			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
+		}
+		if (sheet.getTalentsFlaws() != null) {
+			for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+				if (tf.getAdditionalResistanceLine() != null) {
+					for (String lineStr : tf.getAdditionalResistanceLine()) {
+						showUserText(canvas, 7,  60.0f, y, lineStr);
+						y -= PAGE1_LEFTBOX_LINE_HEIGHT;
+					}
+				}
+			}
 		}
 		/* divine protection */
 		if (sheet.getDivineStatusObject().getProtectionAgainstEvil() > 0) {

@@ -23,14 +23,18 @@ import java.util.List;
 import java.util.Set;
 
 import net.sf.rmoffice.meta.MetaData;
+import net.sf.rmoffice.meta.talentflaw.parser.BaseMoveRateParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseSkillParser;
+import net.sf.rmoffice.meta.talentflaw.parser.DBParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DescriptionParser;
+import net.sf.rmoffice.meta.talentflaw.parser.ResistanceParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ITalentFlawPartParser;
 import net.sf.rmoffice.meta.talentflaw.parser.InitiativeParser;
 import net.sf.rmoffice.meta.talentflaw.parser.BonusParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ProgressionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.RankParser;
+import net.sf.rmoffice.meta.talentflaw.parser.ShieldDBParser;
 import net.sf.rmoffice.meta.talentflaw.parser.SkillTypeParser;
 import net.sf.rmoffice.meta.talentflaw.parser.WeightPenaltyParser;
 
@@ -72,7 +76,7 @@ public class TalentFlawFactory {
 	}
 	
 	private void initParser() {
-		// TODO find a nicer solution to "register" the parsers
+		// FIXME find a nicer solution to "register" the parsers
 		parsers.add(new InitiativeParser());
 		parsers.add(new DescriptionParser());
 		parsers.add(new BonusParser(metaData)); 
@@ -82,6 +86,10 @@ public class TalentFlawFactory {
 		parsers.add(new ProgressionParser());
 		parsers.add(new RankParser());
 		parsers.add(new WeightPenaltyParser());
+		parsers.add(new BaseMoveRateParser());
+		parsers.add(new ResistanceParser());
+		parsers.add(new DBParser());
+		parsers.add(new ShieldDBParser());
 	}
 
 	/**
@@ -97,30 +105,5 @@ public class TalentFlawFactory {
 			}
 		}
 		throw new IllegalArgumentException("Could not find a parser for '"+partAsString+"'");
-//		if (param.startsWith("CHOOSE")) {
-//			String[] parts = StringUtils.splitPreserveAllTokens(param.substring(6), "=");
-//			TalentFlawChoice tfc = new TalentFlawChoice();
-//			tfc.setAmount(Integer.parseInt(parts[0]));
-//			// values
-//			String[] valueParts = StringUtils.splitPreserveAllTokens(parts[1], ";");
-//			for (String val : valueParts) {
-//				if (CATEGORY_CHAR.equals(val.substring(0, 1))) {
-//					Integer catID = Integer.valueOf(val.substring(1));
-//					SkillCategory skillCat = metaData.getSkillCategory(catID);
-//					tfc.addValue(skillCat);
-//				} else if (SKILL_CHAR.equals(val.substring(0,1))) {
-//					Integer skillID = Integer.valueOf(val.substring(1));
-//					ISkill skill = metaData.getSkill(skillID);
-//					tfc.addValue(skill);
-//				}
-//			}
-//			// result
-//			try {
-//				tfc.setSkillType( SkillType.valueOf(StringUtils.trimToEmpty(parts[2])) );
-//			} catch (Exception e) {
-//				tfc.setBonus(Integer.valueOf(StringUtils.trimToEmpty(parts[2])));
-//				// if we get here an exception, too, the format is wrong (exception is thrown --> line can not be decoded)
-//			}
-//			talFlawVal.putChoice(tfc);
 	}
 }

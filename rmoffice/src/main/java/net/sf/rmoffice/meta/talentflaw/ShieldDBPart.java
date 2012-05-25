@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.rmoffice.meta.talentflaw.parser;
+package net.sf.rmoffice.meta.talentflaw;
 
-import net.sf.rmoffice.meta.talentflaw.WeightPenaltyPart;
+import net.sf.rmoffice.core.TalentFlaw;
 
-public class WeightPenaltyParser extends AbstractKeyFloatValueParser<WeightPenaltyPart> {
-	private static final String KEY = "WEIGHTPENALTY";
+public class ShieldDBPart extends KeyValuePart {
+	private static final String ID = TalentFlawFactory.registerID("shielddb");
 	
-	public WeightPenaltyParser() {
-		super(KEY);
+	public ShieldDBPart(float value) {
+		super(value);
 	}
 
 	@Override
-	protected WeightPenaltyPart createPart(float value) {
-		return new WeightPenaltyPart(value);
+	public String getId() {
+		return ID;
+	}
+
+	@Override
+	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
+		talentFlaw.setShieldDb(Integer.valueOf(Math.round(value)));
+	}
+
+	@Override
+	public String asText() {
+		return format(value);
 	}
 
 }

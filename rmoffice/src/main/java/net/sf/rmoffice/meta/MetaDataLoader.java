@@ -781,7 +781,7 @@ public class MetaDataLoader {
 					/*  RR  */
 					String resLine = StringUtils.trimToNull(split[i++]);
 					if (resLine != null) {
-						r.addAdditionalResistenceLine(RESOURCE.getString(resLine));
+						r.addAdditionalResistanceLine(RESOURCE.getString(resLine));
 					}
 					races.add(r);
 					} catch (Exception e) {

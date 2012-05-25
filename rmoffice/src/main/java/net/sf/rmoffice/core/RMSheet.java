@@ -1339,7 +1339,17 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		}
 		
 		
-		return width * 100;
+		width = width * 100;
+		
+		// talent flaw modifier
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getBaseMovement() != null) {
+					width += Math.round(tf.getBaseMovement().floatValue());
+				}
+			}
+		}
+		return width;
 	}
 	
 	public int getReactionBonus() {
@@ -1615,14 +1625,48 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * @return the DB
 	 */
 	public int getDefensiveBonus() {
-		int db = getReactionBonus() + getArmorReactionModi();
+		int db = getReactionBonus() + getArmorReactionModi() + getDefensiveBonusSpecial();
 		if (db < 0) {
 			return 0;
 		} else {
 			return db;
 		}
 	}
+	
+	/**
+	 * Returns the defensive bonus from the talents and flaws.
+	 * 
+	 * @return db
+	 */
+	public int getDefensiveBonusSpecial() {
+		int dbSpecial = 0;
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getDb() != null) {
+					dbSpecial += tf.getDb().intValue();
+				}
+			}
+		}
+		return dbSpecial;
+	}
 
+	/**
+	 * Returns the special shield bonus from talent and flaws.
+	 * 
+	 * @return shield db bonus
+	 */
+	public int getShieldDbBonusSpecial() {
+		int dbSpecial = 0;
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getShieldDb() != null) {
+					dbSpecial += tf.getShieldDb().intValue();
+				}
+			}
+		}
+		return dbSpecial;
+	}
+	
 	/**
 	 * 
 	 * @param skill the skill to inherit from
@@ -2128,6 +2172,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			this.lengthUnit = LengthUnit.CM;
 		}
 		if (! this.lengthUnit.equals(oldUnit)) {
+			RMPreferences.getInstance().setLengthUnit(this.lengthUnit);
 			firePropertyChange(PROPERTY_LENGTH_UNIT, oldUnit, this.lengthUnit);
 			/* recalculate weights in characteristics */
 			int converted = oldUnit.convertTo(getCharacteristics().getHeight(), this.lengthUnit);

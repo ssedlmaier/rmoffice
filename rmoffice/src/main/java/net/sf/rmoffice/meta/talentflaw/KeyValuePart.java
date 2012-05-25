@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.rmoffice.meta.talentflaw.parser;
+package net.sf.rmoffice.meta.talentflaw;
 
-import net.sf.rmoffice.meta.talentflaw.WeightPenaltyPart;
+import java.text.NumberFormat;
 
-public class WeightPenaltyParser extends AbstractKeyFloatValueParser<WeightPenaltyPart> {
-	private static final String KEY = "WEIGHTPENALTY";
-	
-	public WeightPenaltyParser() {
-		super(KEY);
+public abstract class KeyValuePart extends AbstractTalentFlawPart {
+
+	protected final float value;
+
+	public KeyValuePart(float value) {
+		super();
+		this.value = value;
 	}
 
-	@Override
-	protected WeightPenaltyPart createPart(float value) {
-		return new WeightPenaltyPart(value);
+	public static String format(float number) {
+		int f100 = Math.round( 100f * number );
+		if (f100 > 0) {
+			return "+" + NumberFormat.getNumberInstance().format(number);
+		} else if (f100 == 0) {
+			return "+0";
+		}
+		return NumberFormat.getNumberInstance().format(number);
 	}
-
 }

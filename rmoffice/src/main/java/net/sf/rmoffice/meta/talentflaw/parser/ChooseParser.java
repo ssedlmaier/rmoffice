@@ -29,31 +29,30 @@ import org.apache.commons.lang.StringUtils;
 
 public class ChooseParser extends AbstractPatternParser<ChoosePart> {
 
-	private static final String PATTERN = "CHOOSE[0-9]+=([C|S]{1}[;0-9]+)*=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING)";
+	private static final String ALLSKILL = "ALLSKILL";
+	private static final String PATTERN = "CHOOSE[0-9]+=(([C|S]{1}[;0-9]+)*|ALLSKILL)=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING)";
 	private final MetaData metaData;
 
 	public ChooseParser(MetaData metaData) {
 		super(PATTERN);
 		this.metaData = metaData;
 	}
-
+	
 	@Override
-	public ChoosePart parse(String parseableString) {
-		String trimmed = StringUtils.trim(parseableString);
-		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(6), "=");
-
-		int amount = Integer.parseInt(parts[0]);
+	protected ChoosePart createPart(String key, String[] valParts) {
+		int amount = Integer.parseInt(key.substring(6));
 		int bonus = 0;
 		SkillType type = null;
 		try {
-			bonus = Integer.parseInt(parts[2]);
+			bonus = Integer.parseInt(valParts[1]);
 		} catch (NumberFormatException e) {
-			type = SkillType.valueOf(parts[2]);
+			type = SkillType.valueOf(valParts[1]);
 		}
 		// values
 		List<SkillCategory> cats = new ArrayList<SkillCategory>();
 		List<ISkill> skills = new ArrayList<ISkill>();
-		String[] valueParts = StringUtils.splitPreserveAllTokens(parts[1], ";");
+		String[] valueParts = StringUtils.splitPreserveAllTokens(valParts[0], ";");
+		boolean showAllSkills = false;
 		for (String val : valueParts) {
 			if (MetaDataLoader.CATEGORY_CHAR.equals(val.substring(0, 1))) {
 				Integer catID = Integer.valueOf(val.substring(1));
@@ -63,28 +62,30 @@ public class ChooseParser extends AbstractPatternParser<ChoosePart> {
 				Integer skillID = Integer.valueOf(val.substring(1));
 				ISkill skill = metaData.getSkill(skillID);
 				skills.add(skill);
+			} else if (ALLSKILL.equals(val)) {
+				showAllSkills = true;
 			}
 		}
 		if (type != null) {
-			return createChooseBonusPart(amount, type, cats, skills);
+			return createChooseBonusPart(amount, type, cats, skills, showAllSkills);
 		} else {
-			return createChooseBonusPart(amount, bonus, cats, skills);
+			return createChooseBonusPart(amount, bonus, cats, skills, showAllSkills);
 		}
 	}
 
-	/* for test */ ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills) {
+	/* for test */ ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills) {
 		if (cats.size() > 0) {
-			return new ChoosePart(bonus, amount, false, cats.toArray());
+			return new ChoosePart(bonus, amount, false, false, cats.toArray());
 		} else {
-			return new ChoosePart(bonus, amount, true, skills.toArray());
+			return new ChoosePart(bonus, amount, true, showAllSkills, skills.toArray());
 		}
 	}
 	
-	/* for test */ ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills) {
+	/* for test */ ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills) {
 		if (cats.size() > 0) {
-			return new ChoosePart(type, amount, false, cats.toArray());
+			return new ChoosePart(type, amount, false, false, cats.toArray());
 		} else {
-			return new ChoosePart(type, amount, true, skills.toArray());
+			return new ChoosePart(type, amount, true, showAllSkills, skills.toArray());
 		}
 	}
 	

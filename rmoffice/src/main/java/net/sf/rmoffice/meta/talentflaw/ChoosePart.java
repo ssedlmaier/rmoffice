@@ -36,21 +36,24 @@ public class ChoosePart extends AbstractTalentFlawPart {
 	protected final SkillType type;
 	protected final int amount;
 	private final boolean isSkill;
+	private final boolean showAll;
 
-	public ChoosePart(int bonus, int amount, boolean isSkill, Object... selectables ) {
+	public ChoosePart(int bonus, int amount, boolean isSkill, boolean showAll, Object... selectables ) {
 		this.isSkill = isSkill;
 		this.selectables = selectables;
 		this.bonus = Integer.valueOf(bonus);
 		this.amount = amount;
 		this.type = null;
+		this.showAll = showAll;
 	}
 
-	public ChoosePart(SkillType type, int amount, boolean isSkill, Object... selectables) {
+	public ChoosePart(SkillType type, int amount, boolean isSkill, boolean showAll, Object... selectables) {
 		this.isSkill = isSkill;
 		this.selectables = selectables;
 		this.type = type;
 		this.amount = amount;
 		this.bonus = null;
+		this.showAll = showAll;
 	}
 	
 	@Override
@@ -66,8 +69,12 @@ public class ChoosePart extends AbstractTalentFlawPart {
 
 	@Override
 	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
+		Object[] selectableList = selectables;
+		if (showAll && isSkill) {
+			selectableList = context.getSheet().getSkills().toArray();
+		}
 		if (isSkill) {
-			SelectionDialog<ISkill> dialog = new SelectionDialog<ISkill>(context.getOwner(), amount, selectables);
+			SelectionDialog<ISkill> dialog = new SelectionDialog<ISkill>(context.getOwner(), amount, selectableList);
 			dialog.setVisible(true);
 			for (ISkill skill : dialog.getCheckedItems()) {
 				if (type != null) {
@@ -77,7 +84,7 @@ public class ChoosePart extends AbstractTalentFlawPart {
 				}
 			}
 		} else {
-			SelectionDialog<SkillCategory> dialog = new SelectionDialog<SkillCategory>(context.getOwner(), amount, selectables);
+			SelectionDialog<SkillCategory> dialog = new SelectionDialog<SkillCategory>(context.getOwner(), amount, selectableList);
 			dialog.setVisible(true);
 			for (SkillCategory cat : dialog.getCheckedItems()) {
 				if (type != null) {
@@ -93,12 +100,16 @@ public class ChoosePart extends AbstractTalentFlawPart {
 	public String asText() {
 		String what = type != null ? RESOURCE.getString("SkillType."+type.name()) : PDFCreator.format(bonus.intValue(), false);
 		StringBuilder from = new StringBuilder();
-		for (Object val : selectables) {
-			if (from.length() > 0) {
-				from.append(", ");
-			}
-			if (val instanceof INamed) {
-				from.append(((INamed)val).getName());
+		if (showAll) {
+			from.append(RESOURCE.getString("ui.talentflaw.value.choosefrom.allskill"));
+		} else {
+			for (Object val : selectables) {
+				if (from.length() > 0) {
+					from.append(", ");
+				}
+				if (val instanceof INamed) {
+					from.append(((INamed)val).getName());
+				}
 			}
 		}
 		return MessageFormat.format(RESOURCE.getString("ui.talentflaw.value.choosefrom"), ""+amount, from.toString(), what );

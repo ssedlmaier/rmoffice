@@ -15,26 +15,19 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.rmoffice.meta.talentflaw.InitiativePart;
 
-public class InitiativeParser implements ITalentFlawPartParser<InitiativePart> {
+public class InitiativeParser extends AbstractKeyFloatValueParser<InitiativePart> {
 
-	public static final String INI = "INI=";
+	public static final String INI = "INI";
 	
-	@Override
-	public boolean isParseable(String toParse) {
-		if (StringUtils.isEmpty(toParse)) {
-			return false;
-		}
-		return StringUtils.trimToEmpty(toParse).startsWith(INI);
+	public InitiativeParser() {
+		super(INI);
 	}
 
 	@Override
-	public InitiativePart parse(String parseableString) {
-		String trimmed = StringUtils.trimToEmpty(parseableString);
-		return new InitiativePart(Integer.parseInt(trimmed.substring(INI.length())));
+	protected InitiativePart createPart(float value) {
+		return new InitiativePart(Math.round(value));
 	}
 
 }

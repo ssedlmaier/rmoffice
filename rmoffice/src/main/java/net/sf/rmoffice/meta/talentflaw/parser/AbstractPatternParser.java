@@ -50,5 +50,25 @@ public abstract class AbstractPatternParser<T extends ITalentFlawPart> implement
 		}
 		return false;
 	}
+	
+	@Override
+	public final T parse(String parseableString) {
+		String trimmed = StringUtils.trimToEmpty(parseableString);
+		String[] parts = StringUtils.splitPreserveAllTokens(trimmed, "=");
+		String key = StringUtils.trimToEmpty(parts[0]);
+		String[] valueParts = new String[parts.length - 1];
+		for (int i=0; i<valueParts.length; i++) {
+			valueParts[i] = StringUtils.trimToEmpty(parts[i+1]);
+		}
+		return createPart(key, valueParts);
+	}
 
+	/**
+	 * Returns the talent flaw part.
+	 * 
+	 * @param key the trimmed key
+	 * @param valueParts the trimmed value parts
+	 * @return the talent flaw part
+	 */
+	protected abstract T createPart(String key, String[] valueParts);
 }

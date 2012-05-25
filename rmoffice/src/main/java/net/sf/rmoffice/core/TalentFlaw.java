@@ -16,6 +16,7 @@
 package net.sf.rmoffice.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Map;
 import net.sf.rmoffice.meta.IProgression;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.SkillCategory;
+import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
 import net.sf.rmoffice.meta.enums.TalentFlawTransform;
@@ -55,7 +57,12 @@ public class TalentFlaw extends Model {
     private IProgression progressionBody;
     private IProgression progressionPower;
 	private Float weightPenalty; 
-    
+	private Float baseMovement; 
+	private Integer fumbleRange;
+	private List<String> resistanceLines;
+    private Integer db;
+    private Integer shieldDb;
+	
 	public TalentFlaw() {
 	}
 
@@ -220,4 +227,102 @@ public class TalentFlaw extends Model {
 	public void setWeightPenalty(Float weightPenalty) {
 		this.weightPenalty = weightPenalty;
 	}
+
+	/**
+	 * Gets the base movement rate in {@link LengthUnit#CM}.
+	 * 
+	 * @return the base movement rate modifier or {@code null}
+	 */
+	public Float getBaseMovement() {
+		return baseMovement;
+	}
+
+	/**
+	 * Sets the base movement rate in {@link LengthUnit#CM}.
+	 * 
+	 * @param baseMovement the base movement rate modifier or {@code null} to reset
+	 */
+	public void setBaseMovement(Float baseMovement) {
+		this.baseMovement = baseMovement;
+	}
+
+	/**
+	 * Returns the fumble range modifier or {@code null}.
+	 * 
+	 * @return funble range modifier.
+	 */
+	public Integer getFumbleRange() {
+		return fumbleRange;
+	}
+
+	/**
+	 * Sets the fumble range modifier.
+	 * 
+	 * @param fumbleRange the funble range
+	 */
+	public void setFumbleRange(Integer fumbleRange) {
+		this.fumbleRange = fumbleRange;
+	}
+
+	/**
+	 * Adds an additional resistance line on sheet.
+	 * 
+	 * @param descr localized rr line, not {@code null} 
+	 */
+	public void addAdditionalResistanceLine(String descr) {
+		if (resistanceLines == null) {
+			resistanceLines = new ArrayList<String>();
+		}
+		resistanceLines.add(descr);
+	}
+
+	/**
+	 * Returns an unmodifiable list of resistance lines.
+	 * 
+	 * @return list of rr lines or {@code null}
+	 */
+	public List<String> getAdditionalResistanceLine() {
+		if (resistanceLines == null) {
+			return null;
+		}
+		return Collections.unmodifiableList(resistanceLines);
+	}
+
+	/**
+	 * Returns the defensive bonus.
+	 * 
+	 * @return bonus or {@code null}
+	 */
+	public Integer getDb() {
+		return db;
+	}
+
+	/**
+	 * Sets the defensive bonus.
+	 * 
+	 * @param db bonus
+	 */
+	public void setDb(Integer db) {
+		this.db = db;
+	}
+
+	/**
+	 * Returns the shield db or {@code null}.
+	 * 
+	 * @return the shield db or {@code null}
+	 */
+	public Integer getShieldDb() {
+		return shieldDb;
+	}
+
+	/**
+	 * Sets the shield db
+	 * 
+	 * @param shieldDb the shield db, may be {@code null}
+	 */
+	public void setShieldDb(Integer shieldDb) {
+		this.shieldDb = shieldDb;
+	}
+	
+	
 }

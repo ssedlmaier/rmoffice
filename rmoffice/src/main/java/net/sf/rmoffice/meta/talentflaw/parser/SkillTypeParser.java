@@ -20,8 +20,6 @@ import net.sf.rmoffice.meta.MetaDataLoader;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.talentflaw.SkillTypePart;
 
-import org.apache.commons.lang.StringUtils;
-
 public class SkillTypeParser extends AbstractPatternParser<SkillTypePart> {
 	private final static String BONUS_FORMAT = "[0-9]+=[A-Z_]+";
 	private final MetaData metaData;
@@ -32,12 +30,10 @@ public class SkillTypeParser extends AbstractPatternParser<SkillTypePart> {
 	}
 
 	@Override
-	public SkillTypePart parse(String parseableString) {
-		String trimmed = StringUtils.trimToEmpty(parseableString);
-		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(1), "=");
-		Integer id = Integer.valueOf(StringUtils.trim(parts[0]));
-		SkillType skillType = SkillType.valueOf(StringUtils.trim(parts[1]));
-		if (patternList[0].matcher(trimmed).matches()) {
+	protected SkillTypePart createPart(String key, String[] valueParts) {
+		Integer id = Integer.valueOf(key.substring(1));
+		SkillType skillType = SkillType.valueOf(valueParts[0]);
+		if (key.startsWith(MetaDataLoader.SKILL_CHAR)) {
 			return new SkillTypePart(metaData.getSkill(id), skillType);
 		} else {
 			return new SkillTypePart(metaData.getSkillCategory(id), skillType);

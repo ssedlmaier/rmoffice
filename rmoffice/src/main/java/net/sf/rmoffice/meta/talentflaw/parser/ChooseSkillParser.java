@@ -38,23 +38,20 @@ public class ChooseSkillParser extends AbstractPatternParser<ChooseSkillPart> {
 	}
 	
 	@Override
-	public ChooseSkillPart parse(String parseableString) {
-		String trimmed = StringUtils.trim(parseableString);
-		String[] parts = StringUtils.splitPreserveAllTokens(trimmed.substring(11), "=");
-
-		int amount = Integer.parseInt(parts[0]);
+	protected ChooseSkillPart createPart(String key, String[] valueParts) {
+		int amount = Integer.parseInt(key.substring(11));
 		int bonus = 0;
 		SkillType type = null;
 		try {
-			bonus = Integer.parseInt(parts[2]);
+			bonus = Integer.parseInt(valueParts[1]);
 		} catch (NumberFormatException e) {
-			type = SkillType.valueOf(parts[2]);
+			type = SkillType.valueOf(valueParts[1]);
 		}
 		// values
 		List<SkillCategory> cats = new ArrayList<SkillCategory>();
 		List<ISkill> skills = new ArrayList<ISkill>();
-		String[] valueParts = StringUtils.splitPreserveAllTokens(parts[1], ";");
-		for (String val : valueParts) {
+		String[] singleValueParts = StringUtils.splitPreserveAllTokens(valueParts[0], ";");
+		for (String val : singleValueParts) {
 			if (MetaDataLoader.CATEGORY_CHAR.equals(val.substring(0, 1))) {
 				Integer catID = Integer.valueOf(val.substring(1));
 				SkillCategory skillCat = metaData.getSkillCategory(catID);
@@ -67,16 +64,16 @@ public class ChooseSkillParser extends AbstractPatternParser<ChooseSkillPart> {
 		}
 		// follow-up action
 		String followUpAction = "";
-		if (parts.length > 3) {
-			followUpAction = parts[3];
+		if (valueParts.length > 2) {
+			followUpAction = valueParts[2];
 		}
 		int followUpBonus = 0;
 		SkillType followUpType = null;
-		if (parts.length > 4) {
+		if (valueParts.length > 3) {
 			try {
-				followUpBonus = Integer.parseInt(parts[4]);
+				followUpBonus = Integer.parseInt(valueParts[3]);
 			} catch (NumberFormatException e) {
-				followUpType = SkillType.valueOf(parts[4]);
+				followUpType = SkillType.valueOf(valueParts[3]);
 			}
 		}
 		// creation

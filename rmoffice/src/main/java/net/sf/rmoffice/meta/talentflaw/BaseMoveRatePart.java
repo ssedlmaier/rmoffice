@@ -16,13 +16,13 @@
 package net.sf.rmoffice.meta.talentflaw;
 
 
-import java.text.NumberFormat;
-
+import net.sf.rmoffice.RMPreferences;
 import net.sf.rmoffice.core.TalentFlaw;
+import net.sf.rmoffice.meta.enums.LengthUnit;
 
-public class WeightPenaltyPart extends KeyValuePart {
-	private static final String ID = TalentFlawFactory.registerID("weightpenalty");
-	public WeightPenaltyPart(float factor) {
+public class BaseMoveRatePart extends KeyValuePart {
+	private static final String ID = TalentFlawFactory.registerID("basemoverate");
+	public BaseMoveRatePart(float factor) {
 		super(factor);
 	}
 	
@@ -33,11 +33,13 @@ public class WeightPenaltyPart extends KeyValuePart {
 
 	@Override
 	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
-		talentFlaw.setWeightPenalty(Float.valueOf(value));
+		talentFlaw.setBaseMovement(Float.valueOf(value));
 	}
 
 	@Override
 	public String asText() {
-		return "x " + NumberFormat.getNumberInstance().format(value);
+		LengthUnit lu = RMPreferences.getInstance().getLengthUnit();
+		int converted = LengthUnit.CM.convertTo(Math.round(value), lu);
+		return lu.getFormattedString(converted);
 	}
 }

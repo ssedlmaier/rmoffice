@@ -45,7 +45,7 @@ public class Race {
 	private Map<StatEnum, Progression> progMagie = new HashMap<StatEnum, Progression>();
 	private int soulDeparture;
 	private float recoveryMultiplier;
-    private List<String> additionalResistenceLines = new ArrayList<String>();
+    private List<String> additionalResistanceLines = new ArrayList<String>();
 	private int exhaustionPoints;
 	
 	/* package */ Race() {
@@ -152,13 +152,17 @@ public class Race {
 	}
 	
 	
-	
-	public List<String> getAdditionalResistenceLines() {
-		return Collections.unmodifiableList(additionalResistenceLines);
+	/**
+	 * Returns an unmodifiable list of additional resistance lines.
+	 * 
+	 * @return list of resistance lines, not {@code null}
+	 */
+	public List<String> getAdditionalResistanceLines() {
+		return Collections.unmodifiableList(additionalResistanceLines);
 	}
 	
-	/* package private */  void addAdditionalResistenceLine(String resLine) {
-		this.additionalResistenceLines.add(resLine);
+	/* package private */  void addAdditionalResistanceLine(String resLine) {
+		this.additionalResistanceLines.add(resLine);
 	}
 	
 	

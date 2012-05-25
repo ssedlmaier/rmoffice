@@ -15,18 +15,21 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import net.sf.rmoffice.meta.talentflaw.WeightPenaltyPart;
+import java.util.ResourceBundle;
 
-public class WeightPenaltyParser extends AbstractKeyFloatValueParser<WeightPenaltyPart> {
-	private static final String KEY = "WEIGHTPENALTY";
+import net.sf.rmoffice.meta.talentflaw.ResistancePart;
+
+public class ResistanceParser extends AbstractPatternParser<ResistancePart> {
+	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
+	private static final String PATTERN = "RR=.+";
 	
-	public WeightPenaltyParser() {
-		super(KEY);
+	public ResistanceParser() {
+		super(PATTERN);
 	}
 
 	@Override
-	protected WeightPenaltyPart createPart(float value) {
-		return new WeightPenaltyPart(value);
+	protected ResistancePart createPart(String key, String[] valueParts) {
+		return new ResistancePart(RESOURCE.getString(valueParts[0]));
 	}
 
 }

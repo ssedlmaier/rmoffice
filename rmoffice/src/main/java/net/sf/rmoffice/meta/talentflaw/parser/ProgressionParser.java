@@ -15,33 +15,28 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import java.util.regex.Matcher;
-
 import net.sf.rmoffice.meta.talentflaw.ProgressionPart;
 
 import org.apache.commons.lang.StringUtils;
 
 public class ProgressionParser extends AbstractPatternParser<ProgressionPart> {
+	private static final String VALUE_PATTERN = "([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+)";
 	private static final String BODYDEV = "BODYDEV";
 	private static final String POWERDEV = "POWERDEV";
-	private static final String PARSEABLE_PATTERN = "("+BODYDEV+"|"+POWERDEV+")=([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+);([0-9-]+)";
+	private static final String PARSEABLE_PATTERN = "("+BODYDEV+"|"+POWERDEV+")=" + VALUE_PATTERN;
 	
 	public ProgressionParser() {
 		super(PARSEABLE_PATTERN);
 	}
 
 	@Override
-	public ProgressionPart parse(String parseableString) {
-		Matcher matcher = patternList[0].matcher(StringUtils.trimToEmpty(parseableString));
-		if (! matcher.matches()) {
-			throw new IllegalArgumentException("parseableString must be parseable: "+parseableString);
-		}
-		boolean bodyOrPower = BODYDEV.equals(matcher.group(1));
+	protected ProgressionPart createPart(String key, String[] valueParts) {
+		String[] enumeration = StringUtils.split(valueParts[0], ';');
 		int[] progMods = new int[5];
 		for (int i=0; i<5; i++) {
-			progMods[i] = Integer.parseInt(matcher.group(i+2));
+			progMods[i] = Integer.parseInt(enumeration[i]);
 		}
-		return new ProgressionPart(progMods, bodyOrPower);
+		return new ProgressionPart(progMods, key.startsWith(BODYDEV));
 	}
 
 }
