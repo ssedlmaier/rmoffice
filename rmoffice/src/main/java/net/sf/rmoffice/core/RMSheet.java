@@ -1168,10 +1168,22 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		return recovery;
 	}
 
+	/**
+	 * Returns the exhaustion points of the character including the talent and flaw modification.
+	 * 
+	 * @return exhaustion points
+	 */
 	public int getExhaustionPoints() {
 		int exh = 40 + getStatBonusTotal(StatEnum.CONSTITUTION) * 3;
 		if (getRace() != null) {
 			exh += getRace().getExhaustionPoints();
+		}
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getExhaustion() != null) {
+					exh += tf.getExhaustion().intValue();
+				}
+			}
 		}
 		return exh;
 	}
@@ -1820,7 +1832,18 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 				bonus += bonusInt.intValue();
 			}
 		}
-		bonus += getDivineStatusObject().getIntuitionBonus();
+		// divine status
+		if (StatEnum.INTUITION.equals(stat)) {
+			bonus += getDivineStatusObject().getIntuitionBonus();
+		}
+		// talent flaw
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getStatBonus(stat) != null) {
+					bonus += tf.getStatBonus(stat).intValue();
+				}
+			}
+		}
 		return bonus;
 	}
 	
@@ -2441,6 +2464,10 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		firePropertyChange(PROPERTY_SKILLS_CHANGED, null, null);
 		firePropertyChange(PROPERTY_PROGRESSION_BODY, null, getProgressionBody());
 		firePropertyChange(PROPERTY_PROGRESSION_POWER, null, getProgressionPower());
+		for (StatEnum stat : StatEnum.values()) {
+			firePropertyChange(PROPERTY_STAT_MISC2BONUS_PREFIX+stat.name(), null, Integer.valueOf(getStatMisc2Bonus(stat)));
+		}
+		
 	}
 
 	/**

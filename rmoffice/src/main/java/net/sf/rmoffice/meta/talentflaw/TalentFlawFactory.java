@@ -28,6 +28,7 @@ import net.sf.rmoffice.meta.talentflaw.parser.ChooseParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseSkillParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DBParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DescriptionParser;
+import net.sf.rmoffice.meta.talentflaw.parser.ExhaustionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ResistanceParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ITalentFlawPartParser;
 import net.sf.rmoffice.meta.talentflaw.parser.InitiativeParser;
@@ -36,6 +37,7 @@ import net.sf.rmoffice.meta.talentflaw.parser.ProgressionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.RankParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ShieldDBParser;
 import net.sf.rmoffice.meta.talentflaw.parser.SkillTypeParser;
+import net.sf.rmoffice.meta.talentflaw.parser.StatBonusParser;
 import net.sf.rmoffice.meta.talentflaw.parser.WeightPenaltyParser;
 
 /**
@@ -90,6 +92,8 @@ public class TalentFlawFactory {
 		parsers.add(new ResistanceParser());
 		parsers.add(new DBParser());
 		parsers.add(new ShieldDBParser());
+		parsers.add(new ExhaustionParser());
+		parsers.add(new StatBonusParser());
 	}
 
 	/**

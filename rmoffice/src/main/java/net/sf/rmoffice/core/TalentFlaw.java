@@ -26,6 +26,7 @@ import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.SkillType;
+import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
 import net.sf.rmoffice.meta.enums.TalentFlawTransform;
 import net.sf.rmoffice.meta.enums.TalentFlawType;
@@ -62,6 +63,8 @@ public class TalentFlaw extends Model {
 	private List<String> resistanceLines;
     private Integer db;
     private Integer shieldDb;
+	private Integer exhaustion;
+	private Map<StatEnum, Integer> statBonus;
 	
 	public TalentFlaw() {
 	}
@@ -323,6 +326,32 @@ public class TalentFlaw extends Model {
 	public void setShieldDb(Integer shieldDb) {
 		this.shieldDb = shieldDb;
 	}
+
+	public void setExhaustion(Integer exhaustion) {
+		this.exhaustion = exhaustion;
+	}
 	
+	public Integer getExhaustion() {
+		return exhaustion;
+	}
+
+	public void addStatBonus(StatEnum stat, Integer bonus) {
+		if (statBonus == null) {
+			statBonus = new HashMap<StatEnum, Integer>();
+		}
+		statBonus.put(stat, bonus);
+	}
 	
+	/**
+	 * Returns the bonus or {@code null} if no bonus is available. 
+	 * 
+	 * @param stat the stat, may be {@code null}
+	 * @return the bonus or {@code null}
+	 */
+	public Integer getStatBonus(StatEnum stat) {
+		if (statBonus == null || stat == null) {
+			return null;
+		}
+		return statBonus.get(stat);
+	}
 }
