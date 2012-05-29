@@ -49,6 +49,8 @@ public class RankParserTest {
 		assertTrue(parser.isParseable("   RANK4=BASELIST;OPENLIST;CLOSEDLIST"));
 		assertTrue(parser.isParseable("RANK10=BASELIST;OPENLIST;CLOSEDLIST   "));
 		assertTrue(parser.isParseable("   RANK3=BASELIST;OPENLIST;CLOSEDLIST   "));
+		assertTrue(parser.isParseable("   RANK3=LANGUAGE   "));
+		assertTrue(parser.isParseable("   RANK23=LANGUAGE   "));
 	}
 
 	@Test

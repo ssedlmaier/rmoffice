@@ -2269,16 +2269,41 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * @return hit points
 	 */
 	public int getHitPoints() {
+		int hits = getProgressionBodyTotalBonus();
+		// talent flaw tolerance
+		float tolerance = 1f;
+		if (getTalentsFlaws() != null) {
+			for (TalentFlaw tf : getTalentsFlaws()) {
+				if (tf.getTolerance() != null) {
+					tolerance *= tf.getTolerance().floatValue();
+				}
+			}
+		}
+		hits = Math.round( tolerance * hits);
+		return hits;
+	}
+
+	private int getProgressionBodyTotalBonus() {
 		ISkill skillHits = null;
 		for (ISkill skill : data.getSkills()) {
 			if (getSkillcategory(skill).getRankType().isProgressionBody()) {
 				skillHits = skill;				
 			}
 		}
-		if (skillHits != null) {
-			return getSkillTotalBonus(skillHits);
-		}
-		return 0;
+		int hits = getSkillTotalBonus(skillHits);
+		return hits;
+	}
+	
+	/**
+	 * Returns the unconscious points without the hit points.
+	 * 
+	 * @return unconscious points without the hit points
+	 */
+	public int getUnconsciousPoints() {
+		int cp = getStatTemp(StatEnum.CONSTITUTION);
+		int bodyBonus = getProgressionBodyTotalBonus();
+		int hits = getHitPoints();
+		return cp - hits + bodyBonus;
 	}
 	
 	/**

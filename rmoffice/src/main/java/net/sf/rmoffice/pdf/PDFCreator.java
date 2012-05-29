@@ -479,8 +479,16 @@ public class PDFCreator extends AbstractPDFCreator {
 		labeledUserText(canvas, RESOURCE.getString("pdf.page1.raceinfo.souldeparture")+":", ""+sheet.getRace().getSoulDeparture(), x, y, x1, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
-		/* Genesungsmultiplikator */
-		labeledUserText(canvas, RESOURCE.getString("pdf.page1.raceinfo.recoverymult")+":", ""+sheet.getRace().getRecoveryMultiplier(), x, y, x1, fontRegular, 8);
+		/* Recovery Multiplier / Genesungsmultiplikator */
+		float recoveryMultiplier = sheet.getRace().getRecoveryMultiplier();
+		if (sheet.getTalentsFlaws() != null) {
+			for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+				if (tf.getRecoveryMultiplier() != null) {
+					recoveryMultiplier *= tf.getRecoveryMultiplier().floatValue();
+				}
+			}
+		}
+		labeledUserText(canvas, RESOURCE.getString("pdf.page1.raceinfo.recoverymult")+":", ""+recoveryMultiplier, x, y, x1, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		/* Progression Body */

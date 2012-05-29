@@ -322,30 +322,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 						String[] split = StringUtils.split(skill.getDescription(sheet.getLengthUnit()), ',');
 						if (split != null) {
 							if (split.length > 0) {
-								// fumble
-								String fumble = StringUtils.trimToEmpty(split[0]);
-								try {
-									int fumbleInt = Integer.parseInt(fumble);
-									// check talents and flaws
-									if (sheet.getTalentsFlaws() != null) {
-										for (TalentFlaw tf : sheet.getTalentsFlaws()) {
-											if (tf.getFumbleRange() != null) {
-												fumbleInt += tf.getFumbleRange().intValue();
-											}
-										}
-									}
-									fumble = "01";
-									if (fumbleInt > 1) {
-										fumble += "-";
-									}
-									if (fumbleInt < 10) {
-										fumble += "0";
-									}
-									fumble += fumbleInt;
-								} catch (NumberFormatException e) {
-									// ignore
-								}
-								line.add( fumble );
+								line.add( StringUtils.trimToEmpty(split[0]) );
 							}
 							if (split.length > 1) {
 								// range or critical modifier
@@ -710,13 +687,13 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 			canvas.setFontAndSize(fontWidget, 8);
 			canvas.showTextAligned(Element.ALIGN_LEFT, str, LEFT_X + 25, y, 0);
 		}
-		/* */
+		/* unconscious */
 		y -= lineHeight;
 		canvas.setFontAndSize(fontRegular, 8);
 		canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page6.unconscious") + ":", LEFT_X + 5, y, 0);
 		
 		y -= lineHeight;
-		int statTemp = sheet.getStatTemp(StatEnum.CONSTITUTION);
+		int statTemp = sheet.getUnconsciousPoints();
 		points = new int[2];
 		points[0] = (int) Math.ceil( statTemp * 0.5 );
 		points[1] =  statTemp - points[0];

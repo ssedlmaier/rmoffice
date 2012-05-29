@@ -24,7 +24,7 @@ import net.sf.rmoffice.meta.talentflaw.RankPart;
 import org.apache.commons.lang.StringUtils;
 
 public class RankParser extends AbstractPatternParser<RankPart> {
-	private static final String PATTERN = "^RANK[0-9]+=(BASELIST|OPENLIST|CLOSEDLIST|OPENARCANELIST|CLOSEDARCANELIST|;)+$";
+	private static final String PATTERN = "^RANK[0-9]+=(BASELIST|OPENLIST|CLOSEDLIST|OPENARCANELIST|CLOSEDARCANELIST|LANGUAGE|;)+$";
 	
 	public RankParser() {
 		super(PATTERN);

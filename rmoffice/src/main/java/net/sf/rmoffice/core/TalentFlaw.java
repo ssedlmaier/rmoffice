@@ -65,6 +65,8 @@ public class TalentFlaw extends Model {
     private Integer shieldDb;
 	private Integer exhaustion;
 	private Map<StatEnum, Integer> statBonus;
+	private Float recoveryMultiplier;
+	private Float tolerance;
 	
 	public TalentFlaw() {
 	}
@@ -353,5 +355,31 @@ public class TalentFlaw extends Model {
 			return null;
 		}
 		return statBonus.get(stat);
+	}
+
+	public void setRecoveryMultiplier(Float recoveryMultiplier) {
+		this.recoveryMultiplier = recoveryMultiplier;
+	}
+	
+	public Float getRecoveryMultiplier() {
+		return recoveryMultiplier;
+	}
+
+	/**
+	 * Sets the tolerance factor.
+	 * 
+	 * @param tolerance the factor
+	 */
+	public void setTolerance(Float tolerance) {
+		this.tolerance = tolerance;
+	}
+	
+	/**
+	 * Returns the tolerance factor or {@code null}.
+	 * 
+	 * @return the tolerance factor
+	 */
+	public Float getTolerance() {
+		return tolerance;
 	}
 }
