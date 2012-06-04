@@ -17,13 +17,23 @@ package net.sf.rmoffice.meta.talentflaw;
 
 
 import net.sf.rmoffice.core.TalentFlaw;
+import net.sf.rmoffice.meta.enums.ResistanceEnum;
 
 public class ResistancePart extends AbstractTalentFlawPart {
 	private static final String ID = TalentFlawFactory.registerID("resistance");
 	private final String descr;
+	private final ResistanceEnum res;
+	private final int bonus;
 	
 	public ResistancePart(String descr) {
 		this.descr = descr;
+		this.res = null;
+		this.bonus = 0;
+	}
+	public ResistancePart(ResistanceEnum res, int bonus) {
+		this.res = res;
+		this.bonus = bonus;
+		this.descr = null;
 	}
 	
 	@Override
@@ -33,11 +43,21 @@ public class ResistancePart extends AbstractTalentFlawPart {
 
 	@Override
 	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
-		talentFlaw.addAdditionalResistanceLine(descr);
+		if (descr != null) {
+			talentFlaw.addAdditionalResistanceLine(descr);
+		}
+		if (res != null) {
+			talentFlaw.setResistanceBonus(res, Integer.valueOf(this.bonus));
+		}
 	}
 
 	@Override
 	public String asText() {
-		return descr;
+		if (descr != null) {
+			return descr;
+		}
+		StringBuilder sb = new StringBuilder();
+		appendBonusLine(sb, res.toString(), Integer.valueOf(bonus));
+		return sb.toString();
 	}
 }

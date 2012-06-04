@@ -661,12 +661,44 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		return b;
 	}
 
-	public int getResistenceStatBonus(ResistanceEnum res) {
+	/**
+	 * Returns the resistance stat bonus.
+	 * 
+	 * @param res the resistance type, not {@code null}
+	 * @return the bonus for given resistance
+	 */
+	public int getResistanceStatBonus(ResistanceEnum res) {
 		return 3 * getStatBonusTotal(res.getStat());
 	}
-
-	public int getResistenceBonusTotal(ResistanceEnum res) {
-		return getResistenceStatBonus(res) + getRace().getResistenceBonus(res);
+	
+	/**
+	 * Returns the resistance bonus from the talent and flaws.
+	 * 
+	 * @param res the resistance type, not {@code null}
+	 * @return the special bonus
+	 */
+	public int getResistanceSpecialBonus(ResistanceEnum res) {
+		int bonus = 0;
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getResistanceBonus(res) != null) {
+					bonus += tf.getResistanceBonus(res).intValue();
+				}
+			}
+		}
+		return bonus;
+	}
+	
+	/**
+	 * Returns the resistance total bonus including race, stat and talent flaw bonus.
+	 * 
+	 * @param res the resistance type, not {@code null}
+	 * @return the total bonus
+	 */
+	public int getResistanceBonusTotal(ResistanceEnum res) {
+		return getResistanceStatBonus(res) + 
+				getResistanceSpecialBonus(res) + 
+				getRace().getResistanceBonus(res);
 	}
 
 	public int getTempSum() {

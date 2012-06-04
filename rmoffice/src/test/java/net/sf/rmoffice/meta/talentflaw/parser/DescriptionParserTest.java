@@ -36,26 +36,35 @@ public class DescriptionParserTest {
 		assertFalse(parser.isParseable("  dfdf   "));
 		assertFalse(parser.isParseable("67575  "));
 		
-		assertTrue(parser.isParseable("DESCR=talent.snap.5"));
-		assertTrue(parser.isParseable("  DESCR=talent.snap.5"));
-		assertTrue(parser.isParseable("DESCR=talent.snap.5   "));
-		assertTrue(parser.isParseable("  DESCR=talent.snap.5  "));
+		assertTrue(parser.isParseable("DESCR=rolemaster.version"));
+		assertTrue(parser.isParseable("  DESCR=rolemaster.version"));
+		assertTrue(parser.isParseable("DESCR=rolemaster.version   "));
+		assertTrue(parser.isParseable("  DESCR=rolemaster.version  "));
+		assertTrue(parser.isParseable("  DESCR  "));
+		assertTrue(parser.isParseable("DESCR"));
 	}
 
 	@Test
 	public void testParse() {
-		assertDescr("DESCR=talent.snap.5");
-		assertDescr("  DESCR=talent.snap.5");
-		assertDescr("  DESCR=talent.snap.5 ");
-		assertDescr(" DESCR=talent.snap.5  ");
-		assertDescr("DESCR=talent.snap.5  ");
+		assertDescr("DESCR=rolemaster.version");
+		assertDescr("  DESCR=rolemaster.version");
+		assertDescr("  DESCR=rolemaster.version ");
+		assertDescr(" DESCR=rolemaster.version  ");
+		assertDescr("DESCR=rolemaster.version  ");
+		assertDescr("DESCR", DescriptionParser.COPYRIGHT_DESCR_KEY);
+		assertDescr("DESCR ", DescriptionParser.COPYRIGHT_DESCR_KEY);
+		assertDescr("  DESCR   ", DescriptionParser.COPYRIGHT_DESCR_KEY);
 	}
 
 	private void assertDescr(String parseableText) {
+		assertDescr(parseableText, "rolemaster.version");
+	}
+	
+	private void assertDescr(String parseableText, String expectedKey) {
 		DescriptionParser parser = new DescriptionParser();
 		TalentFlaw talentFlaw = new TalentFlaw();
 		parser.parse(parseableText).addToTalentFlaw(null, talentFlaw);
 		assertEquals(1, talentFlaw.getDescriptions().size());
-		assertEquals(RESOURCE.getString("talent.snap.5"), talentFlaw.getDescriptions().get(0));
+		assertEquals(RESOURCE.getString(expectedKey), talentFlaw.getDescriptions().get(0));
 	}
 }

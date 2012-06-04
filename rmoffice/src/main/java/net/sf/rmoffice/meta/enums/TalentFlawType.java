@@ -15,6 +15,9 @@
  */
 package net.sf.rmoffice.meta.enums;
 
+/**
+ * Available types of talents or flaws.
+ */
 public enum TalentFlawType {
 	TRAINING,
 	PHYSICAL,

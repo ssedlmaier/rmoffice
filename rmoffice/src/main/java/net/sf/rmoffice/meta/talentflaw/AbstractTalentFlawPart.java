@@ -15,8 +15,7 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import static net.sf.rmoffice.pdf.AbstractPDFCreator.format;
-
+import java.text.NumberFormat;
 import java.util.ResourceBundle;
 
 import net.sf.rmoffice.meta.enums.SkillType;
@@ -33,10 +32,20 @@ public abstract class AbstractTalentFlawPart implements ITalentFlawPart {
 	}
 	
 	protected void appendBonusLine(StringBuilder sb, String name, Integer value) {
-		appendBreak(sb).append(name).append(" ").append(format(value.intValue(), false));
+		appendBreak(sb).append(name).append(" ").append(format(value.floatValue()));
 	}
 
 	protected void appendTypeLine(StringBuilder sb, String name, SkillType value) {
 		appendBreak(sb).append(name).append(": ").append(RESOURCE.getString("SkillType."+value.name()));
+	}
+	
+	public static String format(float number) {
+		int f100 = Math.round( 100f * number );
+		if (f100 > 0) {
+			return "+" + NumberFormat.getNumberInstance().format(number);
+		} else if (f100 == 0) {
+			return "+0";
+		}
+		return NumberFormat.getNumberInstance().format(number);
 	}
 }

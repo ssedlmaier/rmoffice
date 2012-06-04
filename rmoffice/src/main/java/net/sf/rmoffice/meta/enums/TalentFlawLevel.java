@@ -16,6 +16,7 @@
 package net.sf.rmoffice.meta.enums;
 
 public enum TalentFlawLevel {
+	FREE(0),
 	LESSER(2),
 	MINOR(3),
 	MAJOR(4),

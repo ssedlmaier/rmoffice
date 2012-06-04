@@ -40,7 +40,7 @@ public class Race {
 	private String outline;
 	private int backgroundOptions;
 	private Map<StatEnum, Integer> attributes = new HashMap<StatEnum, Integer>();
-	private Map<ResistanceEnum, Integer> resistences = new HashMap<ResistanceEnum, Integer>();
+	private Map<ResistanceEnum, Integer> resistances = new HashMap<ResistanceEnum, Integer>();
 	private IProgression progKoerperentw;
 	private Map<StatEnum, Progression> progMagie = new HashMap<StatEnum, Progression>();
 	private int soulDeparture;
@@ -87,15 +87,15 @@ public class Race {
 		attributes.put(attribute, value);
 	}
 	
-	public int getResistenceBonus(ResistanceEnum resistence) {
-		if (resistences.containsKey(resistence)) {
-			return resistences.get(resistence).intValue();
+	public int getResistanceBonus(ResistanceEnum resistance) {
+		if (resistances.containsKey(resistance)) {
+			return resistances.get(resistance).intValue();
 		}
 		return 0;
 	}
 	
-	/* package */ void setResistenceBonus(ResistanceEnum resistence, Integer value) {
-		resistences.put(resistence, value);
+	/* package */ void setResistanceBonus(ResistanceEnum resistance, Integer value) {
+		resistances.put(resistance, value);
 	}
 	
 	public IProgression getProgKoerperentw() {

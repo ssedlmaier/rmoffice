@@ -759,7 +759,7 @@ public class MetaDataLoader {
 						r.setAttributeBonus(at, Integer.valueOf(StringUtils.trim(split[i++])));
 					}
 					for (ResistanceEnum re : ResistanceEnum.values()) {
-						r.setResistenceBonus(re, Integer.valueOf(StringUtils.trim(split[i++])));
+						r.setResistanceBonus(re, Integer.valueOf(StringUtils.trim(split[i++])));
 					}
 					/* Progression Hits */
 					

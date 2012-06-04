@@ -17,6 +17,7 @@ package net.sf.rmoffice.meta.talentflaw.parser;
 
 import java.util.ResourceBundle;
 
+import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.talentflaw.ResistancePart;
 
 public class ResistanceParser extends AbstractPatternParser<ResistancePart> {
@@ -29,7 +30,13 @@ public class ResistanceParser extends AbstractPatternParser<ResistancePart> {
 
 	@Override
 	protected ResistancePart createPart(String key, String[] valueParts) {
-		return new ResistancePart(RESOURCE.getString(valueParts[0]));
+		try {
+			ResistanceEnum res = ResistanceEnum.valueOf(valueParts[0]);
+			int bonus = Integer.parseInt(valueParts[1]);
+			return new ResistancePart(res, bonus);
+		} catch (Exception e) {
+			return new ResistancePart(RESOURCE.getString(valueParts[0]));
+		}
 	}
 
 }

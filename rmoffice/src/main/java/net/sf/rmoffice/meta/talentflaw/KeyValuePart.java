@@ -15,8 +15,9 @@
  */
 package net.sf.rmoffice.meta.talentflaw;
 
-import java.text.NumberFormat;
-
+/**
+ * Storage for a float value.
+ */
 public abstract class KeyValuePart extends AbstractTalentFlawPart {
 
 	protected final float value;
@@ -24,15 +25,5 @@ public abstract class KeyValuePart extends AbstractTalentFlawPart {
 	public KeyValuePart(float value) {
 		super();
 		this.value = value;
-	}
-
-	public static String format(float number) {
-		int f100 = Math.round( 100f * number );
-		if (f100 > 0) {
-			return "+" + NumberFormat.getNumberInstance().format(number);
-		} else if (f100 == 0) {
-			return "+0";
-		}
-		return NumberFormat.getNumberInstance().format(number);
 	}
 }

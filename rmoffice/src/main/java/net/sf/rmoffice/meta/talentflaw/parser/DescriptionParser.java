@@ -15,7 +15,6 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import static net.sf.rmoffice.meta.MetaDataLoader.DESCR;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +22,9 @@ import org.apache.commons.lang.StringUtils;
 import net.sf.rmoffice.meta.talentflaw.DescriptionPart;
 
 public class DescriptionParser implements ITalentFlawPartParser<DescriptionPart> {
+	private static final String DESCR = "DESCR";
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
+	static final String COPYRIGHT_DESCR_KEY = "talent.descr.copyright";
 	
 	@Override
 	public boolean isParseable(String toParse) {
@@ -36,6 +37,9 @@ public class DescriptionParser implements ITalentFlawPartParser<DescriptionPart>
 	@Override
 	public DescriptionPart parse(String parseableString) {
 		String trimmed = StringUtils.trim(parseableString);
-		return new DescriptionPart(RESOURCE.getString(trimmed.substring(DESCR.length())));
+		if (DESCR.equals(trimmed)) {
+			return new DescriptionPart(RESOURCE.getString(COPYRIGHT_DESCR_KEY));
+		}
+		return new DescriptionPart(RESOURCE.getString(trimmed.substring(DESCR.length() + 1)));
 	}
 }

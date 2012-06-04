@@ -864,7 +864,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 	protected float page1Resistance(PdfContentByte canvas, final float initialY, boolean withBottomLine) throws IOException {
 		String line = "_____";
 		float lineWidth = fontRegular.getWidthPoint(line, 8);
-		float[] xVal = new float[] {LEFT_X + 4, 130, 157, PAGE1_LEFTBOX_RIGHTX - 6 - (lineWidth / 2)};
+		float[] xVal = new float[] {LEFT_X + 4, 120, 145, 189, PAGE1_LEFTBOX_RIGHTX - 6 - (lineWidth / 2)};
 		float y = initialY;  
 		/* headline */
 		float center = LEFT_X + ((PAGE1_LEFTBOX_RIGHTX - LEFT_X) / 2);
@@ -879,18 +879,20 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page1.resistance.type"), xVal[0], y, 0);
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.resistance.race"), xVal[1], y, 0);
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.resistance.stat"), xVal[2], y, 0);
-		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.resistance.total"), xVal[3], y, 0);
+//		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.resistance.special"), xVal[3], y, 0);
+		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.resistance.total"), xVal[4], y, 0);
 		canvas.endText();
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* resistances */
 		for (ResistanceEnum res : ResistanceEnum.values()) {
-			for (int col=0; col<xVal.length; col++) {
+			for (int col=0; col < xVal.length; col++) {
 				String str = null;
 				switch (col) {
 					case 0:
 						canvas.beginText();
 						canvas.setFontAndSize(fontRegular, 8);
 						canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("ResistanceEnum."+res.name()), xVal[0], y, 0);
+						canvas.setFontAndSize(fontRegular, 7);
 						canvas.showTextAligned(Element.ALIGN_CENTER, line, xVal[1], y, 0);
 						canvas.showTextAligned(Element.ALIGN_CENTER, line, xVal[2], y, 0);
 						String stat = "(3x "+RESOURCE.getString("StatEnum."+res.getStat().name()+".short")+ ")";
@@ -899,16 +901,21 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 						canvas.endText();
 						break;
 					case 1:
-						str = format(sheet.getRace().getResistenceBonus(res), false);
+						str = format(sheet.getRace().getResistanceBonus(res), false);
 						break;
-					case 2: str = format(sheet.getResistenceStatBonus(res), false);break;
+					case 2: 
+						str = format(sheet.getResistanceStatBonus(res), false);
+						break;
 					case 3: 
-						str = format(sheet.getResistenceBonusTotal(res), false);
+						str = format(sheet.getResistanceSpecialBonus(res), true);
+						break;
+					case 4:
+						str = format(sheet.getResistanceBonusTotal(res), false);
 						break;
 					default: str ="";
 				}
 				if (col > 0) {
-					showUserText(canvas, 8, xVal [col], y, str, Element.ALIGN_CENTER);
+					showUserText(canvas, 7, xVal [col], y, str, Element.ALIGN_CENTER);
 				}
 			}
 			/* magical items */
@@ -923,14 +930,14 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		}
 		/* additional resistance lines (race and talents) */
 		for (String lineStr : sheet.getRace().getAdditionalResistanceLines()) {
-			showUserText(canvas, 7,  60.0f, y, lineStr);
+			showUserText(canvas, 8,  60.0f, y, lineStr);
 			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		}
 		if (sheet.getTalentsFlaws() != null) {
 			for (TalentFlaw tf : sheet.getTalentsFlaws()) {
 				if (tf.getAdditionalResistanceLine() != null) {
 					for (String lineStr : tf.getAdditionalResistanceLine()) {
-						showUserText(canvas, 7,  60.0f, y, lineStr);
+						showUserText(canvas, 8,  60.0f, y, lineStr);
 						y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 					}
 				}

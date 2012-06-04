@@ -25,6 +25,7 @@ import net.sf.rmoffice.meta.IProgression;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.enums.LengthUnit;
+import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
@@ -67,6 +68,7 @@ public class TalentFlaw extends Model {
 	private Map<StatEnum, Integer> statBonus;
 	private Float recoveryMultiplier;
 	private Float tolerance;
+	private Map<ResistanceEnum, Integer> resBonus;
 	
 	public TalentFlaw() {
 	}
@@ -381,5 +383,30 @@ public class TalentFlaw extends Model {
 	 */
 	public Float getTolerance() {
 		return tolerance;
+	}
+
+	/**
+	 * Adds a bonus for the given resistance.
+	 * 
+	 * @param res the resistance, not {@code null}
+	 * @param bonus the bonus, not {@code null}
+	 */
+	public void setResistanceBonus(ResistanceEnum res, Integer bonus) {
+		if (resBonus == null) {
+			resBonus = new HashMap<ResistanceEnum, Integer>();
+		}
+		resBonus.put(res, bonus);
+	}
+	
+	/**
+	 * Returns the resistance bonus or {@code null} for the given resistance enum.
+	 * 
+	 * @param res the resistance or {@code null}
+	 */
+	public Integer getResistanceBonus(ResistanceEnum res) {
+		if (resBonus == null) {
+			return null;
+		}
+		return resBonus.get(res);
 	}
 }
