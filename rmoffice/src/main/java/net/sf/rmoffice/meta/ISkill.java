@@ -24,8 +24,6 @@ import net.sf.rmoffice.meta.enums.RaceScope;
  */
 public interface ISkill extends INamed {
 
-	public Integer getId();
-
 	/**
 	 * Returns the description with the given length unit. Returns the general description
 	 * if no description for length unit is available. 

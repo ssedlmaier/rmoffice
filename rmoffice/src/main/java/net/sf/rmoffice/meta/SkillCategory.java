@@ -39,6 +39,7 @@ public class SkillCategory implements INamed {
 	/* package */ SkillCategory() {
 	}
 	
+	@Override
 	public Integer getId() {
 		return id;
 	}

@@ -19,6 +19,7 @@ public class UTSkillCategory extends SkillCategory {
 
 	public UTSkillCategory(int id) {
 		setId(Integer.valueOf(id));
+		setName("skillCat"+id);
 	}
 
 }

@@ -25,8 +25,10 @@ import java.util.Set;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.talentflaw.parser.BaseMoveRateParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseParser;
+import net.sf.rmoffice.meta.talentflaw.parser.ChooseResistanceParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseSkillParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseStatParser;
+import net.sf.rmoffice.meta.talentflaw.parser.CostParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DBParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DescriptionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ExhaustionParser;
@@ -100,6 +102,8 @@ public class TalentFlawFactory {
 		parsers.add(new RecoveryParser());
 		parsers.add(new ToleranceParser());
 		parsers.add(new ChooseStatParser());
+		parsers.add(new CostParser(metaData));
+		parsers.add(new ChooseResistanceParser());
 	}
 
 	/**

@@ -213,8 +213,13 @@ public class MetaData {
 		return emptySkillgroupProg;
 	}
 	
+	/**
+	 * Returns an unmodifiable list of skills including all spell lists.
+	 * 
+	 * @return unmodifiable list of skills, not {@code null}
+	 */
 	public List<ISkill> getSkills() {
-		return skills;
+		return Collections.unmodifiableList(skills);
 	}
 
 	/**

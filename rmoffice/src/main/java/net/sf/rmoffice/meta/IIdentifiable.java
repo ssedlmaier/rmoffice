@@ -15,13 +15,15 @@
  */
 package net.sf.rmoffice.meta;
 
-public interface INamed extends IIdentifiable {
+/**
+ * The instance is idenfiable by its id.
+ */
+public interface IIdentifiable {
 
 	/**
-	 * Returns the localized name of the instance.
+	 * Returns a identifiable number for this object.
 	 * 
-	 * @return the name, not {@code null}
+	 * @return id, not {@code null}
 	 */
-	public String getName();
-
+	public Integer getId();
 }

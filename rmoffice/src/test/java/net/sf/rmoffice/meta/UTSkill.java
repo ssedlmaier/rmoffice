@@ -19,5 +19,6 @@ public class UTSkill extends Skill {
 
 	public UTSkill(int id) {
 		setId(Integer.valueOf(id));
+		setName("skill"+id);
 	}
 }

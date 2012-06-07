@@ -16,6 +16,8 @@
 package net.sf.rmoffice.meta.talentflaw;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.INamed;
@@ -36,24 +38,27 @@ public class ChoosePart extends AbstractTalentFlawPart {
 	protected final SkillType type;
 	protected final int amount;
 	private final boolean isSkill;
-	private final boolean showAll;
+	private final boolean showAllSkills;
+	private final boolean showAllSpelllists;
 
-	public ChoosePart(int bonus, int amount, boolean isSkill, boolean showAll, Object... selectables ) {
+	public ChoosePart(int bonus, int amount, boolean isSkill, boolean showAllSkills, boolean showAllSpelllists, Object... selectables ) {
 		this.isSkill = isSkill;
+		this.showAllSpelllists = showAllSpelllists;
+		this.showAllSkills = showAllSkills;
 		this.selectables = selectables;
 		this.bonus = Integer.valueOf(bonus);
 		this.amount = amount;
 		this.type = null;
-		this.showAll = showAll;
 	}
 
-	public ChoosePart(SkillType type, int amount, boolean isSkill, boolean showAll, Object... selectables) {
+	public ChoosePart(SkillType type, int amount, boolean isSkill, boolean showAllSkills, boolean showAllSpelllists, Object... selectables) {
 		this.isSkill = isSkill;
+		this.showAllSpelllists = showAllSpelllists;
+		this.showAllSkills = showAllSkills;
 		this.selectables = selectables;
 		this.type = type;
 		this.amount = amount;
 		this.bonus = null;
-		this.showAll = showAll;
 	}
 	
 	@Override
@@ -70,8 +75,15 @@ public class ChoosePart extends AbstractTalentFlawPart {
 	@Override
 	public void addToTalentFlaw(TalentFlawContext context, TalentFlaw talentFlaw) {
 		Object[] selectableList = selectables;
-		if (showAll && isSkill) {
-			selectableList = context.getSheet().getSkills().toArray();
+		if ((showAllSpelllists || showAllSkills) && isSkill) {
+			List<Object> allSkills = new ArrayList<Object>();
+			for (ISkill skill : context.getSheet().getSkills()) {
+				if ( (skill.isSpelllist() && showAllSpelllists) ||
+					(!skill.isSpelllist() && showAllSkills) ) {
+					allSkills.add(skill);
+				}
+			}
+			selectableList = allSkills.toArray();
 		}
 		if (isSkill) {
 			SelectionDialog<ISkill> dialog = new SelectionDialog<ISkill>(context.getOwner(), amount, selectableList);
@@ -100,10 +112,14 @@ public class ChoosePart extends AbstractTalentFlawPart {
 	public String asText() {
 		String what = type != null ? RESOURCE.getString("SkillType."+type.name()) : PDFCreator.format(bonus.intValue(), false);
 		StringBuilder from = new StringBuilder();
-		if (showAll) {
+		if (showAllSkills) {
 			from.append(RESOURCE.getString("ui.talentflaw.value.choosefrom.allskill"));
-		} else {
-			for (Object val : selectables) {
+		} 
+        if (showAllSpelllists) {
+			from.append(RESOURCE.getString("ui.talentflaw.value.choosefrom.allspelllists"));
+		}
+        if (selectables != null && selectables.length > 0) {
+        	for (Object val : selectables) {
 				if (from.length() > 0) {
 					from.append(", ");
 				}

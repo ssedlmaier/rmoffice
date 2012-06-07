@@ -41,6 +41,7 @@ public class ChooseParserTest {
 	private List<SkillCategory> cats = null;
 	private List<ISkill> skills = null;
 	private boolean showAllSkills;
+	private boolean showAllSpelllists;
 	
 	@Test
 	public void testIsParseable() {
@@ -83,6 +84,13 @@ public class ChooseParserTest {
 		// key word ALLSKILL
 		assertTrue(parser.isParseable("  CHOOSE10=ALLSKILL=6  "));
 		assertTrue(parser.isParseable("  CHOOSE6=ALLSKILL=10  "));
+		assertTrue(parser.isParseable("  CHOOSE6=ALLSKILL=EVERYMAN  "));
+		
+		// key word ALLSPELLLIST
+		assertTrue(parser.isParseable("  CHOOSE1=ALLSPELLLIST=2  "));
+		assertTrue(parser.isParseable("  CHOOSE3=ALLSPELLLIST=10  "));
+		assertTrue(parser.isParseable("  CHOOSE81=ALLSPELLLIST=EVERYMAN  "));
+		
 	}
 	
 	@Test
@@ -100,58 +108,69 @@ public class ChooseParserTest {
 		};
 		ChooseParser parser = new ChooseParser(meta) {
 			@Override
-			ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills) {
+			ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills, boolean showAllSpelllists) {
 				ChooseParserTest.this.amount = amount;
 				ChooseParserTest.this.bonus = bonus;
 				ChooseParserTest.this.cats = cats;
 				ChooseParserTest.this.skills = skills;
 				ChooseParserTest.this.skillType = null;
 				ChooseParserTest.this.showAllSkills = showAllSkills;
-				return super.createChooseBonusPart(amount, bonus, cats, skills, showAllSkills);
+				ChooseParserTest.this.showAllSpelllists = showAllSpelllists;
+				return super.createChooseBonusPart(amount, bonus, cats, skills, showAllSkills, showAllSpelllists);
 			}
 			@Override
-			ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills) {
+			ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills, boolean showAllSpelllists) {
 				ChooseParserTest.this.amount = amount;
 				ChooseParserTest.this.bonus = 0;
 				ChooseParserTest.this.cats = cats;
 				ChooseParserTest.this.skills = skills;
 				ChooseParserTest.this.skillType = type;
 				ChooseParserTest.this.showAllSkills = showAllSkills;
-				return super.createChooseBonusPart(amount, type, cats, skills, showAllSkills);
+				ChooseParserTest.this.showAllSpelllists = showAllSpelllists;
+				return super.createChooseBonusPart(amount, type, cats, skills, showAllSkills, showAllSpelllists);
 			}
 		};
 		
-		assertPartValues(parser, " CHOOSE1=S48;S5=5", 1, 5, ISkill.class, false, 48, 5);
-		assertPartValues(parser, " CHOOSE2=S48;S156=10 ", 2, 10, ISkill.class, false, 48, 156);
-		assertPartValues(parser, "CHOOSE4=C48;C45=-4", 4, -4, SkillCategory.class, false, 48, 45);
-		assertPartValues(parser, "  CHOOSE10=C48;C45=23  ", 10, 23, SkillCategory.class, false, 48, 45);
-		assertPartValues(parser, "  CHOOSE2=C28;C29;C30;C31;C32;C33=10  ", 2, 10, SkillCategory.class, false, 28,29,30,31,32,33);
+		assertPartValues(parser, " CHOOSE1=S48;S5=5", 1, 5, ISkill.class, false, false, 48, 5);
+		assertPartValues(parser, " CHOOSE2=S48;S156=10 ", 2, 10, ISkill.class, false, false, 48, 156);
+		assertPartValues(parser, "CHOOSE4=C48;C45=-4", 4, -4, SkillCategory.class, false, false, 48, 45);
+		assertPartValues(parser, "  CHOOSE10=C48;C45=23  ", 10, 23, SkillCategory.class, false, false, 48, 45);
+		assertPartValues(parser, "  CHOOSE2=C28;C29;C30;C31;C32;C33=10  ", 2, 10, SkillCategory.class, false, false, 28,29,30,31,32,33);
 		
-		assertPartValues(parser, "CHOOSE4=C48;C45=OCCUPATIONAL", 4, SkillType.OCCUPATIONAL, SkillCategory.class, false, 48, 45);
-		assertPartValues(parser, "  CHOOSE2=C28;C29;C30;C31;C32;C33=EVERYMAN  ", 2, SkillType.EVERYMAN, SkillCategory.class, false, 28,29,30,31,32,33);
+		assertPartValues(parser, "CHOOSE4=C48;C45=OCCUPATIONAL", 4, SkillType.OCCUPATIONAL, SkillCategory.class, false, false, 48, 45);
+		assertPartValues(parser, "  CHOOSE2=C28;C29;C30;C31;C32;C33=EVERYMAN  ", 2, SkillType.EVERYMAN, SkillCategory.class, false, false, 28,29,30,31,32,33);
 		
 		// keyword ALLSKILL
-		assertPartValues(parser, " CHOOSE1=ALLSKILL=5", 1, 5, ISkill.class, true);
-		assertPartValues(parser, " CHOOSE6=ALLSKILL=7", 6, 7, ISkill.class, true);
+		assertPartValues(parser, " CHOOSE1=ALLSKILL=5", 1, 5, ISkill.class, true, false);
+		assertPartValues(parser, " CHOOSE6=ALLSKILL=7", 6, 7, ISkill.class, true, false);
+		
+		// key word ALLSPELLLIST
+		assertPartValues(parser, " CHOOSE1=ALLSPELLLIST=5", 1, 5, ISkill.class, false, true);
+		assertPartValues(parser, " CHOOSE6=ALLSPELLLIST=7", 6, 7, ISkill.class, false, true);
+		assertPartValues(parser, " CHOOSE1=ALLSPELLLIST=EVERYMAN", 1, SkillType.EVERYMAN, ISkill.class, false, true);
+		assertPartValues(parser, " CHOOSE1=ALLSPELLLIST;ALLSKILL=OCCUPATIONAL", 1, SkillType.OCCUPATIONAL, ISkill.class, true, true);
+		assertPartValues(parser, " CHOOSE1=ALLSPELLLIST;ALLSKILL=35", 1, 35, ISkill.class, true, true);
+		
 	}
 
-	private void assertPartValues(ChooseParser parser, String pStr, int amount, int bonus, Class<?> toCheckType, boolean showAllSkills, int... ids) {
+	private void assertPartValues(ChooseParser parser, String pStr, int amount, int bonus, Class<?> toCheckType, boolean showAllSkills, boolean showAllSpelllists, int... ids) {
 		cleanResults();
 		parser.parse(pStr);
 		assertNull(skillType);
 		assertEquals(bonus, this.bonus);
-		assertPartValues(amount, toCheckType,showAllSkills , ids);
+		assertPartValues(amount, toCheckType,showAllSkills, showAllSpelllists, ids);
 	}
-	private void assertPartValues(ChooseParser parser, String pStr, int amount, SkillType skillType, Class<?> toCheckType, boolean showAllSkills, int... ids) {
+	private void assertPartValues(ChooseParser parser, String pStr, int amount, SkillType skillType, Class<?> toCheckType, boolean showAllSkills, boolean showAllSpelllists, int... ids) {
 		cleanResults();
 		parser.parse(pStr);
 		assertEquals(skillType, this.skillType);
-		assertPartValues(amount, toCheckType, showAllSkills, ids);
+		assertPartValues(amount, toCheckType, showAllSkills, showAllSpelllists, ids);
 	}
 
-	private void assertPartValues(int amount, Class<?> toCheckType, boolean showAllSkills, int... ids) {
+	private void assertPartValues(int amount, Class<?> toCheckType, boolean showAllSkills, boolean showAllSpelllists, int... ids) {
 		assertEquals(amount, this.amount);
 		assertTrue(showAllSkills == this.showAllSkills);
+		assertTrue(showAllSpelllists == this.showAllSpelllists);
 		if (toCheckType.equals(ISkill.class)) {
 			assertNotNull(skills);
 			assertEquals(ids.length, skills.size());

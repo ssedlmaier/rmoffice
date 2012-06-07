@@ -1303,7 +1303,17 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			Integer id = costsSwitchable.get(cat.getId());
 			cat = data.getSkillCategory(id);
 		}
-		return data.getSkillcost(getProfession(), cat);
+		Skillcost returnValue = data.getSkillcost(getProfession(), cat);
+		// talent flaw
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getSkillCategoryCostReplacement(cat) != null) {
+					returnValue = tf.getSkillCategoryCostReplacement(cat);
+				}
+			}
+		}
+		
+		return returnValue;
 	}
 	
 	/**
@@ -1321,7 +1331,17 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		}
 		/* spell lists have costs that depends on rank */
 		BigDecimal rank = getSkillRank(skill).getRank();
-		return data.getSkillcost(getProfession(), cat, skill, rank);
+		Skillcost returnValue = data.getSkillcost(getProfession(), cat, skill, rank);
+		
+		// talent flaw
+		if (talentsFlaws != null) {
+			for (TalentFlaw tf : talentsFlaws) {
+				if (tf.getSkillCostReplacement(skill) != null) {
+					returnValue = tf.getSkillCostReplacement(skill);
+				}
+			}
+		}
+		return returnValue;
 	}
 	
 	/**

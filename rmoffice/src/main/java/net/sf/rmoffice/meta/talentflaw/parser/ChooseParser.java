@@ -30,7 +30,8 @@ import org.apache.commons.lang.StringUtils;
 public class ChooseParser extends AbstractPatternParser<ChoosePart> {
 
 	private static final String ALLSKILL = "ALLSKILL";
-	private static final String PATTERN = "CHOOSE[0-9]+=(([C|S]{1}[;0-9]+)*|ALLSKILL)=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING)";
+	private static final String ALLSPELLLIST = "ALLSPELLLIST";
+	private static final String PATTERN = "CHOOSE[0-9]+=(([C|S]{1}[;0-9]+)*|"+ALLSKILL+"|"+ALLSPELLLIST+")=([0-9-]+|EVERYMAN|OCCUPATIONAL|RESTRICTED|RESTRICTED_IF_NOT_CHANNELING)";
 	private final MetaData metaData;
 
 	public ChooseParser(MetaData metaData) {
@@ -53,6 +54,7 @@ public class ChooseParser extends AbstractPatternParser<ChoosePart> {
 		List<ISkill> skills = new ArrayList<ISkill>();
 		String[] valueParts = StringUtils.splitPreserveAllTokens(valParts[0], ";");
 		boolean showAllSkills = false;
+		boolean showAllSpelllists = false;
 		for (String val : valueParts) {
 			if (MetaDataLoader.CATEGORY_CHAR.equals(val.substring(0, 1))) {
 				Integer catID = Integer.valueOf(val.substring(1));
@@ -64,28 +66,30 @@ public class ChooseParser extends AbstractPatternParser<ChoosePart> {
 				skills.add(skill);
 			} else if (ALLSKILL.equals(val)) {
 				showAllSkills = true;
+			} else if (ALLSPELLLIST.equals(val)) {
+				showAllSpelllists = true;
 			}
 		}
 		if (type != null) {
-			return createChooseBonusPart(amount, type, cats, skills, showAllSkills);
+			return createChooseBonusPart(amount, type, cats, skills, showAllSkills, showAllSpelllists);
 		} else {
-			return createChooseBonusPart(amount, bonus, cats, skills, showAllSkills);
+			return createChooseBonusPart(amount, bonus, cats, skills, showAllSkills, showAllSpelllists);
 		}
 	}
 
-	/* for test */ ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills) {
+	/* for test */ ChoosePart createChooseBonusPart(int amount, int bonus, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills, boolean showAllSpelllists) {
 		if (cats.size() > 0) {
-			return new ChoosePart(bonus, amount, false, false, cats.toArray());
+			return new ChoosePart(bonus, amount, false, false, false, cats.toArray());
 		} else {
-			return new ChoosePart(bonus, amount, true, showAllSkills, skills.toArray());
+			return new ChoosePart(bonus, amount, true, showAllSkills, showAllSpelllists, skills.toArray());
 		}
 	}
 	
-	/* for test */ ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills) {
+	/* for test */ ChoosePart createChooseBonusPart(int amount, SkillType type, List<SkillCategory> cats, List<ISkill> skills, boolean showAllSkills, boolean showAllSpelllists) {
 		if (cats.size() > 0) {
-			return new ChoosePart(type, amount, false, false, cats.toArray());
+			return new ChoosePart(type, amount, false, false, false, cats.toArray());
 		} else {
-			return new ChoosePart(type, amount, true, showAllSkills, skills.toArray());
+			return new ChoosePart(type, amount, true, showAllSkills, showAllSpelllists, skills.toArray());
 		}
 	}
 	

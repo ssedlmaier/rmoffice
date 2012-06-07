@@ -24,6 +24,7 @@ import java.util.Map;
 import net.sf.rmoffice.meta.IProgression;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.SkillCategory;
+import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.enums.SkillType;
@@ -69,6 +70,8 @@ public class TalentFlaw extends Model {
 	private Float recoveryMultiplier;
 	private Float tolerance;
 	private Map<ResistanceEnum, Integer> resBonus;
+	private Map<Integer, Skillcost> skillCostReplacement;
+	private Map<Integer, Skillcost> skillCategoryCostReplacement;
 	
 	public TalentFlaw() {
 	}
@@ -408,5 +411,45 @@ public class TalentFlaw extends Model {
 			return null;
 		}
 		return resBonus.get(res);
+	}
+
+	public void setSkillCostReplacement(Integer id, Skillcost costs) {
+		if (skillCostReplacement == null) {
+			skillCostReplacement = new HashMap<Integer, Skillcost>();
+		}
+		skillCostReplacement.put(id, costs);
+	}
+
+	public void setSkillCategoryCostReplacement(Integer id, Skillcost costs) {
+		if (skillCategoryCostReplacement == null) {
+			skillCategoryCostReplacement = new HashMap<Integer, Skillcost>();
+		}
+		skillCategoryCostReplacement.put(id, costs);
+	}
+	
+	/**
+	 * Returns a {@link Skillcost} replacement for the given {@link ISkill} or {@code null}.
+	 * 
+	 * @param skill the skill, not {@code null}
+	 * @return the {@link Skillcost} or {@code null}
+	 */
+	public Skillcost getSkillCostReplacement(ISkill skill) {
+		if (skillCostReplacement == null) {
+			return null;
+		}
+		return skillCostReplacement.get(skill.getId());
+	}
+	
+	/**
+	 * Returns a {@link Skillcost} replacement for the given {@link SkillCategory} or {@code null}.
+	 * 
+	 * @param skillCat the skill category or {@code null}
+	 * @return the {@link Skillcost} or {@code null}
+	 */
+	public Skillcost getSkillCategoryCostReplacement(SkillCategory skillCat) {
+		if (skillCategoryCostReplacement == null) {
+			return null;
+		}
+		return skillCategoryCostReplacement.get(skillCat.getId());
 	}
 }
