@@ -20,6 +20,8 @@ import java.awt.Frame;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -55,6 +57,7 @@ import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jidesoft.swing.TableSearchable;
 
 /**
  * Shows all talents and flaws from the configuration with a description.
@@ -144,7 +147,17 @@ public class TalentFlawPresetDialog extends JDialog {
 		FormLayout layout = new FormLayout("550dlu", "fill:100dlu, 5dlu, fill:150dlu");
 
 		JPanel panel = new JPanel(layout);
-		listModel = new SelectionInList<TalentFlawPreset>(metaData.getTalentFlaws());
+		List<TalentFlawPreset> talentFlawsMeta = metaData.getTalentFlaws();
+		List<TalentFlawPreset> talentFlaws = new ArrayList<TalentFlawPreset>();
+		talentFlaws.addAll(talentFlawsMeta);
+		Comparator<? super TalentFlawPreset> tfComparator = new Comparator<TalentFlawPreset>() {
+			@Override
+			public int compare(TalentFlawPreset tf1, TalentFlawPreset tf2) {
+				return tf1.getName().compareTo(tf2.getName());
+			}
+		};
+		Collections.sort(talentFlaws, tfComparator);
+		listModel = new SelectionInList<TalentFlawPreset>(talentFlaws);
 		TalentFlawPresetTableAdapter adapter = new TalentFlawPresetTableAdapter(listModel);
 		JTable table = new JTable(adapter);
 		table.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
@@ -154,6 +167,8 @@ public class TalentFlawPresetDialog extends JDialog {
 		SingleListSelectionAdapter selectionModel = new SingleListSelectionAdapter(listModel.getSelectionIndexHolder());
 		table.setSelectionModel(selectionModel);
 		panel.add(new JScrollPane(table), CC.xy(1, 1));
+		// Searchable support for the table
+		new TableSearchable(table);
 		
 		TalentFlawPresetValueTableAdapter detailAdapter = new TalentFlawPresetValueTableAdapter(listModel.getSelectionHolder(), selectionHolder);
 		final TableCellRenderer multiLineRenderer = new MultiLineTableCellRenderer();
@@ -206,7 +221,7 @@ public class TalentFlawPresetDialog extends JDialog {
 		TalentFlawPresetLevel tfpLevel = selection.getTalenFlawLevel();
 		// copy basics values
 		talFlaw.setId(tfPreset.getId());
-		talFlaw.setType(talFlaw.getType());
+		talFlaw.setType(tfPreset.getType());
 		talFlaw.setSource(talFlaw.getSource());
 		talFlaw.setName(tfPreset.getName());
 		talFlaw.setLevel(tfpLevel.getLevel());

@@ -50,7 +50,7 @@ public class TalentFlaw extends Model {
 	private TalentFlawLevel level;
 	private int costs;
 	private Integer initiativeBonus;
-	private List<String> descriptions;
+	private String description;
 	private Map<Integer, Integer> skillCatBonus;
 	private Map<Integer, SkillType> skillCatType;
 	private Map<Integer, Integer> skillBonus;
@@ -136,15 +136,20 @@ public class TalentFlaw extends Model {
 		this.initiativeBonus = initiativeBonus;
 	}
 
-	public List<String> getDescriptions() {
-		return descriptions;
+	public String getDescription() {
+		return description;
 	}
 	
-	public void addDescription(String description) {
-		if (descriptions == null) {
-			descriptions = new ArrayList<String>();
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public void addDescription(String newDescription) {
+		if (this.description == null) {
+			this.description = newDescription;
+		} else {
+			this.description += "\n" + newDescription;
 		}
-		descriptions.add(description);
 	}
 
 	public Map<Integer, Integer> getSkillCatBonus() {

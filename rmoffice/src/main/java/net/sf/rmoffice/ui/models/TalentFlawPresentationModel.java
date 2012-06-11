@@ -39,6 +39,9 @@ import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
+/**
+ * Presentation model for the character tab "talent and flaws".
+ */
 public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 	private static final long serialVersionUID = 1L;
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$

@@ -15,16 +15,23 @@
  */
 package net.sf.rmoffice.ui.panels;
 
+import java.util.ResourceBundle;
+
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
+import net.sf.rmoffice.core.RMSheet;
+import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.ui.models.TalentFlawPresentationModel;
 import net.sf.rmoffice.ui.models.TalentFlawTableAdapter;
 
+import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
+import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.CC;
@@ -37,6 +44,8 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class TalentFlawPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
+	
 	private final TalentFlawPresentationModel talentPresModel;
 
 	/**
@@ -50,7 +59,7 @@ public class TalentFlawPanel extends JPanel {
 	}
 
 	private void init() {
-		FormLayout layout = new FormLayout("200dlu, 5dlu, 150dlu", "20dlu, fill:150dlu");
+		FormLayout layout = new FormLayout("200dlu, 5dlu, 250dlu", "20dlu, 3dlu, fill:150dlu, 5dlu, 20dlu");
 		setLayout(layout);
 		
 		PanelBuilder builder = new PanelBuilder(layout, this);
@@ -60,18 +69,23 @@ public class TalentFlawPanel extends JPanel {
 		btBuilder.addButton(talentPresModel.getAddTalentFlawAction());
 		btBuilder.addRelatedGap();
 		btBuilder.addButton(talentPresModel.getDelTalentFlawAction());
-		add(btBuilder.getPanel(), CC.xyw(1, 1, 3));
+		add(btBuilder.getPanel(), CC.xy(1, 1));
 		
+		builder.addLabel(RESOURCE.getString("ui.talentflaw.textbox.description"), CC.xy(3, 1));
 		
 		JTable currentTalentFlaws = new JTable(new TalentFlawTableAdapter(talentPresModel.getListModel()));
 		currentTalentFlaws.setSelectionModel(new SingleListSelectionAdapter(talentPresModel.getListModel().getSelectionIndexHolder()));
 		currentTalentFlaws.getTableHeader().setReorderingAllowed(false);
-		builder.add(new JScrollPane(currentTalentFlaws), CC.xy(1, 2));
+		builder.add(new JScrollPane(currentTalentFlaws), CC.xy(1, 3));
 		
-		JTextArea bgArea = new JTextArea();
+		BeanAdapter<TalentFlaw> beanAdapter = new BeanAdapter<TalentFlaw>(talentPresModel.getListModel());
+		JTextArea bgArea = BasicComponentFactory.createTextArea(beanAdapter.getValueModel("description"), false);
 		bgArea.setLineWrap(true);
-		builder.add(new JScrollPane(bgArea), CC.xy(3, 2));
+		builder.add(new JScrollPane(bgArea), CC.xy(3, 3));
 		Bindings.bind(bgArea, "enabled", talentPresModel.getSelectionEnabledHolder());
 		
+		JCheckBox cbOwnPage = BasicComponentFactory.createCheckBox(talentPresModel.getModel(RMSheet.TALENTFLAW_OWN_PAGE_PROP), RESOURCE.getString("ui.talentflaw.ownpage"));
+		Bindings.bind(cbOwnPage, "enabled", talentPresModel.getSelectionEnabledHolder());
+		builder.add(cbOwnPage, CC.xyw(1, 5, 3));
 	}
 }

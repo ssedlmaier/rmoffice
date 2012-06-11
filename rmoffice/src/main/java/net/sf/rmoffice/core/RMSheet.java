@@ -125,6 +125,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	public static final String FATEPOINTS_PROP = "fatepoints";
 	public static final String GRACEPOINTS_PROP = "gracepoints";
 	public static final String DIVINESTATUS_PROP = "divinestatus";
+	public static final String TALENTFLAW_OWN_PAGE_PROP = "talentFlawOwnPage";
 	
 	/* export to xml */
 	private String playerName;
@@ -163,6 +164,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	private List<TalentFlaw> talentsFlaws;
 	private Long fatepoints;
 	private Long gracepoints;
+	private Boolean talentFlawOwnPage;
 
 	/* must not be exported to XML */
 	private transient MetaData data;
@@ -2597,5 +2599,20 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	public DivineStatus getDivineStatusObject() {
 		int grace = getGracepoints().intValue();
 		return new DivineStatus(grace);
+	}
+
+	public void setTalentFlawOwnPage(Boolean talentFlawOwnPage) {
+		Object oldValue = this.talentFlawOwnPage;
+		this.talentFlawOwnPage = talentFlawOwnPage;
+		firePropertyChange(TALENTFLAW_OWN_PAGE_PROP, oldValue, this.talentFlawOwnPage);
+	}
+	
+	/**
+	 * Returns {@link Boolean#TRUE} if the talent and flaws shall be printed on a new PDF page.
+	 * 
+	 * @return {@link Boolean#TRUE} for new PDF page, {@link Boolean#FALSE} or {@code null} for equipment page.
+	 */
+	public Boolean getTalentFlawOwnPage() {
+		return talentFlawOwnPage;
 	}
 }

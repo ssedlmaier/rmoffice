@@ -72,8 +72,7 @@ public class TalentFlawFactoryTest {
 		
 		// DESCR
 		talFlawVal = callFactory(factory, "DESCR=talent.snap.5");
-		assertNotNull(talFlawVal.getDescriptions());
-		assertEquals(1, talFlawVal.getDescriptions().size());
+		assertNotNull(talFlawVal.getDescription());
 		
 		// CHOOSE1
 //		talFlawVal = new TalentFlaw();

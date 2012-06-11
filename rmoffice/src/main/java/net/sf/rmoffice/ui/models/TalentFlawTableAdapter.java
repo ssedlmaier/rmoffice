@@ -23,6 +23,9 @@ import net.sf.rmoffice.core.TalentFlaw;
 
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
 
+/**
+ * Adapter for the table of characters talent and flaws.
+ */
 public class TalentFlawTableAdapter extends AbstractTableAdapter<TalentFlaw> {
 	private static final long serialVersionUID = 1L;
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
@@ -39,7 +42,7 @@ public class TalentFlawTableAdapter extends AbstractTableAdapter<TalentFlaw> {
 		case 0:
 			return row.getName();
 		case 1:
-			return row.getType();
+			return row.getType().toString();
 		}
 		return null;
 	}

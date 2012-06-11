@@ -64,7 +64,6 @@ public class DescriptionParserTest {
 		DescriptionParser parser = new DescriptionParser();
 		TalentFlaw talentFlaw = new TalentFlaw();
 		parser.parse(parseableText).addToTalentFlaw(null, talentFlaw);
-		assertEquals(1, talentFlaw.getDescriptions().size());
-		assertEquals(RESOURCE.getString(expectedKey), talentFlaw.getDescriptions().get(0));
+		assertEquals(RESOURCE.getString(expectedKey), talentFlaw.getDescription());
 	}
 }
