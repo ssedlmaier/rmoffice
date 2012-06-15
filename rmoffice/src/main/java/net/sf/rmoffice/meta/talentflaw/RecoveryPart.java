@@ -20,7 +20,7 @@ import java.text.NumberFormat;
 import net.sf.rmoffice.core.TalentFlaw;
 
 public class RecoveryPart extends KeyValuePart {
-	private static final String ID = TalentFlawFactory.registerID("recoverymultiplier");
+	public static final String ID = TalentFlawFactory.registerID("recoverymultiplier");
 	
 	public RecoveryPart(float value) {
 		super(value);

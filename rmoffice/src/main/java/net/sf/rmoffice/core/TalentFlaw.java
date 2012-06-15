@@ -15,14 +15,17 @@
  */
 package net.sf.rmoffice.core;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import net.sf.rmoffice.meta.IProgression;
 import net.sf.rmoffice.meta.ISkill;
+import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.enums.LengthUnit;
@@ -30,8 +33,20 @@ import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
-import net.sf.rmoffice.meta.enums.TalentFlawTransform;
 import net.sf.rmoffice.meta.enums.TalentFlawType;
+import net.sf.rmoffice.meta.talentflaw.BaseMoveRatePart;
+import net.sf.rmoffice.meta.talentflaw.DBPart;
+import net.sf.rmoffice.meta.talentflaw.ExhaustionPart;
+import net.sf.rmoffice.meta.talentflaw.InitiativePart;
+import net.sf.rmoffice.meta.talentflaw.ProgressionPart;
+import net.sf.rmoffice.meta.talentflaw.RecoveryPart;
+import net.sf.rmoffice.meta.talentflaw.ResistancePart;
+import net.sf.rmoffice.meta.talentflaw.ShieldDBPart;
+import net.sf.rmoffice.meta.talentflaw.TolerancePart;
+import net.sf.rmoffice.meta.talentflaw.WeightPenaltyPart;
+import net.sf.rmoffice.pdf.PDFCreator;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.jgoodies.binding.beans.Model;
 
@@ -39,6 +54,7 @@ import com.jgoodies.binding.beans.Model;
  * Sheet data: Talent or flaw with one level of the talent.
  */
 public class TalentFlaw extends Model {
+	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	private static final long serialVersionUID = 1L;
 	private static final String ID_PROP = "id";
 	private static final String NAME_PROP = "name";
@@ -55,13 +71,10 @@ public class TalentFlaw extends Model {
 	private Map<Integer, SkillType> skillCatType;
 	private Map<Integer, Integer> skillBonus;
 	private Map<Integer, SkillType> skillType;
-	/* Example: open-arcane is now open-own-realm */
-	private Map<Integer, TalentFlawTransform> transformedSkillCategories;
     private IProgression progressionBody;
     private IProgression progressionPower;
 	private Float weightPenalty; 
 	private Float baseMovement; 
-	private Integer fumbleRange;
 	private List<String> resistanceLines;
     private Integer db;
     private Integer shieldDb;
@@ -210,15 +223,6 @@ public class TalentFlaw extends Model {
 		}
 	}
 
-	public Map<Integer, TalentFlawTransform> getTransformedSkillCategories() {
-		return transformedSkillCategories;
-	}
-
-	public void setTransformedSkillCategories(
-			Map<Integer, TalentFlawTransform> transformedSkillCategories) {
-		this.transformedSkillCategories = transformedSkillCategories;
-	}
-
 	public IProgression getProgressionBody() {
 		return progressionBody;
 	}
@@ -259,24 +263,6 @@ public class TalentFlaw extends Model {
 	 */
 	public void setBaseMovement(Float baseMovement) {
 		this.baseMovement = baseMovement;
-	}
-
-	/**
-	 * Returns the fumble range modifier or {@code null}.
-	 * 
-	 * @return funble range modifier.
-	 */
-	public Integer getFumbleRange() {
-		return fumbleRange;
-	}
-
-	/**
-	 * Sets the fumble range modifier.
-	 * 
-	 * @param fumbleRange the funble range
-	 */
-	public void setFumbleRange(Integer fumbleRange) {
-		this.fumbleRange = fumbleRange;
 	}
 
 	/**
@@ -456,5 +442,124 @@ public class TalentFlaw extends Model {
 			return null;
 		}
 		return skillCategoryCostReplacement.get(skillCat.getId());
+	}
+	
+	/**
+	 * Returns this talent/flaw as text.
+	 * 
+	 * @return as text, not {@code null}
+	 */
+	public String asText(MetaData metaData, RMSheet sheet) {
+		StringBuilder content = new StringBuilder();
+		// Headline
+		content.append(getName());
+		String type = RESOURCE.getString("TalentFlawType."+getType().name());
+		String level = RESOURCE.getString("TalentFlawLevel."+getLevel().name());
+		content.append(" (").append(type).append(", ").append(level ).append(")");
+		content.append("\n");
+		// text
+		if (!StringUtils.isBlank(getDescription())) {
+			content.append(getDescription()).append("\n");
+		}
+		addLine(initiativeBonus, InitiativePart.ID, null, content);
+		addLine(db, DBPart.ID, null, content);
+		addLine(shieldDb, ShieldDBPart.ID, null, content);
+		addLine(exhaustion, ExhaustionPart.ID, null, content);
+		
+		addLine(weightPenalty, WeightPenaltyPart.ID, "x ", content);
+		if (baseMovement != null) {
+			addLine(BaseMoveRatePart.formatLU(baseMovement.floatValue()), BaseMoveRatePart.ID, null, content);
+		}
+		addLine(recoveryMultiplier, RecoveryPart.ID, "x ", content);
+		if (tolerance != null) {
+			addLine(TolerancePart.formatValue(tolerance.floatValue()), TolerancePart.ID, "x ", content);
+		}
+		if (resistanceLines != null) {
+			for (String line : resistanceLines) {
+				addLine(line, ResistancePart.ID, null, content);
+			}
+		}
+		if (progressionBody != null) {
+			addLine(progressionBody.getFormattedString(), ProgressionPart.BODY_ID, null, content);
+		}
+		if (progressionPower != null) {
+			addLine(progressionPower.getFormattedString(), ProgressionPart.POWER_ID, null, content);
+		}
+		
+		if (statBonus != null) {
+			for (StatEnum key : statBonus.keySet()) {
+				content.append(RESOURCE.getString("StatEnum."+key.name()+".long")).append(" (");
+				content.append(RESOURCE.getString("StatEnum."+key.name()+".short")).append(") ");
+				Integer value = statBonus.get(key);
+				content.append(PDFCreator.format(value.intValue(), false)).append(" ");
+			}
+			content.append("\n");
+		}
+		
+		if (resBonus != null) {
+			content.append(RESOURCE.getString("ui.talentflaw.value."+ResistancePart.ID)).append(" ");
+			for (ResistanceEnum key : resBonus.keySet()) {
+				content.append(RESOURCE.getString("ResistanceEnum."+key.name())).append(" ");
+				Integer value = resBonus.get(key);
+				content.append(PDFCreator.format(value.intValue(), false)).append(" ");
+			}
+			content.append("\n");
+		}
+		addMap(sheet, metaData, skillBonus, true, content);
+		addMap(sheet, metaData, skillType, true, content);
+		addMap(sheet, metaData, skillCatBonus, false, content);
+		addMap(sheet, metaData, skillCatType, false, content);
+		addMap(sheet, metaData, skillCostReplacement, true, content);
+		addMap(sheet, metaData, skillCategoryCostReplacement, false, content);
+		
+		return content.toString();
+	}
+
+	private void addMap(RMSheet sheet, MetaData metaData, Map<Integer, ?> map, boolean isSkill, StringBuilder content) {
+		if (map != null) {
+			boolean first = true;
+			for (Integer id : map.keySet()) {
+				if (!first) {
+					content.append(", ");
+				}
+				first = false;
+				Object value = map.get(id);
+				if (isSkill) {
+					content.append( sheet.getSkill(id).getName() );
+				} else {
+					content.append( metaData.getSkillCategory(id).getName() );
+				}
+				content.append(" ");
+				content.append( convertValue(value, null) );
+			}
+			content.append("\n");
+		}
+	}
+
+	private void addLine(Object value, String prop, String prefix, StringBuilder content) {
+		if (value != null) {
+			content.append(RESOURCE.getString("ui.talentflaw.value."+prop))
+			.append(": ");
+			String formatted = convertValue(value, prefix);
+			content.append(formatted);
+			
+			content.append("\n");
+		}
+	}
+
+	private String convertValue(Object value, String prefix) {
+		String formatted = "0";
+		if (value instanceof Integer) {
+			formatted = PDFCreator.format(((Integer)value).intValue(), false);
+		} else if (value instanceof Float){
+			formatted = prefix + NumberFormat.getNumberInstance().format(value);
+		} else if (value instanceof SkillType) {
+			formatted = RESOURCE.getString("SkillType."+((SkillType)value).name());
+		} else if (value instanceof Skillcost) {
+			formatted = ((Skillcost)value).toString();
+		} else {
+			formatted = value.toString();
+		}
+		return formatted;
 	}
 }

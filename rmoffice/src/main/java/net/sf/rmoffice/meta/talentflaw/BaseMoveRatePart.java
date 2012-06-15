@@ -21,7 +21,7 @@ import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 
 public class BaseMoveRatePart extends KeyValuePart {
-	private static final String ID = TalentFlawFactory.registerID("basemoverate");
+	public static final String ID = TalentFlawFactory.registerID("basemoverate");
 	public BaseMoveRatePart(float factor) {
 		super(factor);
 	}
@@ -38,6 +38,10 @@ public class BaseMoveRatePart extends KeyValuePart {
 
 	@Override
 	public String asText() {
+		return formatLU(value);
+	}
+	
+	public static String formatLU(float value) {
 		LengthUnit lu = RMPreferences.getInstance().getLengthUnit();
 		int converted = LengthUnit.CM.convertTo(Math.round(value), lu);
 		return lu.getFormattedString(converted);

@@ -59,7 +59,7 @@ public class TalentFlawPanel extends JPanel {
 	}
 
 	private void init() {
-		FormLayout layout = new FormLayout("200dlu, 5dlu, 250dlu", "20dlu, 3dlu, fill:150dlu, 5dlu, 20dlu");
+		FormLayout layout = new FormLayout("220dlu, 5dlu, 220dlu", "20dlu, 3dlu, fill:160dlu, 3dlu, 20dlu");
 		setLayout(layout);
 		
 		PanelBuilder builder = new PanelBuilder(layout, this);
@@ -78,14 +78,13 @@ public class TalentFlawPanel extends JPanel {
 		currentTalentFlaws.getTableHeader().setReorderingAllowed(false);
 		builder.add(new JScrollPane(currentTalentFlaws), CC.xy(1, 3));
 		
-		BeanAdapter<TalentFlaw> beanAdapter = new BeanAdapter<TalentFlaw>(talentPresModel.getListModel());
-		JTextArea bgArea = BasicComponentFactory.createTextArea(beanAdapter.getValueModel("description"), false);
+		final BeanAdapter<TalentFlaw> listModelAdapter = new BeanAdapter<TalentFlaw>(talentPresModel.getListModel());
+		JTextArea bgArea = BasicComponentFactory.createTextArea(listModelAdapter.getValueModel("description"), false);
 		bgArea.setLineWrap(true);
 		builder.add(new JScrollPane(bgArea), CC.xy(3, 3));
 		Bindings.bind(bgArea, "enabled", talentPresModel.getSelectionEnabledHolder());
 		
 		JCheckBox cbOwnPage = BasicComponentFactory.createCheckBox(talentPresModel.getModel(RMSheet.TALENTFLAW_OWN_PAGE_PROP), RESOURCE.getString("ui.talentflaw.ownpage"));
-		Bindings.bind(cbOwnPage, "enabled", talentPresModel.getSelectionEnabledHolder());
 		builder.add(cbOwnPage, CC.xyw(1, 5, 3));
 	}
 }

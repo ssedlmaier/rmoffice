@@ -20,7 +20,7 @@ import java.text.NumberFormat;
 import net.sf.rmoffice.core.TalentFlaw;
 
 public class TolerancePart extends KeyValuePart {
-	private static final String ID = TalentFlawFactory.registerID("tolerance");
+	public static final String ID = TalentFlawFactory.registerID("tolerance");
 
 	public TolerancePart(float value) {
 		super(value);
@@ -38,7 +38,11 @@ public class TolerancePart extends KeyValuePart {
 
 	@Override
 	public String asText() {
-		return NumberFormat.getPercentInstance().format(value);
+		return formatValue(value);
+	}
+
+	public static String formatValue(float val) {
+		return NumberFormat.getPercentInstance().format(val);
 	}
 
 }

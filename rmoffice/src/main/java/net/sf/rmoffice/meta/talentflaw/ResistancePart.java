@@ -20,7 +20,7 @@ import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.enums.ResistanceEnum;
 
 public class ResistancePart extends AbstractTalentFlawPart {
-	private static final String ID = TalentFlawFactory.registerID("resistance");
+	public static final String ID = TalentFlawFactory.registerID("resistance");
 	private final String descr;
 	private final ResistanceEnum res;
 	private final int bonus;

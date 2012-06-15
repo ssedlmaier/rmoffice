@@ -20,8 +20,8 @@ import net.sf.rmoffice.meta.Progression;
 import net.sf.rmoffice.pdf.PDFCreator;
 
 public class ProgressionPart extends AbstractTalentFlawPart {
-	private static final String BODY_ID = TalentFlawFactory.registerID("bodydev");
-	private static final String POWER_ID = TalentFlawFactory.registerID("bodydev");
+	public static final String BODY_ID = TalentFlawFactory.registerID("bodydev");
+	public static final String POWER_ID = TalentFlawFactory.registerID("bodydev");
 
 	private final int[] progModifier;
 	private final boolean bodyOrPower;

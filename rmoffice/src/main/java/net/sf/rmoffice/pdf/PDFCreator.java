@@ -59,6 +59,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -82,7 +83,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		Document document = createDocument();
         try
         {
-        	longRunAdapter.startProgress(7 + sheet.getInfoPages().size());
+        	longRunAdapter.startProgress(8 + sheet.getInfoPages().size());
         	PdfWriter writer =  PdfWriter.getInstance(document, os);
         	writer.setPdfVersion(PdfWriter.VERSION_1_7);
         	document.open();
@@ -119,7 +120,7 @@ public class PDFCreator extends AbstractPDFCreator {
             	log.error("Could not create a new page 5 'all skills'");
             }
 			PdfContentByte canvas5 = writer.getDirectContent();
-			createPage5(canvas5);
+			createPage5AllSkills(canvas5);
 			
 			/* combat status sheet */
 			longRunAdapter.workDone(1, "pdf.page6.title2");
@@ -132,6 +133,10 @@ public class PDFCreator extends AbstractPDFCreator {
 			/* additional pages */
 			createPageInfoPages(writer, document, longRunAdapter);
 			
+			/* talent and flaw page */
+			longRunAdapter.workDone(1, "ui.tab.talentflaws");
+			createPageTalentAndFlaw(writer, document);
+			
 			/* save */
             document.close();
             longRunAdapter.workDone(1, "message.exportpdf.successful");
@@ -142,35 +147,92 @@ public class PDFCreator extends AbstractPDFCreator {
         }
 	}
 
-	private void createPageInfoPages(PdfWriter writer, Document document, LongRunningUIModel longRunAdapter) throws BadElementException, MalformedURLException, IOException, DocumentException {
-		if (log.isDebugEnabled()) log.debug("processing additional pages");
-		for (InfoPage infoPage : sheet.getInfoPages()) {
-			longRunAdapter.workDone(1, "Page - Additional Info Page");
+	private void createPageTalentAndFlaw(PdfWriter writer, Document document) throws BadElementException, MalformedURLException, IOException, DocumentException {
+		StringBuilder content = new StringBuilder();
+		if (Boolean.TRUE.equals(sheet.getTalentFlawOwnPage()) && sheet.getTalentsFlaws().size() > 0) {
+			for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+				content.append(StringUtils.trim(tf.asText(data, sheet)));
+				content.append("\n\n");
+			}
 			if (!document.newPage()) {
-				log.error("Could not create a new info page");
+				log.error("Could not create a new text page");
 			}
 			PdfContentByte canvas = writer.getDirectContent();
 			/* ----- */
-			headerCustomTitle(canvas, infoPage.getTitle());
+			headerCustomTitle(canvas, RESOURCE.getString("ui.tab.talentflaws"));
 			box(canvas, LEFT_X, UPPER_Y, RIGHT_X, BOTTOM_Y);
 			/* -- simulate - */
 			ColumnText ct = new ColumnText(canvas);
 			float fontSize = 8.25f;
 			float leading = 10;
-			Phrase phrase = new Phrase(infoPage.getContent(), new Font(fontUser, fontSize));
+			Phrase phrase = new Phrase(content.toString(), new Font(fontUser, fontSize));
 			int result = 0;
 			do {
 				ct = new ColumnText(canvas);
 				fontSize -= 0.25f;
 				leading -= 0.35f;
-			    phrase = new Phrase(infoPage.getContent(), new Font(fontUser, fontSize));
+			    phrase = new Phrase(content.toString(), new Font(fontUser, fontSize));
 				ct.setSimpleColumn(phrase, LEFT_X + 5, UPPER_Y, RIGHT_X - 5, BOTTOM_Y + 5, leading, Element.ALIGN_LEFT);
 				result = ct.go(true);
 				log.debug("result column = "+result+" with font size="+fontSize+" leading="+leading);
 			} while (fontSize > 2.5 && result == ColumnText.NO_MORE_COLUMN);
 			/* real print */
 			ct = new ColumnText(canvas);
-			phrase = new Phrase(infoPage.getContent(), new Font(fontUser, fontSize));
+			ct.setSimpleColumn(LEFT_X + 5, UPPER_Y, RIGHT_X - 5, BOTTOM_Y + 5, leading, Element.ALIGN_LEFT);
+			page4PrintTalentFlaws(ct, fontSize);
+			result = ct.go();
+			/* could not print all text on this page */
+			if (result == ColumnText.NO_MORE_COLUMN) {
+				showUserText(canvas, 6, LEFT_X + 10, BOTTOM_Y + 2, RESOURCE.getString("pdf.info.error.toomuchtext"));
+			}
+			log.debug("final result column = "+result+" with font size="+fontSize+" leading="+leading);
+			/* ----- */
+			footer(canvas);
+		}
+	}
+
+	private void page4PrintTalentFlaws(ColumnText ct, float fontSize) {
+		for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+			String[] text = StringUtils.split(StringUtils.trim(tf.asText(data, sheet)), "\n", 2);
+			ct.addElement(new Paragraph(text[0], new Font(fontBold, fontSize + 0.5f)));
+			Paragraph pText = new Paragraph(text[1], new Font(fontUser, fontSize - 0.5f));
+			pText.setSpacingAfter(2);
+			ct.addElement(pText);
+		}
+	}
+
+	private void createPageInfoPages(PdfWriter writer, Document document, LongRunningUIModel longRunAdapter) throws BadElementException, MalformedURLException, IOException, DocumentException {
+		if (log.isDebugEnabled()) log.debug("processing additional pages");
+		for (InfoPage infoPage : sheet.getInfoPages()) {
+			String title = infoPage.getTitle();
+			String content = infoPage.getContent();
+			longRunAdapter.workDone(1, "Page - Additional Info Page");
+			//
+			if (!document.newPage()) {
+				log.error("Could not create a new info page");
+			}
+			PdfContentByte canvas = writer.getDirectContent();
+			/* ----- */
+			headerCustomTitle(canvas, title);
+			box(canvas, LEFT_X, UPPER_Y, RIGHT_X, BOTTOM_Y);
+			/* -- simulate - */
+			ColumnText ct = new ColumnText(canvas);
+			float fontSize = 8.25f;
+			float leading = 10;
+			Phrase phrase = new Phrase(content, new Font(fontUser, fontSize));
+			int result = 0;
+			do {
+				ct = new ColumnText(canvas);
+				fontSize -= 0.25f;
+				leading -= 0.35f;
+			    phrase = new Phrase(content, new Font(fontUser, fontSize));
+				ct.setSimpleColumn(phrase, LEFT_X + 5, UPPER_Y, RIGHT_X - 5, BOTTOM_Y + 5, leading, Element.ALIGN_LEFT);
+				result = ct.go(true);
+				log.debug("result column = "+result+" with font size="+fontSize+" leading="+leading);
+			} while (fontSize > 2.5 && result == ColumnText.NO_MORE_COLUMN);
+			/* real print */
+			ct = new ColumnText(canvas);
+			phrase = new Phrase(content, new Font(fontUser, fontSize));
 			ct.setSimpleColumn(phrase, LEFT_X + 5, UPPER_Y, RIGHT_X - 5, BOTTOM_Y + 5, leading, Element.ALIGN_LEFT);
 			result = ct.go();
 			/* could not print all text on this page */
@@ -179,7 +241,7 @@ public class PDFCreator extends AbstractPDFCreator {
 			}
 			log.debug("final result column = "+result+" with font size="+fontSize+" leading="+leading);
 			/* ----- */
-			footer(canvas);	
+			footer(canvas);
 		}
 	}
 
@@ -224,7 +286,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		return y;
 	}
 	
-	private void page4Equipment(PdfContentByte canvas) {
+	private void page4Equipment(PdfContentByte canvas, float bottomY) {
 		float lineHeight = 10.5f;
 		float y = UPPER_Y - lineHeight;
 		float centerX = LEFT_X + (RIGHT_X - LEFT_X ) / 4;
@@ -247,7 +309,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		canvas.beginText();
 		canvas.setFontAndSize(fontRegular, 7);
 		int maxEquipmentLines = 0;
-		while (yLine > (BOTTOM_Y + 2 * lineHeight)) {
+		while (yLine > (bottomY + 2 * lineHeight)) {
 			maxEquipmentLines++;
 			canvas.showTextAligned(Element.ALIGN_LEFT, "___________________________________________", x[0], yLine, 0);
 			canvas.showTextAligned(Element.ALIGN_CENTER, "__________", x[1], yLine, 0);
@@ -1082,9 +1144,12 @@ public class PDFCreator extends AbstractPDFCreator {
 		box(canvas, LEFT_X, UPPER_Y, RIGHT_X, BOTTOM_Y);
 		float centerX = LEFT_X + (RIGHT_X - LEFT_X ) / 2;
 		vline(canvas, centerX, UPPER_Y, BOTTOM_Y);
-		page4Equipment(canvas);
+		/* left col */
+		float y = page4TalentFlaws(canvas, centerX);
+		page4Equipment(canvas, y);
+		
 		/* right col */
-		float y = page4Jewelry(canvas, UPPER_Y);
+		y = page4Jewelry(canvas, UPPER_Y);
 		float yBottom = page4CharImageAndSize(canvas);
 		/* lines between jewelry and image */
 		page4MagicItems(canvas, y, yBottom);
@@ -1092,10 +1157,56 @@ public class PDFCreator extends AbstractPDFCreator {
 		footer(canvas);		
 	}
 	
+	private float page4TalentFlaws(PdfContentByte canvas, float rightX) throws DocumentException {
+		float upperY = BOTTOM_Y;
+		// first calculate
+		if (!(Boolean.TRUE.equals(sheet.getTalentFlawOwnPage())) && sheet.getTalentsFlaws().size() > 0) {
+			StringBuilder content = new StringBuilder();
+			for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+				content.append(StringUtils.trim(tf.asText(data, sheet)));
+				content.append("\n\n");
+			}
+			String allTalentsText = StringUtils.trim(content.toString());
+			/* -- simulate -> searching the upperY (height of the box)- */
+			ColumnText ct = new ColumnText(canvas);
+			float fontSize = 7f;
+			float leading = 9;
+			Phrase phrase = new Phrase(allTalentsText, new Font(fontUser, fontSize));
+			int result = 0;
+			do {
+				upperY += 22;
+				ct = new ColumnText(canvas);
+			    phrase = new Phrase(allTalentsText, new Font(fontUser, fontSize));
+				ct.setSimpleColumn(phrase, LEFT_X + 5, BOTTOM_Y + 5, rightX - 5, upperY, leading, Element.ALIGN_LEFT);
+				result = ct.go(true);
+				log.debug("result column = "+result+" with upperY="+upperY);
+			} while (upperY < (BOTTOM_Y + 300) && result == ColumnText.NO_MORE_COLUMN);
+			/* real print */
+			ct = new ColumnText(canvas);
+			ct.setSimpleColumn(LEFT_X + 5, BOTTOM_Y + 5, rightX - 5, upperY, leading, Element.ALIGN_LEFT);
+			page4PrintTalentFlaws(ct, fontSize);
+			result = ct.go();
+			/* could not print all text on this page */
+			if (result == ColumnText.NO_MORE_COLUMN) {
+				showUserText(canvas, 6, LEFT_X + 10, BOTTOM_Y + 2, RESOURCE.getString("pdf.info.error.toomuchtext"));
+			}
+			/* print the headline */
+			upperY += 2;
+			float centerX = LEFT_X + (rightX - LEFT_X) / 2;
+			canvas.beginText();
+			canvas.setFontAndSize(fontHeadline, 8);
+			canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("ui.tab.talentflaws"), centerX, upperY, 0);
+			canvas.endText();
+			upperY += 14;
+			hline(canvas, LEFT_X, upperY, rightX);
+		}
+		return upperY;
+	}
+
 	/**
 	 * all skills list
 	 */
-	private void createPage5(PdfContentByte canvas) throws BadElementException, MalformedURLException, IOException, DocumentException {
+	private void createPage5AllSkills(PdfContentByte canvas) throws BadElementException, MalformedURLException, IOException, DocumentException {
 		header2(canvas, 5);
 		box(canvas, LEFT_X, UPPER_Y, RIGHT_X, BOTTOM_Y);
 		/* extract skills (without weapons, spells) */

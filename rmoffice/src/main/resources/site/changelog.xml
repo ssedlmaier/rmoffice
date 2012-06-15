@@ -47,7 +47,7 @@
 		     <listitem><para>SHADOWWORLD: races and cultures</para></listitem>
 		     <listitem><para>NPC: generator creates more different characters with typical skills for the profession</para></listitem>
 		     <listitem><para>BASIC: range description for weapons depends on length unit now</para></listitem>
-		     <listitem><para>BASIC: divine status support</para></listitem>
+		     <listitem><para>BASIC: divine status and fate points support</para></listitem>
 		     <listitem><para>PDF: Character image can be printed on PDF page 1 (bottom right corner) and on the PDF page 4 (equpipment page). It is configurable per character.</para></listitem>
 		     <listitem><para>UI: A button to delete the character image</para></listitem>
 		    </itemizedlist>

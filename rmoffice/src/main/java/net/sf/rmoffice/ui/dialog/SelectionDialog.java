@@ -20,6 +20,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -45,7 +46,7 @@ public class SelectionDialog<T> extends JDialog {
 	
 
 	public SelectionDialog(Frame owner, int amount, Object... selectables) {
-		super(owner, RESOURCE.getString("ui.trainpack.add"), true);
+		super(owner, RESOURCE.getString("ui.talentflaw.dialog.title"), true);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		setContentPane( createContentPane(amount, selectables) );
 		pack();
@@ -65,7 +66,8 @@ public class SelectionDialog<T> extends JDialog {
 		FormLayout layout = new FormLayout("150dlu", "15dlu,3dlu,fill:150dlu,5dlu,15dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		builder.addLabel("Wähle ...", CC.xy(1, 1));
+		String msg = MessageFormat.format(RESOURCE.getString("ui.talentflaw.dialog.select"), ""+amount);
+		builder.addLabel(msg , CC.xy(1, 1));
 		checkBoxlist = new CheckBoxList<T>();
 		//
 		builder.add(new JScrollPane(checkBoxlist), CC.xy(1, 3));

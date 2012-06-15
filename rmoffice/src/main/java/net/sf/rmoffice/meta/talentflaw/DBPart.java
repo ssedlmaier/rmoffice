@@ -18,7 +18,7 @@ package net.sf.rmoffice.meta.talentflaw;
 import net.sf.rmoffice.core.TalentFlaw;
 
 public class DBPart extends KeyValuePart {
-	private static final String ID = TalentFlawFactory.registerID("db");
+	public static final String ID = TalentFlawFactory.registerID("db");
 	
 	public DBPart(float value) {
 		super(value);

@@ -21,7 +21,7 @@ import java.text.NumberFormat;
 import net.sf.rmoffice.core.TalentFlaw;
 
 public class WeightPenaltyPart extends KeyValuePart {
-	private static final String ID = TalentFlawFactory.registerID("weightpenalty");
+	public static final String ID = TalentFlawFactory.registerID("weightpenalty");
 	public WeightPenaltyPart(float factor) {
 		super(factor);
 	}

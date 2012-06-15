@@ -18,7 +18,7 @@ package net.sf.rmoffice.meta.talentflaw;
 import net.sf.rmoffice.core.TalentFlaw;
 
 public class ShieldDBPart extends KeyValuePart {
-	private static final String ID = TalentFlawFactory.registerID("shielddb");
+	public static final String ID = TalentFlawFactory.registerID("shielddb");
 	
 	public ShieldDBPart(float value) {
 		super(value);
