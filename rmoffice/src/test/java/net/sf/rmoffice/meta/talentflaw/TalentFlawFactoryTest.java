@@ -71,49 +71,8 @@ public class TalentFlawFactoryTest {
 		assertEquals(Integer.valueOf(3), talFlawVal.getInitiativeBonus());
 		
 		// DESCR
-		talFlawVal = callFactory(factory, "DESCR=talent.snap.5");
+		talFlawVal = callFactory(factory, "DESCR=rolemaster.version");
 		assertNotNull(talFlawVal.getDescription());
-		
-		// CHOOSE1
-//		talFlawVal = new TalentFlaw();
-//		loader.parseTalentFlawValue(talFlawVal, "CHOOSE1=C3;C29=EVERYMAN", meta);
-//		assertNotNull(talFlawVal.getChoices());
-//		assertEquals(1, talFlawVal.getChoices().size());
-//		TalentFlawChoice choice1 = talFlawVal.getChoices().get(0);
-//		assertEquals(1, choice1.getAmount());
-//		assertEquals(2, choice1.getValues().size());
-//		assertEquals(3, ((SkillCategory)choice1.getValues().get(0)).getId().intValue());
-//		assertEquals(29, ((SkillCategory)choice1.getValues().get(1)).getId().intValue());
-//		
-//		// CHOOSE2
-//		talFlawVal = new TalentFlawPresetLevel();
-//		loader.parseTalentFlawValue(talFlawVal, "CHOOSE2=S1;S12;S123=EVERYMAN", meta);
-//		assertNotNull(talFlawVal.getChoices());
-//		assertEquals(1, talFlawVal.getChoices().size());
-//		choice1 = talFlawVal.getChoices().get(0);
-//		assertEquals(2, choice1.getAmount());
-//		assertEquals(3, choice1.getValues().size());
-//		assertEquals(1, ((ISkill)choice1.getValues().get(0)).getId().intValue());
-//		assertEquals(12, ((ISkill)choice1.getValues().get(1)).getId().intValue());
-//		assertEquals(123, ((ISkill)choice1.getValues().get(2)).getId().intValue());
-		
-		// TODO CHOOSESKILL1=C2=25
-		
-		// TODO CHOOSESKILL1=C13;C14=EVERYMAN
-		
-		// TODO BODYDEV=2;2;2;2;2
-		
-		// TODO CHOOSESKILL1=C27;C28;C29;C30;C31;C32;C33=OCCUPATIONAL=CAT=EVERYMAN
-		
-		// Belastungsabzüge halbieren
-		
-		// Sprachränge
-		
-		// Talentiert: +5 auf Gruppe oder +10 auf Fertigkeit
-		
-		// +25 auf Hinterhalt, aber nicht für Kritische Modifikation)
-		
-		// Waffen-Patzer um 2 (in der niedrigsten Kategorie) alle anderen um 1 reduzieren
 	}
 
 	private TalentFlaw callFactory(TalentFlawFactory factory, String partAsString) {

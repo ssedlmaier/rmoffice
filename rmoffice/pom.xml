@@ -3,10 +3,11 @@
   <groupId>net.sf.rmoffice</groupId>
   <artifactId>rmoffice</artifactId>
   <name>RoleMaster Office</name>
-  <version>4.2.5a2</version>
+  <version>4.2.5b</version>
   <scm>
-  	<connection>https://rmoffice.svn.sourceforge.net/svnroot/rmoffice/trunk</connection>
-  	<url>http://rmoffice.svn.sourceforge.net/viewvc/rmoffice/</url>
+  	<connection>git://rmoffice.git.sourceforge.net/gitroot/rmoffice/rmoffice </connection>
+  	<url>http://rmoffice.git.sourceforge.net/git/gitweb-index.cgi</url>
+  	<developerConnection>ssh://username@rmoffice.git.sourceforge.net/gitroot/rmoffice/rmoffice</developerConnection>
   </scm>
   <organization>
     <name>RoleMaster Office</name>
