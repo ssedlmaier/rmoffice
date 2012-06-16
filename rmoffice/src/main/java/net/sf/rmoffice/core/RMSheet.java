@@ -477,9 +477,13 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * @param race the new race, not {@code null}
 	 */
 	public void setRace(Race race) {
-		if ( ! State.RACE_PROF_SELECTION.equals(getState()) ) throw new IllegalStateException("You can only set the race in state "+State.RACE_PROF_SELECTION);			
+		if ( ! State.RACE_PROF_SELECTION.equals(getState()) ) throw new IllegalStateException("You can only set the race in state "+State.RACE_PROF_SELECTION);	
 		Race oldValue = getRace();
-		this.raceId = race.getId();
+		if (race != null) {
+			this.raceId = race.getId();
+		} else {
+			this.raceId = null;
+		}
 		firePropertyChange(PROPERTY_RACE, oldValue, race);
 		List<Culture> cultureForRace = data.getCultureForRace(race);
 		if (log.isDebugEnabled()) log.debug("found "+cultureForRace.size()+" cultures for race id "+raceId);
@@ -1656,7 +1660,9 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	}
 
 	private void updateProgressionBody() {
-		setProgressionBody(getRace().getProgKoerperentw());
+		if (getRace() != null) {
+			setProgressionBody(getRace().getProgKoerperentw());
+		}
 	}
 	
 	/* removes all youth ranks and sets youth ranks for the current race */

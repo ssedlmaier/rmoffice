@@ -344,7 +344,8 @@ public class CharacterGenerator {
 		for (ISkill skill : data.getSkills()) {
 			if (!RMPreferences.getInstance().isExcluded(skill.getSource())) {
 				SkillCategory cat = sheet.getSkillcategory(skill);
-				if (FLAVOR_SKILL_CATS.contains(cat.getId()) && ! foundCats.contains(cat) && DiceUtils.roll(1, 100) < 20) {
+				int chance = 15 - flavored.size() * 7;
+				if (FLAVOR_SKILL_CATS.contains(cat.getId()) && ! foundCats.contains(cat) && DiceUtils.roll(1, 100) < chance) {
 					foundCats.add(cat);
 					flavored.add(skill);
 				}
@@ -365,18 +366,18 @@ public class CharacterGenerator {
 			ISkill skill = data.getSkill(Integer.valueOf(id));
 			Skillcost costs = sheetAdapter.getBean().getSkillcost(skill);
 			/* Example base chance:
-			 * Cost 1/3 --> 90%
-			 * Cost 2/7 --> 80%
-			 * Cost 6   --> 40%
+			 * Cost 1/3 --> 80%
+			 * Cost 2/7 --> 70%
+			 * Cost 6   --> 30%
 			 * */
-			chance -= costs.getCost(0) * 10;
+			chance -= costs.getCost(0) * 10 - 10;
 			/* second value:
-			 * 1/2 => base 90 - 4 = 86
-			 * 1/5 => base 90 - 10 = 80
-			 * 2/7 => base 80 - 14 = 66
+			 * 1/2 => base 80 - 6 = 83
+			 * 1/5 => base 80 - 15 = 65
+			 * 2/7 => base 70 - 21 = 49
 			 * */
 			if (costs.size() > 1) {
-				chance -= costs.getCost(1) * 2;
+				chance -= costs.getCost(1) * 3;
 			} else {
 				chance -= 35;
 			}
@@ -613,42 +614,68 @@ public class CharacterGenerator {
 	}
 
 	private int levelUpSkills(RMSheet bean, List<ISkill> skills, int devPoints, long level) {
-		int spelllistRanks = 0;
+		Set<Integer> learnSpellistsThisLevel = new HashSet<Integer>();
 		for (int round=0; round<3 && devPoints > 0; round++) {
 			if (log.isDebugEnabled()) log.debug("generate round "+round+" skills. dp="+devPoints);
 			for (ISkill skill : skills) {
-				if (!skill.isSpelllist() || (skill.isSpelllist() && round == 0 && spelllistRanks < 5)) { 
+				/* pre check for spell lists */
+				// level 1+2 only learn base lists
+				boolean useThisSkill = ! skill.isSpelllist();
+				if (skill.isSpelllist()) {
+					Spelllist spelllist = ((Spelllist)skill);
+					/* only learn 5 spell lists each level */
+					if (learnSpellistsThisLevel.size() <= 5 || learnSpellistsThisLevel.contains(spelllist.getId())) {
+						if (level <= 2) {
+							/* only base lists on level 1+2 */
+							useThisSkill = spelllist.getSpelllistType().isProfession();
+						} else {
+							useThisSkill = true;
+						}
+					}
+				}
+				if (useThisSkill) { 
 					Skillcost costs = bean.getSkillcost(skill);
 					if (costs.size() > round) {
 						int cost = costs.getCost(round);
 						if (devPoints >= cost) {
 							/* everyman/restricted/... factor */
 							float costsStepsFactor = 1f / bean.getSkillType(skill).getStep().floatValue();
-							int chance = (int) (100f - (cost * 5f * costsStepsFactor));
+							int chance = (int) (100f - (cost * 8f * costsStepsFactor));
 							Rank rank = bean.getSkillRank(skill);		
 							/* reduce the chance to increase very high skill ranks (e.g. 1/2 everyman skills will
 							 * be very high on higher levels) */
 							chance -= Math.max(0, (rank.getRank().longValue() - level) * 4 );
+							/* spell list: if learned this level, increase chance */
+							if (skill.isSpelllist()) {
+								if (learnSpellistsThisLevel.contains(skill.getId())) {
+									chance += 30;
+								} else if (rank.getRank().longValue() > level) {
+									/* lesser chance to learn spell lists, if the rank is greater than level */
+									chance -= 16;
+								}
+							}
 							boolean isFavorit = Boolean.TRUE.equals(rank.getFavorite());
 							if ( (DiceUtils.roll(1, 100) < chance || isFavorit) && rank.getRank().longValue() < 9997) {
 								try {
 									bean.setSkillRank(skill, rank.getRank().add(BigDecimal.valueOf(1)));
 									devPoints -= cost;
 									if (skill.isSpelllist()) {
-										spelllistRanks++;
+										learnSpellistsThisLevel.add(skill.getId());
 									}
 									/* check if the categorys rank is > 0 */
-									SkillCategory cat = bean.getSkillcategory(skill);
-									BigDecimal catRank = bean.getSkillcategoryRank(cat).getRank();
-									if (catRank.intValue() <= 0) {
-										/* we increase the rank */
-										Skillcost catCost = bean.getSkillcost(cat);
-										if (catCost.size() > 0 && devPoints > catCost.getCost(0)) {
-											try {
-												bean.setSkillcategoryRank(cat, catRank.add(BigDecimal.valueOf(1)) );
-												devPoints -= catCost.getCost(0);
-											} catch (LevelUpVetoException e) {
-												/* ignore */
+									if (!skill.isSpelllist()) {
+										SkillCategory cat = bean.getSkillcategory(skill);
+										BigDecimal catRank = bean.getSkillcategoryRank(cat).getRank();
+										if (catRank.intValue() <= 0) {
+											/* we increase the rank */
+											Skillcost catCost = bean.getSkillcost(cat);
+											if (catCost.size() > 0 && devPoints > catCost.getCost(0)) {
+												try {
+													bean.setSkillcategoryRank(cat, catRank.add(BigDecimal.valueOf(1)) );
+													devPoints -= catCost.getCost(0);
+												} catch (LevelUpVetoException e) {
+													/* ignore */
+												}
 											}
 										}
 									}
@@ -698,6 +725,13 @@ public class CharacterGenerator {
 			if (!steps1.equals(steps2)) {
 				/* higher is better */
 				return steps2.compareTo(steps1);
+			}
+			/* spell list is better than normal skills, if costs are <= 6 */
+			if (o1.isSpelllist() && !o2.isSpelllist() && cost1.getCost(0) <= 6) {
+				return -1;
+			}
+			if (!o1.isSpelllist() && o2.isSpelllist() && cost2.getCost(0) <= 6) {
+				return 1;
 			}
 			/* cost compare */
 			return cost1.compareTo(cost2);
