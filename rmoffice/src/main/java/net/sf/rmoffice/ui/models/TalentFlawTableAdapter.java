@@ -32,7 +32,9 @@ public class TalentFlawTableAdapter extends AbstractTableAdapter<TalentFlaw> {
 
 	public TalentFlawTableAdapter(ListModel model) {
 		super(model, RESOURCE.getString("ui.talentflaw.tablecol.name"),
-				RESOURCE.getString("ui.talentflaw.tablecol.type"));
+				RESOURCE.getString("ui.talentflaw.tablecol.type"),
+				RESOURCE.getString("ui.talentflaw.tablecol.level")
+				);
 	}
 	
 	@Override
@@ -42,7 +44,9 @@ public class TalentFlawTableAdapter extends AbstractTableAdapter<TalentFlaw> {
 		case 0:
 			return row.getName();
 		case 1:
-			return row.getType().toString();
+			return RESOURCE.getString("TalentFlawType."+row.getType().name());
+		case 2:
+			return RESOURCE.getString("TalentFlawLevel."+row.getLevel().name());
 		}
 		return null;
 	}

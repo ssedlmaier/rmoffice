@@ -666,6 +666,14 @@ public class PDFCreator extends AbstractPDFCreator {
 					case 6: if (rank.getSpecialBonus() != null) {
 						str = format( rank.getSpecialBonus().intValue(), true); 
 					}
+					if (sheet.getSkillSpecialBonus(skill) != 0) {
+						String special = format( sheet.getSkillSpecialBonus(skill), true);
+						if (str == null) {
+							str = special;
+						} else{
+							str += " "+special;
+						}
+					}
 					break;
 					case 7: str = format( sheet.getSkillTotalBonus(skill), false);break;
 					case 8: /* magical items */ 
