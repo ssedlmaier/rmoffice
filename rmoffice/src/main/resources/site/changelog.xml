@@ -43,6 +43,7 @@
 		  <title>&features;</title>
 		  <para>
 		    <itemizedlist>
+		     <listitem><para>BASIC: talents support</para></listitem>
 		     <listitem><para>LOCALE: spanish translation</para></listitem>
 		     <listitem><para>SHADOWWORLD: races and cultures</para></listitem>
 		     <listitem><para>NPC: generator creates more different characters with typical skills for the profession</para></listitem>
