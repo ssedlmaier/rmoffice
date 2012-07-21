@@ -256,8 +256,8 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (getState() == State.NORMAL) {
 			updateMagicProgessionAndRealm();
 			updateTempSum(false);
-			firePropertyChange(PROPERTY_MAGICREALM_CHANGED, null, this.magicrealm);
 		}
+		firePropertyChange(PROPERTY_MAGICREALM_CHANGED, null, this.magicrealm);
 		for (StatEnum stat : StatEnum.values()) {
 			firePropertyChange(PROPERTY_STAT_TEMP_PREFIX+stat.name(), null, Integer.valueOf(getStatTemp(stat)));
 			firePropertyChange(PROPERTY_STAT_POT_PREFIX+stat.name(), null, Integer.valueOf(getStatPot(stat)));
@@ -485,6 +485,9 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			this.raceId = null;
 		}
 		firePropertyChange(PROPERTY_RACE, oldValue, race);
+		if (oldValue == null) {
+			updateMagicProgessionAndRealm();
+		}
 		List<Culture> cultureForRace = data.getCultureForRace(race);
 		if (log.isDebugEnabled()) log.debug("found "+cultureForRace.size()+" cultures for race id "+raceId);
 		if (cultureForRace.size() > 1) {
@@ -1589,13 +1592,14 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 					mb.add(stat);
 				}
 			}
-			if (mb.size() > 0) {
-				setMagicRealm(mb);
-			}
 		}
 		/* the user may choose the magical realm (magicrealm) (e.g. fighter) */
-		setMagicRealmEditable(progr == null);		
-		if (progr == null) {
+		setMagicRealmEditable(progr == null);
+		if (mb.size() > 0) {
+			/* we have to set after setting the realm-editability*/
+			setMagicRealm(mb);
+		}
+		if (progr == null && getProfession() != null && getRace() != null) {
 			/* here we have a non-magical profession, we get the current realm (magicrealm) */
 			mb = getMagicRealm();
 			/* mb should contain one attribute */

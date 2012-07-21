@@ -69,12 +69,14 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 	private ValueHolder levelUpValueModel = new ValueHolder(RESOURCE.getString("ui.basic.levelup.start"));
 	private ValueHolder availableCultures = new ValueHolder(new ArrayList<Culture>(), true);
 	private ValueHolder armorModisModel = new ValueHolder("");
+	private final ValueHolder enabledValueHolder;
 
 	public BasicPresentationModel(Frame owner, final BeanAdapter<RMSheet> adapter, MetaData data, ValueHolder enabledValueHolder) {
 		super(adapter.getBeanChannel());
 		this.owner = owner;
 		this.adapter = adapter;
 		this.data = data;
+		this.enabledValueHolder = enabledValueHolder;
 		adapter.addBeanPropertyChangeListener(this);
 		enabledValueHolder.addPropertyChangeListener("value", new PropertyChangeListener() {
 			
@@ -117,6 +119,12 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 				levelUpValueModel.setValue(RESOURCE.getString("ui.basic.levelup.finish"));
 			} else {
 				levelUpValueModel.setValue(RESOURCE.getString("ui.basic.levelup.start"));
+			}
+		} else if (RMSheet.PROPERTY_MAGICREALM_EDITABLE.equals(evt.getPropertyName())) {
+			if (Boolean.TRUE.equals(evt.getNewValue())) {
+				magicRealmEnabledValueHolder.setValue(enabledValueHolder.booleanValue());
+			} else {
+				magicRealmEnabledValueHolder.setValue(false);
 			}
 		}
 	}
@@ -251,10 +259,15 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if ("value".equals(evt.getPropertyName())) {
-				if (Boolean.TRUE.equals(evt.getNewValue())) {
-					other1.setValue(false);
-					other2.setValue(false);
-					getBean().setMagicRealm(stat);
+				if (adapter.getBean().isMagicRealmEditable()) {
+					if (Boolean.TRUE.equals(evt.getNewValue())) {
+						other1.setValue(false);
+						other2.setValue(false);
+						Set<StatEnum> magicRealm = getBean().getMagicRealm();
+						if (magicRealm == null || magicRealm.size() != 1 || ! magicRealm.contains(stat)) {
+							getBean().setMagicRealm(stat);
+						}
+					}
 				}
 			}
 		}
