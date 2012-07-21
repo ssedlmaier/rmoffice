@@ -38,6 +38,28 @@
 	
 	 -->
 	 <section>
+		<title>Version 4.2.6 (Date)</title>
+		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		     <listitem><para></para></listitem>
+		    </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>BASIC: Selected magic realm was not saved if editable (non-magical professions)</para></listitem>
+		     <listitem><para>BASIC: Magic realm comboboxes editability</para></listitem>
+		     <listitem><para></para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>
+	 
+	 <section>
 		<title>Version 4.2.5 (2012-06-30)</title>
 		<section>
 		  <title>&features;</title>

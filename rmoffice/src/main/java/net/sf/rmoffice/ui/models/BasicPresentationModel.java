@@ -61,6 +61,7 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 	private final Frame owner;
 	private ValueHolder raceProfEnabledValueHolder = new ValueHolder(true);
 	private ValueHolder cultureEnabledValueHolder = new ValueHolder(false);
+	private ValueHolder magicRealmEnabledValueHolder = new ValueHolder(false);
 	private AbstractAction actionTrainPack;
 	private ValueHolder magicRealmIn = new ValueHolder(false);
 	private ValueHolder magicRealmEm = new ValueHolder(false);
@@ -69,12 +70,26 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 	private ValueHolder availableCultures = new ValueHolder(new ArrayList<Culture>(), true);
 	private ValueHolder armorModisModel = new ValueHolder("");
 
-	public BasicPresentationModel(Frame owner, BeanAdapter<RMSheet> adapter, MetaData data) {
+	public BasicPresentationModel(Frame owner, final BeanAdapter<RMSheet> adapter, MetaData data, ValueHolder enabledValueHolder) {
 		super(adapter.getBeanChannel());
 		this.owner = owner;
 		this.adapter = adapter;
 		this.data = data;
 		adapter.addBeanPropertyChangeListener(this);
+		enabledValueHolder.addPropertyChangeListener("value", new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (Boolean.TRUE.equals(evt.getNewValue())) {
+					magicRealmEnabledValueHolder.setValue(adapter.getBean().isMagicRealmEditable());
+				} else {
+					magicRealmEnabledValueHolder.setValue(false);
+				}
+			}
+		});
+		magicRealmIn.addPropertyChangeListener(new MagicRealmPropertyChangeListener(StatEnum.INTUITION, magicRealmEm, magicRealmPr));
+		magicRealmEm.addPropertyChangeListener(new MagicRealmPropertyChangeListener(StatEnum.EMPATHY, magicRealmIn, magicRealmPr));
+		magicRealmPr.addPropertyChangeListener(new MagicRealmPropertyChangeListener(StatEnum.PRESENCE, magicRealmIn, magicRealmEm));
 	}
 
 	@Override
@@ -136,6 +151,10 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 	
 	public ValueModel getCultureEnabledValueHolder() {
 		return cultureEnabledValueHolder;
+	}
+	
+	public ValueHolder getMagicRealmEnabledValueHolder() {
+		return magicRealmEnabledValueHolder;
 	}
 	
 	public List<Profession> getAvailableProfession() {
@@ -212,5 +231,33 @@ public class BasicPresentationModel extends PresentationModel<RMSheet> implement
 
 	public List<CharImagePos> getAvailableCharImgPos() {
 		return Arrays.asList(CharImagePos.values());
+	}
+	
+	/* ********************************************************
+	 * delegate the checkbox changes to to sheet
+	 ******************************************************** */
+	private class MagicRealmPropertyChangeListener implements PropertyChangeListener {
+
+		private final ValueHolder other1;
+		private final ValueHolder other2;
+		private final StatEnum stat;
+
+		private MagicRealmPropertyChangeListener(StatEnum stat, ValueHolder other1, ValueHolder other2) {
+			this.stat = stat;
+			this.other1 = other1;
+			this.other2 = other2;
+		}
+		
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if ("value".equals(evt.getPropertyName())) {
+				if (Boolean.TRUE.equals(evt.getNewValue())) {
+					other1.setValue(false);
+					other2.setValue(false);
+					getBean().setMagicRealm(stat);
+				}
+			}
+		}
+		
 	}
 }

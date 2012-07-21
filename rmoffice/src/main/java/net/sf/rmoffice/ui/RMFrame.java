@@ -218,7 +218,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		toDoPanel.init();
 		panel.add(toDoPanel, BorderLayout.NORTH);
 		tabbedPane = new JideTabbedPane();
-		BasicPresentationModel basicModel = new BasicPresentationModel(this, getRMSheetAdapter(), data);
+		BasicPresentationModel basicModel = new BasicPresentationModel(this, getRMSheetAdapter(), data, enableValueHolder);
 		BasicPanel basicPanel = new BasicPanel(basicModel, enableValueHolder);
 		tabbedPane.addTab(RESOURCE.getString("ui.tab.basic"), new JScrollPane(basicPanel));
 		/* ---- characteristics / BG / talents & flaws */

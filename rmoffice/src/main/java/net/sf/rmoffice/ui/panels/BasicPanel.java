@@ -109,13 +109,13 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		FormLayout magRealmLayout = new FormLayout("40dlu, 2dlu, 40dlu, 2dlu, 40dlu", ROW);
 		PanelBuilder mrPB = new PanelBuilder(magRealmLayout);
 		JCheckBox cbIn = BasicComponentFactory.createCheckBox(basicModel.getMagicRealmIn(), RESOURCE.getString("MagicRealm."+StatEnum.INTUITION.name()+".short"));
-		Bindings.bind(cbIn, "enabled", basicModel.getModel(RMSheet.PROPERTY_MAGICREALM_EDITABLE));
+		Bindings.bind(cbIn, "enabled", basicModel.getMagicRealmEnabledValueHolder());
 		mrPB.add(cbIn, CC.xy(1, 1));
 		JCheckBox cbEm = BasicComponentFactory.createCheckBox(basicModel.getMagicRealmEm(), RESOURCE.getString("MagicRealm."+StatEnum.EMPATHY.name()+".short"));
-		Bindings.bind(cbEm, "enabled", basicModel.getModel(RMSheet.PROPERTY_MAGICREALM_EDITABLE));
+		Bindings.bind(cbEm, "enabled", basicModel.getMagicRealmEnabledValueHolder());
 		mrPB.add(cbEm, CC.xy(3, 1));
 		JCheckBox cbPr = BasicComponentFactory.createCheckBox(basicModel.getMagicRealmPr(), RESOURCE.getString("MagicRealm."+StatEnum.PRESENCE.name()+".short"));
-		Bindings.bind(cbPr, "enabled", basicModel.getModel(RMSheet.PROPERTY_MAGICREALM_EDITABLE));
+		Bindings.bind(cbPr, "enabled", basicModel.getMagicRealmEnabledValueHolder());
 		mrPB.add(cbPr, CC.xy(5, 1));
 		builder.add(mrPB.getPanel(), CC.xyw(COL_COMP_R, row, 3));
 		row += 2;

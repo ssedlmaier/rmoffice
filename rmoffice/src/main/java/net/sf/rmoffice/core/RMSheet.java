@@ -747,11 +747,11 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * resolves the {@link StatEnum} for the {@link SkillCategory} if it has
 	 * {@link RankType#M}.
 	 * 
-	 * @param group
+	 * @param skillCategory
 	 * @return a list of attribute
 	 */
-	public List<StatEnum> getSkillcategoryStats(SkillCategory group) {
-		if (group.getRankType().isProgressionMagic() || group.getRankType().isOwnRealm()) {			
+	public List<StatEnum> getSkillcategoryStats(SkillCategory skillCategory) {
+		if (skillCategory.getRankType().isProgressionMagic() || skillCategory.getRankType().isOwnRealm()) {			
 			List<StatEnum> attr = new ArrayList<StatEnum>();
 			if (isMagicRealmEditable()) {
 				for (StatEnum ae : getMagicRealm()) {
@@ -768,7 +768,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			}
 			return attr;
 		} else {
-			return group.getAttributes();
+			return skillCategory.getAttributes();
 		}
 	}
 
