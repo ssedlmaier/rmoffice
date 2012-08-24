@@ -1129,8 +1129,8 @@ public class PDFCreator extends AbstractPDFCreator {
 		int pageCount = (int) Math.ceil((float)skills.size() / (float)maxSkillsPerPage);
 		for (int i=0; i<pageCount; i++) {
 			int toIndex = (i+1) * maxSkillsPerPage;
-			if (toIndex >= skills.size()) {
-				toIndex = skills.size() - 1;
+			if (toIndex > skills.size()) {
+				toIndex = skills.size();
 			}
 			List<ISkill> subList = skills.subList(i*maxSkillsPerPage, toIndex);
 

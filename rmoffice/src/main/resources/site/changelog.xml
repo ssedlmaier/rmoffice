@@ -38,7 +38,7 @@
 	
 	 -->
 	 <section>
-		<title>Version 4.2.6 (Date)</title>
+		<title>Version 4.2.6 (2012-08-24)</title>
 		<section>
 		  <title>&features;</title>
 		  <para>
@@ -53,6 +53,7 @@
 		   <itemizedlist>
 		     <listitem><para>BASIC: Selected magic realm was not saved if editable (non-magical professions)</para></listitem>
 		     <listitem><para>BASIC: Magic realm comboboxes editability</para></listitem>
+		     <listitem><para>PDF: Last skill or spell list on page 3 is now printed out</para></listitem>
 		     <listitem><para></para></listitem>
 		   </itemizedlist>
 		 </para>
