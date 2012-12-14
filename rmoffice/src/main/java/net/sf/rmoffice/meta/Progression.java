@@ -23,6 +23,11 @@ package net.sf.rmoffice.meta;
 public class Progression implements IProgression {
 	private final float[] bonus;
 	
+	/* constructor for java 7 and XStream */
+	Progression() {
+		bonus = null;
+	}
+	
 	public Progression(float bonus1, float bonus2, float bonus3, float bonus4, float bonus5) {
 		this.bonus = new float[] {bonus1, bonus2, bonus3, bonus4, bonus5};
 	}
