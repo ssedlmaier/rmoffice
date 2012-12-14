@@ -85,6 +85,7 @@ public class TalentFlaw extends Model {
 	private Map<ResistanceEnum, Integer> resBonus;
 	private Map<Integer, Skillcost> skillCostReplacement;
 	private Map<Integer, Skillcost> skillCategoryCostReplacement;
+	private HashMap<StatEnum, Integer> spellRealmBonus;
 	
 	public TalentFlaw() {
 	}
@@ -208,7 +209,29 @@ public class TalentFlaw extends Model {
 			skillBonus.put(skill.getId(), rank);
 		}
 	}
+	
+	/**
+	 * Returns the spell realm bonus or {@code null} if not available.
+	 * 
+	 * @param stat the spell realm stat
+	 * @return the bonus or {@code null}
+	 */
+	public Integer getSpellRealmBonus(StatEnum stat) {
+		if (spellRealmBonus == null) {
+			return null;
+		}
+		return spellRealmBonus.get(stat);
+	}
 
+	public void addSpellRealmBonus(StatEnum stat, Integer value) {
+		if (spellRealmBonus == null) {
+			spellRealmBonus = new HashMap<StatEnum, Integer>();
+		}
+		if (stat != null && value != null) {
+			spellRealmBonus.put(stat, value);
+		}
+	}
+	
 	public Map<Integer, SkillType> getSkillType() {
 		return skillType;
 	}

@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class ChooseResistanceParser extends AbstractPatternParser<ChooseResistancePart> {
 	private static final String KEY = "CHOOSERR";
-	private static final String PATTERN = KEY + "([0-9]+)=.+=([0-9]+)";
+	private static final String PATTERN = KEY + "([0-9]+)=.+=([0-9]+)=*([0-9]*)";
 
 	public ChooseResistanceParser() {
 		super(PATTERN);
@@ -32,16 +32,20 @@ public class ChooseResistanceParser extends AbstractPatternParser<ChooseResistan
 	protected ChooseResistancePart createPart(String key, String[] valueParts) {
 		int amount = Integer.parseInt(key.substring(KEY.length()));
 		int bonus = Integer.parseInt(valueParts[1]);
+		int spellBonus = 0;
+		if (valueParts.length > 2) {
+			spellBonus = Integer.parseInt(valueParts[2]);
+		}
 		String[] selectableStrings = StringUtils.splitByWholeSeparator(valueParts[0], ";");
 		ResistanceEnum[] selectables = new ResistanceEnum[selectableStrings.length];
 		for (int i=0; i<selectableStrings.length; i++) {
 			selectables[i] = ResistanceEnum.valueOf(StringUtils.trimToEmpty(selectableStrings[i]));
 		}
-		return createPart(amount, bonus, selectables);
+		return createPart(amount, bonus, spellBonus, selectables);
 	}
 
-	protected ChooseResistancePart createPart(int amount, int bonus, ResistanceEnum... selectables) {
-		return new ChooseResistancePart(amount, bonus, selectables);
+	protected ChooseResistancePart createPart(int amount, int bonus, int spellBonus, ResistanceEnum... selectables) {
+		return new ChooseResistancePart(amount, bonus, spellBonus, selectables);
 	}
 
 }

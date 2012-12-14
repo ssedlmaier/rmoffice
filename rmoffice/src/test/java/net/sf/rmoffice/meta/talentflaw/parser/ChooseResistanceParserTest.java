@@ -33,17 +33,18 @@ public class ChooseResistanceParserTest {
 	@Test
 	public void testParse() {
 		
-		assertPart(" CHOOSERR1= "+ResistanceEnum.CHANNELING.name()+" ; "+ResistanceEnum.FEAR.name() + " =30", 30, ResistanceEnum.CHANNELING);
-		assertPart(" CHOOSERR2= "+ResistanceEnum.CHANNELING.name()+" ; "+ResistanceEnum.FEAR.name() + " =30", 30, ResistanceEnum.CHANNELING, ResistanceEnum.FEAR);
-		assertPart(" CHOOSERR1= "+ResistanceEnum.ESSENCE.name() + ";"+ResistanceEnum.MENTALISM.name()+" =2", 2, ResistanceEnum.ESSENCE);
+		assertPart(" CHOOSERR1= "+ResistanceEnum.CHANNELING.name()+" ; "+ResistanceEnum.FEAR.name() + " =30", 30, 0, ResistanceEnum.CHANNELING);
+		assertPart(" CHOOSERR2= "+ResistanceEnum.CHANNELING.name()+" ; "+ResistanceEnum.FEAR.name() + " =30", 30, 0, ResistanceEnum.CHANNELING, ResistanceEnum.FEAR);
+		assertPart(" CHOOSERR1= "+ResistanceEnum.ESSENCE.name() + ";"+ResistanceEnum.MENTALISM.name()+" =2", 2, 0, ResistanceEnum.ESSENCE);
+		assertPart(" CHOOSERR1= "+ResistanceEnum.ESSENCE.name() + " =2=25", 2, 25, ResistanceEnum.ESSENCE);
 	}
 
 
-	private void assertPart(String parseableString, int expectedBonus, ResistanceEnum... expectedEnums) {
+	private void assertPart(String parseableString, int expectedBonus, int expectedSpellBonus, ResistanceEnum... expectedEnums) {
 		ChooseResistanceParser parser = new ChooseResistanceParser() {
 			@Override
-			protected ChooseResistancePart createPart(int amount, int bonus, ResistanceEnum... selectables) {
-				UTChooseResistancePart part =  new UTChooseResistancePart(amount, bonus, selectables);
+			protected ChooseResistancePart createPart(int amount, int bonus, int spellBonus, ResistanceEnum... selectables) {
+				UTChooseResistancePart part =  new UTChooseResistancePart(amount, bonus, spellBonus, selectables);
 				part.selectables = new ArrayList<ResistanceEnum>();
 				for (int i=0; i<amount; i++) {
 					part.selectables.add(selectables[i]);
@@ -51,6 +52,7 @@ public class ChooseResistanceParserTest {
 				return part;
 			}
 		};
+		assertTrue(parser.isParseable(parseableString));
 		ChooseResistancePart part = parser.parse(parseableString);
 		TalentFlaw tf =new TalentFlaw();
 		part.addToTalentFlaw(null, tf);
@@ -59,8 +61,14 @@ public class ChooseResistanceParserTest {
 			if (expectedEnumList.contains(res)) {
 				assertNotNull(tf.getResistanceBonus(res));
 				assertEquals(expectedBonus, tf.getResistanceBonus(res).intValue());
+				if (expectedSpellBonus != 0) {
+					assertEquals(expectedSpellBonus, tf.getSpellRealmBonus(res.getStat()).intValue());
+				} else {
+					assertNull(tf.getSpellRealmBonus(res.getStat()));
+				}
 			} else {
 				assertNull(tf.getResistanceBonus(res));
+				assertNull(tf.getSpellRealmBonus(res.getStat()));
 			}
 		}
 	}
@@ -69,8 +77,8 @@ public class ChooseResistanceParserTest {
 	private static class UTChooseResistancePart extends ChooseResistancePart {
 		List<ResistanceEnum> selectables;
 
-		public UTChooseResistancePart(int amount, int bonus, ResistanceEnum[] selectables) {
-			super(amount, bonus, selectables);
+		public UTChooseResistancePart(int amount, int bonus, int spellBonus, ResistanceEnum[] selectables) {
+			super(amount, bonus, spellBonus, selectables);
 		}
 		
 		@Override

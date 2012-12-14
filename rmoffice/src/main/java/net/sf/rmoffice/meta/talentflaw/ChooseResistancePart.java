@@ -28,10 +28,12 @@ public class ChooseResistancePart extends AbstractTalentFlawPart {
 	private final int amount;
 	private final int bonus;
 	private final ResistanceEnum[] selectables;
+	private final int spellBonus;
 	
-	public ChooseResistancePart(int amount, int bonus, ResistanceEnum... selectables) {
+	public ChooseResistancePart(int amount, int bonus, int spellBonus, ResistanceEnum... selectables) {
 		this.amount = amount;
 		this.bonus = bonus;
+		this.spellBonus = spellBonus;
 		this.selectables = selectables;
 	}
 	
@@ -45,6 +47,9 @@ public class ChooseResistancePart extends AbstractTalentFlawPart {
 		List<ResistanceEnum> selection = showSelectionDialog(context);
 		for (ResistanceEnum res : selection) {
 			talentFlaw.setResistanceBonus(res, Integer.valueOf(bonus));
+			if (spellBonus != 0) {
+				talentFlaw.addSpellRealmBonus(res.getStat(), Integer.valueOf(spellBonus));
+			}
 		}
 	}
 
@@ -57,10 +62,11 @@ public class ChooseResistancePart extends AbstractTalentFlawPart {
 			}
 			what.append(res.toString());
 		}
-		StringBuilder sb = new StringBuilder();
-		String msg = MessageFormat.format(RESOURCE.getString("ui.talentflaw.value.choosefrom"), ""+amount, what, format(bonus) );
-		appendBonusLine(sb, msg, Integer.valueOf(bonus));
-		return sb.toString();
+		String msg = MessageFormat.format(RESOURCE.getString("ui.talentflaw.value.choosefrom"), ""+amount, what, Integer.valueOf(bonus));
+		if (spellBonus != 0) {
+			msg += "( + " + RESOURCE.getString("rolemaster.spells") + " " + format(spellBonus) + ")";
+		}
+		return msg;
 	}
 	
 	protected List<ResistanceEnum> showSelectionDialog(TalentFlawContext context) {
