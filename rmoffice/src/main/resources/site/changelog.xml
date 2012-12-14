@@ -46,6 +46,7 @@
 		   <itemizedlist>
 		     <listitem><para>BASIC: change power manipulation to combined [<ulink url="http://sourceforge.net/tracker/?func=detail&amp;aid=3574456&amp;group_id=366195&amp;atid=1526969">&typeBug; 3574456</ulink>]</para></listitem>
 		     <listitem><para>LOCALE: spanisch locale enhancement [<ulink url="http://sourceforge.net/tracker/?func=detail&amp;aid=3574458&amp;group_id=366195&amp;atid=1526969">&typeBug; 3574458</ulink>]</para></listitem>
+		     <listitem><para>BASIC: add missing resource keys for english</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
