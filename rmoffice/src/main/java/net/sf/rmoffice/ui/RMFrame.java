@@ -107,6 +107,7 @@ import net.sf.rmoffice.ui.panels.BasicPanel;
 import net.sf.rmoffice.ui.panels.CharacteristicsPanel;
 import net.sf.rmoffice.ui.panels.CoinsPanel;
 import net.sf.rmoffice.ui.panels.EquipmentPanel;
+import net.sf.rmoffice.ui.panels.HerbsPanel;
 import net.sf.rmoffice.ui.panels.InfoPagePanel;
 import net.sf.rmoffice.ui.panels.LevelUpStatusBar;
 import net.sf.rmoffice.ui.panels.MagicalItemPanel;
@@ -253,6 +254,10 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		/* MagicalItem Panel */
 		MagicalItemPanel itemPanel = new MagicalItemPanel(getRMSheetAdapter(), enableValueHolder);
 		equipmentTabs.addTab(RESOURCE.getString("ui.tab.items"), null, createNorthPanel(itemPanel));		
+		/* Herbs */
+		HerbsPanel herbsPanel = new HerbsPanel(getRMSheetAdapter());
+		equipmentTabs.addTab(RESOURCE.getString("ui.tab.herbs"), herbsPanel);
+		/* add tabs to parent tab pane*/
 		tabbedPane.addTab(RESOURCE.getString("ui.tab.equipment"), null, equipmentTabs);
 		/* Info Panel */
 		InfoPagePanel infoPanel = new InfoPagePanel(getRMSheetAdapter());

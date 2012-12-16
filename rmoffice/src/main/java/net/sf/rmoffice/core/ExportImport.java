@@ -89,6 +89,7 @@ public class ExportImport {
 		xStream.alias("infopage", InfoPage.class);
 		xStream.alias("skillType", SkillType.class);
 		xStream.alias("talentflaw", TalentFlaw.class);
+		xStream.alias("herb", Herb.class);
 		xStream.addImmutableType(SkillType.class);
 		xStream.addImmutableType(StatEnum.class);
 		xStream.addImmutableType(ToDoType.class);

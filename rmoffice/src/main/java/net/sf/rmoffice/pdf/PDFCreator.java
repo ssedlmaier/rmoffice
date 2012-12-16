@@ -34,6 +34,7 @@ import javax.swing.JFrame;
 
 import net.sf.rmoffice.core.Characteristics;
 import net.sf.rmoffice.core.Equipment;
+import net.sf.rmoffice.core.Herb;
 import net.sf.rmoffice.core.InfoPage;
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.core.Rank;
@@ -1160,7 +1161,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		y = page4Jewelry(canvas, UPPER_Y);
 		float yBottom = page4CharImageAndSize(canvas);
 		/* lines between jewelry and image */
-		page4MagicItems(canvas, y, yBottom);
+		page4MagicItemsHerbs(canvas, y, yBottom);
 		/* */
 		footer(canvas);		
 	}
@@ -1386,10 +1387,10 @@ public class PDFCreator extends AbstractPDFCreator {
 	}
 	
 
-	private void page4MagicItems(PdfContentByte canvas, float y, float yBottom) {
+	private void page4MagicItemsHerbs(PdfContentByte canvas, float y, float yBottom) {
 		float leftX = LEFT_X + ((RIGHT_X - LEFT_X) / 2);
 		float centerX = leftX + ((RIGHT_X - LEFT_X) / 4);
-		/* header */
+		/* header Magical Items */
 		canvas.beginText();
 		canvas.setFontAndSize(fontHeadline, 8);
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("rolemaster.magicitems.header"), centerX, y, 0);
@@ -1419,10 +1420,51 @@ public class PDFCreator extends AbstractPDFCreator {
 			}
 		}
 		y -= 11;
+		y = page4MagicItemsHerbsEmptyLine(canvas, y, leftX);
+		y = page4MagicItemsHerbsEmptyLine(canvas, y, leftX);
+		/* Herbs */
+		List<Herb> herbs = sheet.getHerbs();
+		if (herbs.size() > 0) {
+			/* Header Herbs */
+			y -= 5;
+			canvas.beginText();
+			canvas.setFontAndSize(fontHeadline, 8);
+			canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("rolemaster.herbs.header"), centerX, y, 0);
+			canvas.endText();
+			y -= 5;
+			for (int i=0; i< herbs.size(); i++) {
+				/* herb text block */
+				Herb herb = herbs.get(i);
+				ColumnText ct = new ColumnText(canvas);
+				Phrase phrase0 = new Phrase(herb.getName()+" ", new Font(fontUser, 8));
+				Phrase phrase1 = new Phrase(herb.getDescription()+" ", new Font(fontUser, 7));
+				Phrase phrase2 = new Phrase(getWidgetBoxes( Math.min(10, herb.getAmount()) ), new Font(fontWidget, 7));
+				Phrase phrase3 = new Phrase((herb.getAmount() > 10 ? "... ":" ") + "("+herb.getAmount()+")", new Font(fontUser, 7));
+				ct.setSimpleColumn(phrase0, leftX + 5, y, RIGHT_X - 5, BOTTOM_Y + 5, 8, Element.ALIGN_LEFT);
+				ct.addText(phrase1);
+				ct.addText(phrase2);
+				ct.addText(phrase3);
+				try {
+					ct.go();
+					if (log.isDebugEnabled()) log.debug("description herb "+i+" lines written: "+ct.getLinesWritten());
+					y -= (8 * ct.getLinesWritten() + 4);
+				} catch (DocumentException e) {
+					log.error(e.getMessage(), e);
+				}
+				/* separator line */
+				labeledUserText(canvas, "", "__________________________", leftX + 30, y + 1, RIGHT_X - 30, fontUser, 7);
+			}
+			y -= 13;
+		}
 		/* fill up with lines */
 		while (y > yBottom) {
-			labeledUserText(canvas, "", "", leftX + 4, y, RIGHT_X - 4, fontRegular, 8);
-			y -= 11;
+			y = page4MagicItemsHerbsEmptyLine(canvas, y, leftX);
 		}
+	}
+
+	private float page4MagicItemsHerbsEmptyLine(PdfContentByte canvas, float y, float leftX) {
+		labeledUserText(canvas, "", "", leftX + 4, y, RIGHT_X - 4, fontRegular, 8);
+		y -= 11;
+		return y;
 	}
 }

@@ -726,7 +726,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		return y;
 	}
 
-	private String getWidgetBoxes(int numbs) {
+	protected String getWidgetBoxes(int numbs) {
 		StringBuilder sb = new StringBuilder();
 		for (int j=1; j<=numbs; j++) {
 			sb.append("o");

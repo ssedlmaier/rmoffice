@@ -41,6 +41,14 @@
 	  <section>
 		<title>Version 4.2.7 (2012-?)</title>
 		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		      <listitem><para>BASIC: Herbs and Potion panel and section on the PDF page 4 [<ulink url="http://sourceforge.net/tracker/?func=detail&amp;aid=3575230&amp;group_id=366195&amp;atid=1526972">&typeFeature; 3575230</ulink>]</para></listitem>
+		    </itemizedlist>
+		  </para>
+		</section>   
+		<section>
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>

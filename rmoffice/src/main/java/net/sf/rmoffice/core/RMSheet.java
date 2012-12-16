@@ -115,6 +115,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
     public static final String PROPERTY_STATE = "state";
     public static final String PROPERTY_MAGICALITEMS = "magicalitems";
 	public static final String PROPERTY_EQUIPMENTS = "equipments";
+	public static final String PROPERTY_HERBS = "herbs";
 	public static final String PROPERTY_INFO_PAGES = "infoPages";
 	public static final String PROPERTY_WEIGHT_UNIT = "weightUnit";
 	public static final String PROPERTY_LENGTH_UNIT = "lengthUnit";
@@ -154,6 +155,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	private List<ToDo> todos;
 	private List<MagicalItem> magicalitems;
 	private List<Equipment> equipments;
+	private List<Herb> herbs;
 	private Coins coins;
 	private List<InfoPage> infoPages; 
 	private RMLevelUp levelUp;
@@ -197,6 +199,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (magicalitems == null) {magicalitems = new ArrayList<MagicalItem>();}
 		if (characteristics != null) {characteristics.initialize();}
 		if (equipments == null) {equipments = new ArrayList<Equipment>();}
+		if (herbs == null) {herbs = new ArrayList<Herb>();}
 		if (coins == null) {coins = new Coins();}
 		if (levelUp == null) {levelUp = new RMLevelUp();}
 		levelUp.init(this, data);
@@ -204,6 +207,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			infoPages = new ArrayList<InfoPage>();
 		}
 		firePropertyChange(PROPERTY_EQUIPMENTS, null, equipments);
+		firePropertyChange(PROPERTY_HERBS, null, herbs);
 		firePropertyChange(PROPERTY_MAGICALITEMS, null, magicalitems);
 		if (raceId == null || professionId == null || cultureId == null) {
 			if (! State.RACE_PROF_SELECTION.equals(getState())) {
@@ -1988,6 +1992,19 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		firePropertyChange(PROPERTY_EQUIPMENTS, oldValue, equipment);
 	}
 	
+	public List<Herb> getHerbs() {
+		if (herbs == null) {
+			herbs = new ArrayList<Herb>();
+		}
+		return Collections.unmodifiableList(herbs);
+	}
+
+	public void setHerbs(List<Herb> herbs) {
+		Object oldValue = this.herbs;
+		this.herbs = herbs;
+		firePropertyChange(PROPERTY_HERBS, oldValue, this.herbs);
+	}
+
 	/**
 	 * The coin and jewelry save object.
 	 * 
