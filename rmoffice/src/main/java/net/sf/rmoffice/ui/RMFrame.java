@@ -408,8 +408,17 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		skillsTable.setSelectionBackground(UIConstants.COLOR_SELECTION_BG);
 		skillsTable.setSelectionForeground(UIConstants.COLOR_SELECTION_FG);
 		skillsTable.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
+		/* sorting*/
+		TableColumn orderGroupCol = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_ORDERGROUP);
+		orderGroupCol.setPreferredWidth(50);
+		NumberSpinnerTableCellEditor orderSpinner = new NumberSpinnerTableCellEditor(1, true, 0);
+		orderGroupCol.setCellEditor(orderSpinner);
+		NumberSpinnerTableRenderer orderRenderer = new NumberSpinnerTableRenderer();
+		orderGroupCol.setCellRenderer(orderRenderer);
+		/* skill */
 		TableColumn skillCol = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_SKILL);
 		skillCol.setPreferredWidth(200);
+		/* fav */
 		TableColumn favCol = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_FAVORITE);
 		favCol.setPreferredWidth(30);
 		favCol.setCellRenderer(new ColoredBooleanRenderer());

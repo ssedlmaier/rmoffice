@@ -80,7 +80,11 @@ public class NumberSpinnerTableCellEditor extends AbstractCellEditor implements 
 				value = feature.getBonus();
 			}
 		}
-		editor.setValue(value);
+		if (value == null) {
+			editor.setValue(Double.valueOf(0));
+		} else {
+			editor.setValue(value);
+		}
 		return editor;
 	}
 	

@@ -44,18 +44,19 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 	private final static Logger log = LoggerFactory.getLogger(SkillsTableModel.class);
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 
-	public static final int COL_SKILL = 0;
-	public static final int COL_SKILLGROUP = 1;
-	public static final int COL_FAVORITE = 2;
-	public static final int COL_RANK = 3;
-	public static final int COL_RANK_TYPE = 4;
-	public static final int COL_COST = 5;
+	public static final int COL_ORDERGROUP = 0;
+	public static final int COL_SKILL = 1;
+	public static final int COL_SKILLGROUP = 2;
+	public static final int COL_FAVORITE = 3;
+	public static final int COL_RANK = 4;
+	public static final int COL_RANK_TYPE = 5;
+	public static final int COL_COST = 6;
 	/** talents & flaws bonus */
-	public static final int COL_SPECIAL2_BONUS = 6; 
+	public static final int COL_SPECIAL2_BONUS = 7; 
 	/** user defined */
-	public static final int COL_SPECIAL_BONUS = 7; 
-	public static final int COL_TOTAL_BONUS = 8;
-	public static final int COL_ITEM_BONUS = 9;
+	public static final int COL_SPECIAL_BONUS = 8; 
+	public static final int COL_TOTAL_BONUS = 9;
+	public static final int COL_ITEM_BONUS = 10;
 
 	private String[] columNames;
 	private RMSheet sheet;
@@ -64,7 +65,8 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 	 * 
 	 */
 	public SkillsTableModel() {
-		columNames = new String[] { RESOURCE.getString("common.skill"),
+		columNames = new String[] { RESOURCE.getString("common.order"),
+				RESOURCE.getString("common.skill"),
 				RESOURCE.getString("ui.skills.table.skillgroup"),
 				RESOURCE.getString("common.favorite"),
 				RESOURCE.getString("common.ranks"),
@@ -102,6 +104,7 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 		case COL_SPECIAL_BONUS:
 		case COL_SPECIAL2_BONUS:
 		case COL_TOTAL_BONUS:
+		case COL_ORDERGROUP:
 			return Integer.class;
 		default:
 			return String.class;
@@ -111,7 +114,7 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 	/** {@inheritDoc} */
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return column == COL_FAVORITE || column == COL_RANK || column == COL_SPECIAL_BONUS;
+		return column == COL_FAVORITE || column == COL_RANK || column == COL_SPECIAL_BONUS || column == COL_ORDERGROUP;
 	}
 
 	public void setSheet(RMSheet sheet) {
@@ -166,6 +169,13 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 				sheet.setSkillSpecialBonus(skill, 0);
 			}
 			super.setValueAt(aValue, row, column);
+		} else if (column == COL_ORDERGROUP) {
+			if (aValue instanceof Integer) {
+				skill.setOrderGroup((Integer) aValue);
+			} else {
+				skill.setOrderGroup(null);
+			}
+			super.setValueAt(aValue, row, column);
 		} else {
 			super.setValueAt(aValue, row, column);
 		}
@@ -195,6 +205,7 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 		}
 		/* add to model */
 		Object[] rowData = new Object[columNames.length];
+		rowData[COL_ORDERGROUP] = skill.getOrderGroup();
 		rowData[COL_SKILL] = skill;
 		rowData[COL_SKILLGROUP] = sheet.getSkillcategory(skill).getName();
 		rowData[COL_FAVORITE] = sheet.getSkillRank(skill).getFavorite();
@@ -259,8 +270,8 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
                 Vector<Object> v1 = (Vector<Object>) o1;
                 Vector<Object> v2 = (Vector<Object>) o2;
  
-                ISkill sk1 = (ISkill) v1.get(0);
-                ISkill sk2 = (ISkill) v2.get(0);
+                ISkill sk1 = (ISkill) v1.get(COL_SKILL);
+                ISkill sk2 = (ISkill) v2.get(COL_SKILL);
                 if (! sk1.isSpelllist() && sk2.isSpelllist()) {
                 	return -1;
                 }
@@ -275,6 +286,7 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 	public void skillValuesChanged() {
 		for (int row=0; row < getRowCount(); row++) {
 			ISkill skill = (ISkill) super.getValueAt(row, COL_SKILL);
+			super.setValueAt(skill.getOrderGroup(), row, COL_ORDERGROUP);
 			super.setValueAt(sheet.getSkillRank(skill).getFavorite(), row, COL_FAVORITE);
 			BigDecimal rank = sheet.getSkillRank(skill).getRank();
 			if (rank == null) {

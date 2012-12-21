@@ -32,6 +32,7 @@ import net.sf.rmoffice.meta.enums.SkillType;
 	private final Integer id;
 	private String name;
 	private SkillType type;
+	private Integer orderGroup;
 
 	/* for Java 7 xStream deserializing behavior */
 	/* package private */ CustomSkill() {
@@ -114,6 +115,19 @@ import net.sf.rmoffice.meta.enums.SkillType;
 	@Override
 	public String getSource() {
 		return "";
+	}
+	
+	@Override
+	public Integer getOrderGroup() {
+		if (orderGroup == null) {
+			return Integer.valueOf(0);
+		}
+		return orderGroup;
+	}
+
+	@Override
+	public void setOrderGroup(Integer orderGroup) {
+		this.orderGroup = orderGroup;
 	}
 	
 	/** {@inheritDoc} */

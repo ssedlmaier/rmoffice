@@ -33,6 +33,7 @@ public class Skill implements ISkill {
 	private Map<LengthUnit, String> descriptions;
 	private RaceScope scope;
 	private String source;
+	private Integer orderGroup;
 	
 	/* package */ Skill() {
 	}
@@ -129,6 +130,19 @@ public class Skill implements ISkill {
 	
 	/* package */ void setSource(String source) {
 		this.source = source;
+	}
+	
+	@Override
+	public Integer getOrderGroup() {
+		if (orderGroup == null) {
+			return Integer.valueOf(0);
+		}
+		return orderGroup;
+	}
+
+	@Override
+	public void setOrderGroup(Integer orderGroup) {
+		this.orderGroup = orderGroup;
 	}
 
 	@Override

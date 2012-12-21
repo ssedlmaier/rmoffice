@@ -51,6 +51,7 @@ import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.ui.actions.DesktopAction;
 import net.sf.rmoffice.ui.models.LongRunningUIModel;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -365,6 +366,16 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 	             }
 	             if (sk1.isSpelllist() && ! sk2.isSpelllist()) {
 	             	return 1;
+	             }
+	             // sort by order/group
+	             if (!ObjectUtils.equals(sk1.getOrderGroup(), sk2.getOrderGroup())) {
+	            	 if (sk1.getOrderGroup() == null /* means sk2 has a order group */) {
+	            		 return -1;
+	            	 } else if (sk2.getOrderGroup() == null) {
+	            		 return 1;
+	            	 } else {
+	            		 return sk1.getOrderGroup().compareTo(sk2.getOrderGroup());
+	            	 }
 	             }
 	             return sk1.getName().compareTo(sk2.getName());
 	        }

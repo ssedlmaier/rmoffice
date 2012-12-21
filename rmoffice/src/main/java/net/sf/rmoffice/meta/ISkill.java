@@ -48,4 +48,18 @@ public interface ISkill extends INamed {
 	 */
 	public String getSource();
 	
+	/**
+	 * Returns a number for ordering/grouping the favorites.
+	 * 
+	 * @return order group number, not {@code null}
+	 */
+	public Integer getOrderGroup();
+	
+	/**
+	 * Sets the new order number or {@code null} for default.
+	 * 
+	 * @param order number or {@code null}
+	 */
+	public void setOrderGroup(Integer orderGroup);
+	
 }

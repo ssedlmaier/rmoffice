@@ -159,7 +159,7 @@
 				</listitem>
 			</orderedlist>
 		</section>
-	     <section>
+	    <section>
 			<title>Magical items</title>
 			<para>Magical items have a name and features (powers, aibilities, ..). These features can be a resistance bonus, 
 			 stat bonus, skill bonus or a description like &quot;against orcs +20&quot;. All magical items are generated on the PDF
@@ -187,6 +187,22 @@
 			  </orderedlist>
 			</para>
 			<para>Each magical item has a number which is printed on page 1 of the PDF and page 4, too.
+			</para>
+	    </section>
+	    <section>
+			<title>Sorting in the skill table</title>
+			<para>Since &product; 4.2.7 a new column was added to the skill table named sorting. You can order your
+			favorite skills, spells and weapons on page 1. The first criteria is the type (skill, spell, weapon)
+			which you cannot modify. The second criteria is the new sorting column and the third criteria is the name.
+			</para>
+			<para>
+			So if you want to group some of your favorite skills give them the same sorting number. Example: You want
+			to group your outdoor skills. Enter a 1 to all your outdoor skills. Now your outdoor skills are grouped at
+			the end of your skill list together.
+			</para>
+			<para>
+			Next you want to your base spell lists at top of the favorite lists block. Give all non base lists a 1.
+			The base lists have a 0 and the rest of your lists have a 1.
 			</para>
 	    </section>
 	</section>
