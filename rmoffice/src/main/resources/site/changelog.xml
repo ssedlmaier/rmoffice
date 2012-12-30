@@ -58,7 +58,7 @@
 		     <listitem><para>BASIC: add missing resource keys for english</para></listitem>
 		     <listitem><para>BASIC: Add spell casting +25 to talent Exceptional Magical Ability [<ulink url="http://sourceforge.net/tracker/?func=detail&amp;aid=3575232&amp;group_id=366195&amp;atid=1526969">&typeBug; 3575232</ulink>]</para></listitem>
 		     <listitem><para>BASIC: Fix loading character files with Java 7 and talents with progression changes  [<ulink url="http://sourceforge.net/tracker/?func=detail&amp;aid=3594297&amp;group_id=366195&amp;atid=1526969">&typeBug; 3594297</ulink>]</para></listitem>
-		     <listitem><para>BASIC: Add Everyman skills for Shadow World culture forest dweller  [<ulink url="http://sourceforge.net/tracker/?func=detail&amp;aid=3575408&amp;group_id=366195&amp;atid=1526969">&typeBug; 3575408</ulink>]</para></listitem>
+		     <listitem><para>BASIC: Add Everyman skills for Shadow World culture highlander, sailor, nomad, forest dweller  [<ulink url="http://sourceforge.net/tracker/?func=detail&amp;aid=3575408&amp;group_id=366195&amp;atid=1526969">&typeBug; 3575408</ulink>]</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
