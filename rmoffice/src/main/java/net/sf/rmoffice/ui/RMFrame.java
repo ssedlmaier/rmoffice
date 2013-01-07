@@ -500,7 +500,8 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (skillsTable.getSelectedRow() > -1) {
-					skillModel.removeRow(skillsTable.getSelectedRow());
+					int actualRow = skillsTable.convertRowIndexToModel(skillsTable.getSelectedRow());
+					skillModel.removeRow(actualRow);
 				}
 			}
 		});
