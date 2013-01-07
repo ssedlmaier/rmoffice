@@ -32,31 +32,58 @@ import net.sf.rmoffice.ui.UIConstants;
 public class TextAreaTableCellRenderer extends DefaultTableCellRenderer  {
 	private static final long serialVersionUID = 1L;
 	private JTextArea textAreaComponent;
+	private JTextArea textAreaComponentSelected;
 	
 	/**
 	 * 
 	 */
 	public TextAreaTableCellRenderer() {
 		super();
-		textAreaComponent = new JTextArea();
-		textAreaComponent.setWrapStyleWord(true);
-		textAreaComponent.setLineWrap(true);
-		textAreaComponent.setForeground(Color.black);
 	}
 	
+	private JTextArea createTF() {
+		JTextArea ta = new JTextArea();
+		ta.setWrapStyleWord(true);
+		ta.setLineWrap(true);
+		ta.setForeground(Color.black);
+		return ta;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		JLabel lbl = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		textAreaComponent.setBorder(lbl.getBorder());
-		textAreaComponent.setBackground(lbl.getBackground());
-		textAreaComponent.setText(lbl.getText());
-		textAreaComponent.setSize(table.getSize().width, table.getRowHeight());
-		int rowHeight = textAreaComponent.getPreferredSize().height;
+		JTextArea renderer;
+		// due to performance issues we will hold 2 different renderer components
+		if (isSelected) {
+			if (textAreaComponentSelected == null) {
+				JLabel lbl = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				textAreaComponentSelected = createTF();
+				textAreaComponentSelected.setBorder(lbl.getBorder());
+				textAreaComponentSelected.setBackground(lbl.getBackground());
+			}
+			renderer = textAreaComponentSelected;
+		} else {
+			if (textAreaComponent == null) {
+				JLabel lbl = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				textAreaComponent = createTF();
+				textAreaComponent.setBorder(lbl.getBorder());
+				textAreaComponent.setBackground(lbl.getBackground());
+			}
+			renderer = textAreaComponent;
+		}
+		if (value != null) {
+			renderer.setText(value.toString());
+		} else{
+			renderer.setText("");
+		}
+		renderer.setSize(table.getSize().width, table.getRowHeight());
+		int rowHeight = renderer.getPreferredSize().height;
 		if (rowHeight < UIConstants.TABLE_ROW_HEIGHT) {
 			rowHeight = UIConstants.TABLE_ROW_HEIGHT;
 		}
-		table.setRowHeight(row, rowHeight );
-		return textAreaComponent;
+		if (table.getRowHeight(row) != rowHeight) {
+			table.setRowHeight(row, rowHeight );
+		}
+		return renderer;
 	}
 }

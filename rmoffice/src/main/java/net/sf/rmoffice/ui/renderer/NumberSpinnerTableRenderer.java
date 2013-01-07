@@ -18,7 +18,6 @@ package net.sf.rmoffice.ui.renderer;
 import java.awt.Component;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSpinner.NumberEditor;
 import javax.swing.JTable;
@@ -38,12 +37,9 @@ import com.jidesoft.swing.DefaultOverlayable;
  */
 public class NumberSpinnerTableRenderer extends JLabel implements TableCellRenderer {
 	private static final long serialVersionUID = 1L;
-	private final static JLabel OVERLAY1 = new JLabel(new ImageIcon(NumberSpinnerTableRenderer.class.getResource("/images/icons/overlay_1.png")));
-	private final static JLabel OVERLAY2 = new JLabel(new ImageIcon(NumberSpinnerTableRenderer.class.getResource("/images/icons/overlay_2.png")));
-	private final static JLabel OVERLAY3 = new JLabel(new ImageIcon(NumberSpinnerTableRenderer.class.getResource("/images/icons/overlay_3.png")));
 	
-	private final OverlayableSpinner spinner;
-	private final DefaultOverlayable overlayable;
+	private final OverlayableSpinner[] spinner;
+	private final DefaultOverlayable[] overlayable;
 	private final boolean alwaysShow;
 	
 	/**
@@ -62,9 +58,18 @@ public class NumberSpinnerTableRenderer extends JLabel implements TableCellRende
 	 */
     public NumberSpinnerTableRenderer(boolean alwaysShow) {
         this.alwaysShow = alwaysShow;
-		spinner  = new OverlayableSpinner(new SpinnerNumberModel(0d, 0d, 100d, 0.5d));
-        spinner.setBorder(null);
-        overlayable = new DefaultOverlayable(spinner);
+        spinner = new OverlayableSpinner[4];
+        overlayable = new DefaultOverlayable[4];
+        for (int i=0; i<spinner.length; i++) {
+        	spinner[i]  = new OverlayableSpinner(new SpinnerNumberModel(0d, 0d, 100d, 0.5d));
+        	spinner[i].setBorder(null);
+        	overlayable[i] = new DefaultOverlayable(spinner[i]);
+        	if (i > 0) {
+        		JLabel icon = new JLabel(new ImageIcon(NumberSpinnerTableRenderer.class.getResource("/images/icons/overlay_"+i+".png")));   		
+        		overlayable[i].addOverlayComponent(icon, DefaultOverlayable.WEST);
+        		overlayable[i].setOverlayVisible(true);
+        	}
+        }
     }
 
     @Override
@@ -87,41 +92,31 @@ public class NumberSpinnerTableRenderer extends JLabel implements TableCellRende
 				return getEmptyLabel(table, isSelected);
 			}
 		}
+		// determine the renderer index
+		int rendererIdx = 0;
+		if (table.getModel() instanceof IOverlaySupportable) {
+			IOverlaySupportable overlaySupport = (IOverlaySupportable) table.getModel();
+			int actualRow = table.convertRowIndexToModel(row);
+			int actualCol = table.convertColumnIndexToModel(column);
+			rendererIdx = overlaySupport.getLevelUpSteps(actualRow, actualCol);
+		}
+		 // modify renderer
 		if (isSelected) {
-			spinner.setBackground(table.getSelectionBackground());
-			((NumberEditor)spinner.getEditor()).getTextField().setBackground(table.getSelectionBackground());
+			spinner[rendererIdx].setBackground(table.getSelectionBackground());
+			((NumberEditor)spinner[rendererIdx].getEditor()).getTextField().setBackground(table.getSelectionBackground());
 			setOpaque(true);
 		} else {
-			spinner.setBackground(table.getBackground());
-			((NumberEditor)spinner.getEditor()).getTextField().setBackground(UIConstants.COLOR_EDITABLE_BG);
+			spinner[rendererIdx].setBackground(table.getBackground());
+			((NumberEditor)spinner[rendererIdx].getEditor()).getTextField().setBackground(UIConstants.COLOR_EDITABLE_BG);
 			setOpaque(false);
 		}		
         if(value == null) {
-            spinner.setValue(Double.valueOf(0));
+            spinner[rendererIdx].setValue(Double.valueOf(0));
         } else {
-            spinner.setValue(value);
+            spinner[rendererIdx].setValue(value);
         }
-        /* remove all overlays */
-        for (JComponent comp : overlayable.getOverlayComponents()) {
-        	overlayable.removeOverlayComponent(comp);
-        }
-        if (table.getModel() instanceof IOverlaySupportable) {
-        	IOverlaySupportable overlaySupport = (IOverlaySupportable) table.getModel();
-        	int actualRow = table.convertRowIndexToModel(row);
-        	int actualCol = table.convertColumnIndexToModel(column);
-        	switch (overlaySupport.getLevelUpSteps(actualRow, actualCol)) {
-        		case 1:
-        			overlayable.addOverlayComponent(OVERLAY1, DefaultOverlayable.WEST);
-        		break;
-        		case 2:        	
-        			overlayable.addOverlayComponent(OVERLAY2, DefaultOverlayable.WEST);
-        			break;
-        		case 3:
-        			overlayable.addOverlayComponent(OVERLAY3, DefaultOverlayable.WEST);
-        			break;
-        	}
-        }
-        return overlayable;
+       
+        return overlayable[rendererIdx];
     }
 
 	/**
