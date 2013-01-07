@@ -256,7 +256,7 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 	/** {@inheritDoc} */
 	@Override
 	public void removeRow(int row) {
-		ISkill skill = (ISkill)super.getValueAt(row, 0);			
+		ISkill skill = (ISkill)super.getValueAt(row, COL_SKILL);			
 		sheet.removeSkillRank(skill);
 		super.removeRow(row);
 	}
