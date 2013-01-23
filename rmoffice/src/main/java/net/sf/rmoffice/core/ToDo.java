@@ -24,13 +24,14 @@ import net.sf.rmoffice.meta.enums.ToDoType;
 public class ToDo {	
 	private final String message;
 	private final ToDoType type;
-	private final String toString;
+	private transient String toString;
 	
 	/* for Java 7 xStream deserializing bug */
 	/* package private */ ToDo() {
 		message = "";
 		type = ToDoType.SYSTEM;
-		this.toString = init(message, type);
+		/* with Java 7 leave it empty */
+		this.toString = null;
 	}
 	
 	/**
@@ -63,6 +64,9 @@ public class ToDo {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
+		if (toString == null) {
+			toString = init(message, type);
+		}
 		return toString;
 	}
 	
