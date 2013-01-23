@@ -28,3 +28,11 @@ Source code has no warnings with the eclipse compiler settings you can find in t
 Docbook generator:
 Download the rmoffice-docbook.zip from sf.net and import it as a new eclipse project.
 Run the default target from build.xml to generate the html sites. (check the console output)
+
+Howto Release:
+You have to change the new version in follwing files:
+/pom.xml (the main version)
+/lvl.nfo (for the update notification)
+/src/main/resources/readme.xml (for up-to-date readme)
+/src/main/resources/changelog.xml (the current date)
+/src/main/resources/conf/i18n/locale*.properties (for the update notification)
