@@ -1219,7 +1219,8 @@ public class PDFCreator extends AbstractPDFCreator {
 		header2(canvas, 5);
 		box(canvas, LEFT_X, UPPER_Y, RIGHT_X, BOTTOM_Y);
 		/* extract skills (without weapons, spells) */
-		List<ISkill> allSkills = data.getSkills();
+		List<ISkill> allSkills = sheet.getSkills();
+		/* add custom skills */
 		List<String> skills = new ArrayList<String>();
 		for (ISkill skill : allSkills) {
 			if (!skill.isSpelllist() && (skill.getScope() == null || skill.getScope().equals(sheet.getRace().getScope()))) {

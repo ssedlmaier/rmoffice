@@ -30,6 +30,7 @@ import net.sf.rmoffice.meta.enums.MagicalItemFeatureType;
 import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.ui.components.StrictAutoCompletionComboBox;
+import net.sf.rmoffice.ui.renderer.SkillnameComboboxRenderer;
 
 import com.jgoodies.binding.beans.BeanAdapter;
 import com.jidesoft.swing.AutoCompletionComboBox;
@@ -39,6 +40,7 @@ import com.jidesoft.swing.AutoCompletionComboBox;
  * 
  */
 public class MagicalFeatureTableCellEditor extends AbstractComboBoxTableCellEditor {
+
 	private static final long serialVersionUID = 1L;
 	private final JTextField textfield = new JTextField();
 	private final AutoCompletionComboBox cbStat;
@@ -57,6 +59,7 @@ public class MagicalFeatureTableCellEditor extends AbstractComboBoxTableCellEdit
 		cbResistance = new StrictAutoCompletionComboBox(ResistanceEnum.values());
 		cbResistance.addPopupMenuListener(this);
 		cbSkill = new StrictAutoCompletionComboBox(new Vector<ISkill>());
+		cbSkill.setRenderer(new SkillnameComboboxRenderer());
 		cbSkill.addPopupMenuListener(this);
 	}
 

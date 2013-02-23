@@ -39,6 +39,15 @@
 	 -->
 	 <section>
 		<title>Version 4.3.0 (2013-)</title>
+		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		      <listitem><para>PDF: Page 5 (all skills) contains all skills (including custom skill)</para></listitem>
+		      <listitem><para>UI: Magical-Item-View and Skill-Table shows custom skills with bold font, spells with italic font</para></listitem>
+		    </itemizedlist>
+		  </para>
+		</section>   
 	    <section>
 		 <title>&bugfixes;</title>
 		 <para>

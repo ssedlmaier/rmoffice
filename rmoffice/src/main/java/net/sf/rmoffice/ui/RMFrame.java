@@ -119,6 +119,7 @@ import net.sf.rmoffice.ui.renderer.BonusFormatTableCellRenderer;
 import net.sf.rmoffice.ui.renderer.ColoredBooleanRenderer;
 import net.sf.rmoffice.ui.renderer.NumberSpinnerTableRenderer;
 import net.sf.rmoffice.ui.renderer.SkillTreeRenderer;
+import net.sf.rmoffice.ui.renderer.SkillnameTableRenderer;
 import net.sf.rmoffice.util.RMOFileFilter;
 
 import org.slf4j.Logger;
@@ -417,6 +418,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		orderGroupCol.setCellRenderer(orderRenderer);
 		/* skill */
 		TableColumn skillCol = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_SKILL);
+		skillCol.setCellRenderer(new SkillnameTableRenderer());
 		skillCol.setPreferredWidth(200);
 		/* fav */
 		TableColumn favCol = skillsTable.getColumnModel().getColumn(SkillsTableModel.COL_FAVORITE);
