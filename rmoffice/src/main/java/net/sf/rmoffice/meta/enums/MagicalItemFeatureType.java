@@ -27,8 +27,8 @@ public enum MagicalItemFeatureType {
 	SKILL(true),
 	RESISTANCE(true),
 	STAT(true),
-	DESCRIPTION(false)
-	/* TODO DB(Shield) */
+	DESCRIPTION(false),
+	DB(true)
 	;
 	
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$

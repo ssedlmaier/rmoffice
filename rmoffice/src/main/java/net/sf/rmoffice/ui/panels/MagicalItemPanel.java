@@ -187,6 +187,14 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 				}
 				return super.getCellEditor(row, column);
 			}
+			
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				if (COL_DESCR == column) {
+					return MagicalItemFeatureType.DB != getValueAt(row, COL_TYPE);
+				}
+				return super.isCellEditable(row, column);
+			}
 		};
 		featureTable.setBackground(UIConstants.COLOR_EDITABLE_BG);
 		featureTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -307,6 +315,9 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 			switch (columnIndex) {
 				case COL_TYPE:
 				  feature.setType((MagicalItemFeatureType)aValue);
+				  if (MagicalItemFeatureType.DB.equals(feature.getType())) {
+					  feature.setDescription(RESOURCE.getString("MagicalItemFeatureType.DB"));
+				  }
 				  fireTableRowsUpdated(rowIndex, rowIndex);
 				break;
 				case COL_DESCR:
@@ -344,6 +355,10 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 							break;
 						case DESCRIPTION:
 							feature.setDescription((String)aValue);
+							break;
+						case DB:
+							// not editable
+							break;
 					}
 					break;
 				case COL_BONUS:

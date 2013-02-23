@@ -141,6 +141,21 @@ public class MagicalItem extends AbstractPropertyChangeSupport {
 	}
 	
 	/**
+	 * 
+	 * @param res
+	 * @return whether one of the features is DB modifying
+	 */
+	public boolean hasDBModifier() {
+		for (MagicalFeature feat : getFeatures()) {
+			if (MagicalItemFeatureType.DB.equals(feat.getType())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
 	 * Returns the item with all features as one string line.
 	 * @param index the index of the item
 	 * 

@@ -75,6 +75,8 @@ public class MagicalFeatureTableCellEditor extends AbstractComboBoxTableCellEdit
 				return cbResistance.getSelectedItem();
 			case DESCRIPTION:
 				return textfield.getText();
+			case DB:
+				// cell is not editable
 		}
 		return null;
 	}
@@ -102,6 +104,8 @@ public class MagicalFeatureTableCellEditor extends AbstractComboBoxTableCellEdit
 				case DESCRIPTION:
 					textfield.setText(mf.getDescription());
 					return textfield;
+				case DB:
+					// cell is not editable
 			}
 		}
 		return textfield;

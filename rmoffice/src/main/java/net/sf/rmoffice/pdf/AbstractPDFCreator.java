@@ -856,14 +856,19 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.shield")+":", sb.toString(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.magic")+":", "", x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
-		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.special")+":", format(sheet.getDefensiveBonusSpecial(), true), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* defensive bonus */
 		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.total")+":", format(sheet.getDefensiveBonus(), false), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		/* db modifing items */
+		List<MagicalItem> items = sheet.getMagicalitems();
+		for (int i=0; i<items.size(); i++) {
+			MagicalItem item = items.get(i);
+			if (Boolean.TRUE.equals(item.getFavorite()) && item.hasDBModifier()) {
+				y = showMagicalItems(canvas, item.asOneLine(i+1), y, x + 10, PAGE1_LEFTBOX_RIGHTX - 6, false);
+			}
+		}
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		
 		/* -------------- */
 		hline(canvas, LEFT_X, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , PAGE1_LEFTBOX_RIGHTX);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
