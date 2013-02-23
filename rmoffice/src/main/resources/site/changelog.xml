@@ -37,6 +37,18 @@
 	</section>
 	
 	 -->
+	 <section>
+		<title>Version 4.3.0 (2013-)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>PDF: Show max 10 boxes for fate points</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>
+	 
 		<section>
 		<title>Version 4.2.8 (2013-01-23)</title>
 	    <section>

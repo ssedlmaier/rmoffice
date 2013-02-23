@@ -608,8 +608,14 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("ui.basic.fatepoints"), LEFT_X + 240, y, 0);
 		y -= lineHeight;
 		canvas.setFontAndSize(fontWidget, 8);
-		String str = getWidgetBoxes(sheet.getFatepoints().intValue());
+		// show max. 10 fate point boxes
+		String str = getWidgetBoxes(Math.min(sheet.getFatepoints().intValue(), 10));
 		canvas.showTextAligned(Element.ALIGN_CENTER, str, LEFT_X + 240, y, 0);
+		if (sheet.getFatepoints().intValue() > 10) {
+			canvas.setFontAndSize(fontUser, 8);
+			String label = "(" + sheet.getFatepoints().intValue() + ")";
+			canvas.showTextAligned(Element.ALIGN_LEFT, label, LEFT_X + 272, y, 0);
+		}
 		
 		/* grace / corruption */
 		canvas.setFontAndSize(fontBold, 8);
