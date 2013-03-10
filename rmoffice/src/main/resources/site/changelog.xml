@@ -54,6 +54,7 @@
 		 <para>
 		   <itemizedlist>
 		     <listitem><para>PDF: Show max 10 boxes for fate points</para></listitem>
+		     <listitem><para>LOCALE: FIX spanish divine status levels</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
