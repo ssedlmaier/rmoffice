@@ -15,6 +15,8 @@
  */
 package net.sf.rmoffice;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -25,7 +27,12 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import net.sf.rmoffice.meta.MetaData;
@@ -44,6 +51,7 @@ public class RMOffice {
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	private static final String LATEST_VERSION_CHECK_URL = "http://sourceforge.net/projects/rmoffice/files/old/lv.nfo/download";
 
+	private static RMFrame frame = null;
 	/**
 	 * 
 	 * @param args
@@ -53,7 +61,8 @@ public class RMOffice {
 			log.info("starting "+getProgramString());
 			log.info("locale: "+Locale.getDefault());
 		}
-		RMFrame frame = null;
+		// install AWT error handler
+		System.setProperty("sun.awt.exception.handler", AWTExceptionHandler.class.getName());
 		try {
 			frame = new RMFrame();
 			RMPreferences.init();
@@ -68,11 +77,22 @@ public class RMOffice {
 				log.debug("offline mode: no latest release check");
 			}
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			Writer sOut = new StringWriter();
-			e.printStackTrace(new PrintWriter(sOut ));
-			JOptionPane.showMessageDialog(frame, RESOURCE.getString("error.application")+"\n\n"+e.getClass().getName()+" "+sOut.toString());
+			handleException(e);
 		}
+	}
+
+	private static void handleException(Throwable t) {
+		log.error(t.getMessage(), t);
+		Writer sOut = new StringWriter();
+		t.printStackTrace(new PrintWriter(sOut ));
+		JTextArea ta = new JTextArea(t.getClass().getName()+" "+sOut.toString());
+		JScrollPane sp = new JScrollPane(ta);
+		sp.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(new JLabel(RESOURCE.getString("error.application")), BorderLayout.NORTH);
+		panel.add(sp, BorderLayout.CENTER);
+		sp.setPreferredSize(new Dimension(400, 200));
+		JOptionPane.showMessageDialog(frame, panel, RESOURCE.getString("error.application"), JOptionPane.ERROR_MESSAGE);
 	}
 	
 	private static void checkForUpdate(final RMFrame frame) {		
@@ -131,5 +151,12 @@ public class RMOffice {
 	 */
 	public static String getProgramString() {
 		return MessageFormat.format(RESOURCE.getString("rolemaster.versioninfo"), RESOURCE.getString("rolemaster.version"));
+	}
+	
+	public static class AWTExceptionHandler {
+
+		public void handle(Throwable t) {
+			RMOffice.handleException(t);
+		}
 	}
 }
