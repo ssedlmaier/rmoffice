@@ -217,8 +217,9 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 				int result = fch.showOpenDialog(CharacteristicsPanel.this);
 				if (JFileChooser.APPROVE_OPTION == result) {
 					File selectedFile = fch.getSelectedFile();
+					InputStream fileInputStream = null;
 					try {
-						InputStream fileInputStream = new FileInputStream(selectedFile);
+						fileInputStream = new FileInputStream(selectedFile);
 						ByteArrayOutputStream out = new ByteArrayOutputStream();
 						byte[] b = new byte[2048];
 						while (fileInputStream.available() > 0) {
@@ -232,6 +233,14 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 						charImageConverter.setValue(bytes);
 					} catch (IOException ex) {
 						if (log.isWarnEnabled()) log.warn(ex.getMessage());
+					} finally {
+						if (fileInputStream != null) {
+							try {
+								fileInputStream.close();
+							} catch (IOException e1) {
+								log.warn("Could not close file stream {0}: {1}", selectedFile.toString(), e1);
+							}
+						}
 					}
 				}
 			}
