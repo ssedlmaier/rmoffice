@@ -30,6 +30,7 @@ public class StatBonusParserTest {
 		StatBonusParser parser = new StatBonusParser();
 		for (StatEnum stat : StatEnum.values()) {
 			parser.isParseable(stat.name() + "=5");
+			parser.isParseable(stat.name() + "=-5");
 		}
 	}
 	

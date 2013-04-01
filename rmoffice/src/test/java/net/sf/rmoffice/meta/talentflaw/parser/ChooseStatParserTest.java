@@ -40,6 +40,9 @@ public class ChooseStatParserTest {
 		assertTrue(parser.isParseable("STAT1=5"));
 		assertTrue(parser.isParseable(" STAT2=10"));
 		assertTrue(parser.isParseable(" STAT10=55 "));
+		assertTrue(parser.isParseable("STAT1=-5"));
+		assertTrue(parser.isParseable(" STAT2=-10"));
+		assertTrue(parser.isParseable(" STAT10=-55 "));
 	}
 	
 	@Test
@@ -49,6 +52,11 @@ public class ChooseStatParserTest {
 		assertStatBonus("  STAT1=5  ", 5, StatEnum.STRENGTH);
 		assertStatBonus("  STAT1=5", 5, StatEnum.STRENGTH);
 		assertStatBonus("  STAT1=  5", 5, StatEnum.STRENGTH);
+		assertStatBonus("STAT1=-5", -5, StatEnum.STRENGTH);
+		assertStatBonus("STAT2=-10", -10, StatEnum.STRENGTH, StatEnum.QUICKNESS);
+		assertStatBonus("  STAT1=-5  ", -5, StatEnum.STRENGTH);
+		assertStatBonus("  STAT1=-5", -5, StatEnum.STRENGTH);
+		assertStatBonus("  STAT1=  -5", -5, StatEnum.STRENGTH);
 	}
 
 	private void assertStatBonus(String parseableString, final int expectedBonus, final StatEnum... expectedStats) {

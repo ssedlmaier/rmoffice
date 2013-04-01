@@ -66,6 +66,7 @@ public class TalentFlaw extends Model {
 	private TalentFlawLevel level;
 	private int costs;
 	private Integer initiativeBonus;
+	private Integer snapBonus;
 	private String description;
 	private Map<Integer, Integer> skillCatBonus;
 	private Map<Integer, SkillType> skillCatType;
@@ -81,11 +82,14 @@ public class TalentFlaw extends Model {
 	private Integer exhaustion;
 	private Map<StatEnum, Integer> statBonus;
 	private Float recoveryMultiplier;
+	private Float exhaustionMultiplier;
+	private Float basemoverateMultiplier;
 	private Float tolerance;
 	private Map<ResistanceEnum, Integer> resBonus;
 	private Map<Integer, Skillcost> skillCostReplacement;
 	private Map<Integer, Skillcost> skillCategoryCostReplacement;
 	private HashMap<StatEnum, Integer> spellRealmBonus;
+	private Integer souldeparture;
 	
 	public TalentFlaw() {
 	}
@@ -148,6 +152,14 @@ public class TalentFlaw extends Model {
 
 	public void setInitiativeBonus(Integer initiativeBonus) {
 		this.initiativeBonus = initiativeBonus;
+	}
+	
+	public Integer getSnapBonus() {
+		return snapBonus;
+	}
+	
+	public void setSnapBonus(Integer snapBonus) {
+		this.snapBonus = snapBonus;
 	}
 
 	public String getDescription() {
@@ -383,6 +395,22 @@ public class TalentFlaw extends Model {
 	public Float getRecoveryMultiplier() {
 		return recoveryMultiplier;
 	}
+	
+	public Float getExhaustionMultiplier() {
+		return exhaustionMultiplier;
+	}
+	
+	public void setExhaustionMultiplier(Float exhaustionMultiplier) {
+		this.exhaustionMultiplier = exhaustionMultiplier;
+	}
+	
+	public Float getBasemoverateMultiplier() {
+		return basemoverateMultiplier;
+	}
+	
+	public void setBasemoverateMultiplier(Float basemoverateMultiplier) {
+		this.basemoverateMultiplier = basemoverateMultiplier;
+	}
 
 	/**
 	 * Sets the tolerance factor.
@@ -400,6 +428,22 @@ public class TalentFlaw extends Model {
 	 */
 	public Float getTolerance() {
 		return tolerance;
+	}
+	
+	/**
+	 * Sets absolute value of soul departure.
+	 * @param souldeparture
+	 */
+	public void setSouldeparture(Integer souldeparture) {
+		this.souldeparture = souldeparture;
+	}
+	
+	/**
+	 * Returns the absolute value of soul departure.
+	 * @return new value for soul departure or {@code null}
+	 */
+	public Integer getSouldeparture() {
+		return souldeparture;
 	}
 
 	/**

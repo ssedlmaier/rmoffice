@@ -32,6 +32,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 
+import net.sf.rmoffice.RMPreferences;
 import net.sf.rmoffice.core.Characteristics;
 import net.sf.rmoffice.core.Equipment;
 import net.sf.rmoffice.core.Herb;
@@ -196,9 +197,11 @@ public class PDFCreator extends AbstractPDFCreator {
 		for (TalentFlaw tf : sheet.getTalentsFlaws()) {
 			String[] text = StringUtils.split(StringUtils.trim(tf.asText(data, sheet)), "\n", 2);
 			ct.addElement(new Paragraph(text[0], new Font(fontBold, fontSize + 0.5f)));
-			Paragraph pText = new Paragraph(text[1], new Font(fontUser, fontSize - 0.5f));
-			pText.setSpacingAfter(2);
-			ct.addElement(pText);
+			if (text.length > 1 && !StringUtils.isEmpty(text[1])) {
+				Paragraph pText = new Paragraph(text[1], new Font(fontUser, fontSize - 0.5f));
+				pText.setSpacingAfter(2);
+				ct.addElement(pText);
+			}
 		}
 	}
 
@@ -538,8 +541,16 @@ public class PDFCreator extends AbstractPDFCreator {
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.raceinfo.header"), center, y, 0);
 		canvas.endText();
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		/* Seelenstärke */
-		labeledUserText(canvas, RESOURCE.getString("pdf.page1.raceinfo.souldeparture")+":", ""+sheet.getRace().getSoulDeparture(), x, y, x1, fontRegular, 8);
+		/* Soul departure */
+		int soulDeparture = sheet.getRace().getSoulDeparture();
+		if (sheet.getTalentsFlaws() != null) {
+			for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+				if (tf.getSouldeparture() != null) {
+					soulDeparture = tf.getSouldeparture().intValue();
+				}
+			}
+		}
+		labeledUserText(canvas, RESOURCE.getString("pdf.page1.raceinfo.souldeparture")+":", ""+soulDeparture, x, y, x1, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		/* Recovery Multiplier / Genesungsmultiplikator */
@@ -1284,11 +1295,26 @@ public class PDFCreator extends AbstractPDFCreator {
 		for (int i=1; i<=6; i++) {
 			String textLine = RESOURCE.getString("pdf.page6.order"+i);
 			if (textLine.contains("{0}")) {
-				String quBonus = format(sheet.getInitiativeBonus(), false);
-				if ("0".equals(quBonus)) {
-					quBonus = "+0";
+				if (i == 3) {
+					String quBonus = format(sheet.getInitiativeBonus(), false);
+					if ("0".equals(quBonus)) {
+						quBonus = "+0";
+					}
+					textLine = MessageFormat.format(textLine, quBonus);
+				} else if (i == 4) {
+					String snapBonus = format(RMPreferences.getInstance().getSnapBonus(), false);
+					if (sheet.getTalentsFlaws() != null) {
+						for (TalentFlaw tf : sheet.getTalentsFlaws()) {
+							if (tf.getSnapBonus() != null) {
+								snapBonus = format(tf.getSnapBonus().intValue(), false);
+							}
+						}
+					}
+					if ("0".equals(snapBonus)) {
+						snapBonus = "+0";
+					}
+					textLine = MessageFormat.format(textLine, snapBonus);
 				}
-				textLine = MessageFormat.format(textLine, quBonus);
 			}
 			canvas.showTextAligned(Element.ALIGN_LEFT, textLine, LEFT_X + 5, UPPER_Y + (-1 * lineHeight * i), 0);
 			float x0 = fontRegular.getWidthPoint(RESOURCE.getString("pdf.page6.order"+i), 8);

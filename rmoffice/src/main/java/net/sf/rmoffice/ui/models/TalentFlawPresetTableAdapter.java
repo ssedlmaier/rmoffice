@@ -44,7 +44,11 @@ public class TalentFlawPresetTableAdapter extends AbstractTableAdapter<TalentFla
 		TalentFlawPreset tfp = getRow(rowIndex);
 		switch (columnIndex) {
 		case 0: return tfp.getName();
-		case 1: return RESOURCE.getString("TalentFlawType."+tfp.getType().name());
+		case 1: 
+			int costs = tfp.getValues().get(0).getCosts();
+			String cat = RESOURCE.getString("ui.talentflaw."+ (costs >= 0 ? "talent" : "flaw"));
+			String type = cat + " - " + RESOURCE.getString("TalentFlawType."+tfp.getType().name());
+			return type;
 		case 2: return RESOURCE.getString("rolemaster.source." + tfp.getSource());
 		}
 		return null;

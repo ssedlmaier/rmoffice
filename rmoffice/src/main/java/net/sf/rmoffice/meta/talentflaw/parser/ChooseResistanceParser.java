@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class ChooseResistanceParser extends AbstractPatternParser<ChooseResistancePart> {
 	private static final String KEY = "CHOOSERR";
-	private static final String PATTERN = KEY + "([0-9]+)=.+=([0-9]+)=*([0-9]*)";
+	private static final String PATTERN = KEY + "([0-9]+)=.+=([0-9-]+)=*([0-9-]*)";
 
 	public ChooseResistanceParser() {
 		super(PATTERN);

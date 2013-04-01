@@ -37,6 +37,10 @@ public class ChooseResistanceParserTest {
 		assertPart(" CHOOSERR2= "+ResistanceEnum.CHANNELING.name()+" ; "+ResistanceEnum.FEAR.name() + " =30", 30, 0, ResistanceEnum.CHANNELING, ResistanceEnum.FEAR);
 		assertPart(" CHOOSERR1= "+ResistanceEnum.ESSENCE.name() + ";"+ResistanceEnum.MENTALISM.name()+" =2", 2, 0, ResistanceEnum.ESSENCE);
 		assertPart(" CHOOSERR1= "+ResistanceEnum.ESSENCE.name() + " =2=25", 2, 25, ResistanceEnum.ESSENCE);
+		assertPart(" CHOOSERR1= "+ResistanceEnum.CHANNELING.name()+" ; "+ResistanceEnum.FEAR.name() + " =-30", -30, 0, ResistanceEnum.CHANNELING);
+		assertPart(" CHOOSERR2= "+ResistanceEnum.CHANNELING.name()+" ; "+ResistanceEnum.FEAR.name() + " =-30", -30, 0, ResistanceEnum.CHANNELING, ResistanceEnum.FEAR);
+		assertPart(" CHOOSERR1= "+ResistanceEnum.ESSENCE.name() + ";"+ResistanceEnum.MENTALISM.name()+" =-2", -2, 0, ResistanceEnum.ESSENCE);
+		assertPart(" CHOOSERR1= "+ResistanceEnum.ESSENCE.name() + " =-2=-25", -2, -25, ResistanceEnum.ESSENCE);
 	}
 
 

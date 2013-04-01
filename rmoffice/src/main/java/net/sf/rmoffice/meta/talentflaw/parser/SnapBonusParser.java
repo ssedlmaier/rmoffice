@@ -15,25 +15,19 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import net.sf.rmoffice.meta.talentflaw.ChooseStatPart;
+import net.sf.rmoffice.meta.talentflaw.SnapBonusPart;
 
-public class ChooseStatParser extends AbstractPatternParser<ChooseStatPart> {
-	private static final String STAT = "STAT";
-	private static final String PATTERN = STAT + "([0-9]+)=([0-9-]+)";
+public class SnapBonusParser extends AbstractKeyFloatValueParser<SnapBonusPart> {
 
-	public ChooseStatParser() {
-		super(PATTERN);
-	}
+	public static final String INI = "SNAPBONUS";
 	
-	@Override
-	protected ChooseStatPart createPart(String key, String[] valueParts) {
-		int amount = Integer.parseInt(key.substring(STAT.length()));
-		int bonus = Integer.parseInt(valueParts[0]);
-		return createPart(amount, bonus);
+	public SnapBonusParser() {
+		super(INI);
 	}
 
-	protected ChooseStatPart createPart(int amount, int bonus) {
-		return new ChooseStatPart(amount, bonus);
+	@Override
+	protected SnapBonusPart createPart(float value) {
+		return new SnapBonusPart(Math.round(value));
 	}
 
 }

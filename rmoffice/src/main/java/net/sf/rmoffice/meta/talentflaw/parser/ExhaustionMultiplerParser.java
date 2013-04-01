@@ -15,25 +15,18 @@
  */
 package net.sf.rmoffice.meta.talentflaw.parser;
 
-import net.sf.rmoffice.meta.talentflaw.ChooseStatPart;
+import net.sf.rmoffice.meta.talentflaw.ExhaustionMultiplierPart;
 
-public class ChooseStatParser extends AbstractPatternParser<ChooseStatPart> {
-	private static final String STAT = "STAT";
-	private static final String PATTERN = STAT + "([0-9]+)=([0-9-]+)";
-
-	public ChooseStatParser() {
-		super(PATTERN);
-	}
+public class ExhaustionMultiplerParser extends AbstractKeyFloatValueParser<ExhaustionMultiplierPart> {
+	private static final String KEY = "EXHAUSTIONMULTIPLIER";
 	
-	@Override
-	protected ChooseStatPart createPart(String key, String[] valueParts) {
-		int amount = Integer.parseInt(key.substring(STAT.length()));
-		int bonus = Integer.parseInt(valueParts[0]);
-		return createPart(amount, bonus);
+	public ExhaustionMultiplerParser() {
+		super(KEY);
 	}
 
-	protected ChooseStatPart createPart(int amount, int bonus) {
-		return new ChooseStatPart(amount, bonus);
+	@Override
+	protected ExhaustionMultiplierPart createPart(float value) {
+		return new ExhaustionMultiplierPart(value);
 	}
 
 }

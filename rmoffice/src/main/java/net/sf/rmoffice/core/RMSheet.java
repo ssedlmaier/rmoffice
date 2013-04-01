@@ -1231,14 +1231,19 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (getRace() != null) {
 			exh += getRace().getExhaustionPoints();
 		}
+		float factor = 1;
 		if (talentsFlaws != null) {
 			for (TalentFlaw tf : talentsFlaws) {
 				if (tf.getExhaustion() != null) {
 					exh += tf.getExhaustion().intValue();
 				}
+				if (tf.getExhaustionMultiplier() != null) {
+					factor *= tf.getExhaustionMultiplier().floatValue();
+				}
 			}
 		}
-		return exh;
+		
+		return Math.round(exh * factor);
 	}
 
 	public boolean isMagicRealmEditable() {
@@ -1427,14 +1432,18 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		width = width * 100;
 		
 		// talent flaw modifier
+		float factor = 1;
 		if (talentsFlaws != null) {
 			for (TalentFlaw tf : talentsFlaws) {
 				if (tf.getBaseMovement() != null) {
 					width += Math.round(tf.getBaseMovement().floatValue());
 				}
+				if (tf.getBasemoverateMultiplier() != null) {
+					factor *= tf.getBasemoverateMultiplier().floatValue();
+				}
 			}
 		}
-		return width;
+		return Math.round(width * factor);
 	}
 	
 	public int getReactionBonus() {

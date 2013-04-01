@@ -44,7 +44,9 @@ public class TalentFlawTableAdapter extends AbstractTableAdapter<TalentFlaw> {
 		case 0:
 			return row.getName();
 		case 1:
-			return RESOURCE.getString("TalentFlawType."+row.getType().name());
+			String cat = RESOURCE.getString("ui.talentflaw."+ (row.getCosts() >= 0 ? "talent" : "flaw"));
+			String type = cat +" - " +RESOURCE.getString("TalentFlawType."+row.getType().name());
+			return type;
 		case 2:
 			return RESOURCE.getString("TalentFlawLevel."+row.getLevel().name());
 		}

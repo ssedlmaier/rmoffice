@@ -24,6 +24,7 @@ import java.util.Set;
 
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.talentflaw.parser.BaseMoveRateParser;
+import net.sf.rmoffice.meta.talentflaw.parser.BasemoverateMultiplerParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseResistanceParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ChooseSkillParser;
@@ -31,6 +32,7 @@ import net.sf.rmoffice.meta.talentflaw.parser.ChooseStatParser;
 import net.sf.rmoffice.meta.talentflaw.parser.CostParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DBParser;
 import net.sf.rmoffice.meta.talentflaw.parser.DescriptionParser;
+import net.sf.rmoffice.meta.talentflaw.parser.ExhaustionMultiplerParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ExhaustionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.RecoveryParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ResistanceParser;
@@ -41,6 +43,8 @@ import net.sf.rmoffice.meta.talentflaw.parser.ProgressionParser;
 import net.sf.rmoffice.meta.talentflaw.parser.RankParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ShieldDBParser;
 import net.sf.rmoffice.meta.talentflaw.parser.SkillTypeParser;
+import net.sf.rmoffice.meta.talentflaw.parser.SnapBonusParser;
+import net.sf.rmoffice.meta.talentflaw.parser.SouldepartureParser;
 import net.sf.rmoffice.meta.talentflaw.parser.StatBonusParser;
 import net.sf.rmoffice.meta.talentflaw.parser.ToleranceParser;
 import net.sf.rmoffice.meta.talentflaw.parser.WeightPenaltyParser;
@@ -104,6 +108,10 @@ public class TalentFlawFactory {
 		parsers.add(new ChooseStatParser());
 		parsers.add(new CostParser(metaData));
 		parsers.add(new ChooseResistanceParser());
+		parsers.add(new SouldepartureParser());
+		parsers.add(new SnapBonusParser());
+		parsers.add(new BasemoverateMultiplerParser());
+		parsers.add(new ExhaustionMultiplerParser());
 	}
 
 	/**

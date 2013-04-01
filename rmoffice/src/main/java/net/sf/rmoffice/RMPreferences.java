@@ -41,6 +41,7 @@ public class RMPreferences {
 	private static final String PREF_EXCLUDE = "excludes";
 	private static final String PREF_SPELLLIST_DP_INCREASING = "spelllist-dp-increasing";
 	private static final String PREF_SHOW_OUTLINE_IMAGE = "outline-image";
+	private static final String PREF_SNAP_BONUS = "snapbonus";
 	
 	
 	private final Set<String> excludes = new HashSet<String>();
@@ -48,6 +49,7 @@ public class RMPreferences {
 	private int spelllistDPincreasing = 5;
 	private boolean printOutlineImage = true;
 	private LengthUnit lengthUnit = LengthUnit.CM;
+	private int snapBonus = -20;
 	private static String propertyFilePath;
 	
 	private RMPreferences() {
@@ -93,6 +95,13 @@ public class RMPreferences {
 		}
 		if (props.containsKey(PREF_SHOW_OUTLINE_IMAGE)) {
 			instance.printOutlineImage = ! "0".equals(props.getProperty(PREF_SHOW_OUTLINE_IMAGE));
+		}
+		if (props.containsKey(PREF_SNAP_BONUS)) {
+			try {
+				instance.snapBonus = Integer.parseInt(props.getProperty(PREF_SNAP_BONUS));
+			} catch (Exception e) {
+				log.warn("invalid value '{0}' for preference {1}", props.getProperty(PREF_SNAP_BONUS), PREF_SNAP_BONUS);
+			}
 		}
 	}
 
@@ -167,5 +176,9 @@ public class RMPreferences {
 	
 	public void setLengthUnit(LengthUnit lengthUnit) {
 		this.lengthUnit = lengthUnit;
+	}
+
+	public int getSnapBonus() {
+		return snapBonus;
 	}
 }

@@ -46,6 +46,8 @@
 		      <listitem><para>PDF: Page 5 (all skills) contains all skills (including custom skill)</para></listitem>
 		      <listitem><para>UI: Magical-Item-View and Skill-Table shows custom skills with bold font, spells with italic font</para></listitem>
 		      <listitem><para>BASIC: Add magical item feature type: DB, favorite DB items will be displayed under the DB on PDF page 1</para></listitem>
+		      <listitem><para>BASIC: Add flaws from character law</para></listitem>
+		      <listitem><para>PREF: new key in the user preferences for the default snap action bonus</para></listitem>
 		    </itemizedlist>
 		  </para>
 		</section>   
@@ -55,6 +57,7 @@
 		   <itemizedlist>
 		     <listitem><para>PDF: Show max 10 boxes for fate points</para></listitem>
 		     <listitem><para>LOCALE: FIX spanish divine status levels</para></listitem>
+		     <listitem><para>PDF: FIX internal error if a talent has no text</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
