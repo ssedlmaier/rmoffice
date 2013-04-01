@@ -59,6 +59,7 @@
 		     <listitem><para>LOCALE: FIX spanish divine status levels</para></listitem>
 		     <listitem><para>PDF: FIX internal error if a talent has no text</para></listitem>
 		     <listitem><para>BASIC: Improved error handler</para></listitem>
+		     <listitem><para>BASIC: Internal error (missing rank causes a NullPointerException)</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

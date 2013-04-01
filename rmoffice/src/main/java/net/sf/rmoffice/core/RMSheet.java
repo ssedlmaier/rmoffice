@@ -784,9 +784,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			Rank rank = skillgroupRanks.get(category.getId());
 			return rank;
 		} else {
-			Rank r = new Rank();
-			r.setId(category.getId());
-			r.setRank(BigDecimal.valueOf(0));
+			Rank r = new Rank(category.getId());
 			skillgroupRanks.put(category.getId(), r);
 			return r;
 		}		
@@ -849,10 +847,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (skillRanks.containsKey(skill.getId())) {
 			return skillRanks.get(skill.getId());
 		}
-		Rank r = new Rank();
-		r.setId(skill.getId());
-		r.setRank(BigDecimal.valueOf(0));
-		return r;
+		return new Rank(skill.getId());
 	}
 	
 	public void removeSkillRank(ISkill skill) {
@@ -887,9 +882,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (skillRanks.containsKey(skill.getId())) {
 			 r = skillRanks.get(skill.getId());
 		} else {
-			r = new Rank();
-			r.setId(skill.getId());
-			r.setRank(BigDecimal.valueOf(0));
+			r = new Rank(skill.getId());
 			skillRanks.put(skill.getId(), r);
 		}
 		BigDecimal delta = rank.subtract(r.getRank());
@@ -932,9 +925,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		if (skillRanks.containsKey(skill.getId())) {
 			 r = skillRanks.get(skill.getId());
 		} else {
-			r = new Rank();
-			r.setId(skill.getId());
-			r.setRank(BigDecimal.valueOf(0));
+			r = new Rank(skill.getId());
 			skillRanks.put(skill.getId(), r);
 		}
 		r.setSpecialBonus(Integer.valueOf(bonus));

@@ -30,7 +30,9 @@ public class Rank {
 	/**
 	 * 
 	 */
-	/* package private */ Rank() {
+	/* package private */ Rank(Integer id) {
+		this.id = id;
+		rank = BigDecimal.valueOf(0);
 	}
 	
 	/**
@@ -50,8 +52,16 @@ public class Rank {
 		this.id = id;
 	}
 	
+	/**
+	 * Returns the current rank.
+	 * @return rank, not {@code null}
+	 */
 	public BigDecimal getRank() {
-		return rank;
+		if (rank == null) {
+			return BigDecimal.valueOf(0);
+		} else {
+			return rank;
+		}
 	}
 	
 	/* package private */ void setRank(BigDecimal rank) {
