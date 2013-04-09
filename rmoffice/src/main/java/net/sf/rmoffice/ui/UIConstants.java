@@ -47,6 +47,7 @@ public final class UIConstants {
 	public static final ImageIcon ICON_NEWLINE = new ImageIcon(RMFrame.class.getResource("/images/icons/newline.png"));
 	public static final ImageIcon ICON_NEW = new ImageIcon(RMFrame.class.getResource("/images/icons/new.png"));
 	public static final ImageIcon ICON_NEWITEM = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/newitem.png"));
+	public static final ImageIcon ICON_WAND = new ImageIcon(RMFrame.class.getResource("/images/icons/wand.png"));
 	
 	public static final ImageIcon ICON_PDF = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/pdf.png"));
 	public static final ImageIcon ICON_SAVE = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/save.png"));
@@ -56,4 +57,5 @@ public final class UIConstants {
 	public static final ImageIcon ICON_GEN_NAME = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/gen-name.png"));
 	public static final ImageIcon ICON_GEN_ALL = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/gen.png"));
 	public static final ImageIcon ICON_HELP = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/help.png"));
+	public static final ImageIcon ICON_HELP_SMALL = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/help_22.png"));
 }

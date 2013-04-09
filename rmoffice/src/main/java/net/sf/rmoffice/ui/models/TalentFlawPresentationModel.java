@@ -31,6 +31,7 @@ import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.ui.UIConstants;
 import net.sf.rmoffice.ui.converters.SelectionIndexToEnabledListener;
+import net.sf.rmoffice.ui.dialog.TalentFlawCreateDialog;
 import net.sf.rmoffice.ui.dialog.TalentFlawPresetDialog;
 
 import com.jgoodies.binding.PresentationModel;
@@ -48,10 +49,12 @@ public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 	
 	private final Action addTalentFlawAction;
 	private final Action delTalentFlawAction;
+	private final Action createTalentFlawAction;
 	private final ValueModel enabledModel;
 	private ValueHolder selectionEnabledHolder;
 
 	private TalentFlawPresetDialog presetDialog;
+	private TalentFlawCreateDialog createDialog;
 	private SelectionInList<TalentFlaw> listModel;
 	
 	public TalentFlawPresentationModel(BeanAdapter<RMSheet> beanAdapter, ValueModel enabledModel, Frame owner, MetaData metaData) {
@@ -59,6 +62,7 @@ public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 		this.enabledModel = enabledModel;
 		// 
 		presetDialog = new TalentFlawPresetDialog(owner, metaData, beanAdapter);
+		createDialog = new TalentFlawCreateDialog(owner, metaData, beanAdapter);
 		listModel = new SelectionInList<TalentFlaw>(getModel(RMSheet.TALENTSFLAWS_PROP));
 		// add buttons
 		addTalentFlawAction = new AddAction();
@@ -69,6 +73,9 @@ public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 		ValueModel selectionIndexHolder = listModel.getSelectionIndexHolder();
 		selectionIndexHolder.addValueChangeListener(new SelectionIndexToEnabledListener(selectionEnabledHolder));
 		selectionEnabledHolder.addValueChangeListener(new ActionEnabledListener(delTalentFlawAction));
+		// create Talent/Flaw
+		createTalentFlawAction = new CreateAction();
+		enabledModel.addValueChangeListener(new ActionEnabledListener(createTalentFlawAction));
 	}
 
 	public Action getAddTalentFlawAction() {
@@ -77,6 +84,10 @@ public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 
 	public Action getDelTalentFlawAction() {
 		return delTalentFlawAction;
+	}
+
+	public Action getCreateTalentFlawAction() {
+		return createTalentFlawAction;
 	}
 	
 	public ValueModel getEnabledHolder() {
@@ -148,5 +159,19 @@ public class TalentFlawPresentationModel extends PresentationModel<RMSheet> {
 			}
 		}
 		
+	}
+	
+	private class CreateAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+
+		public CreateAction() {
+			super(RESOURCE.getString("ui.talentflaw.add"), UIConstants.ICON_WAND);
+			setEnabled(false);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			createDialog.setVisible(true);
+		}
 	}
 }

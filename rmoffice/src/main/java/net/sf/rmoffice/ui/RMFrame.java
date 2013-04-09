@@ -230,7 +230,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		characteristicsTabs.addTab(RESOURCE.getString("ui.tab.characteristics"), null, createNorthPanel( characteristicsPanel ));
 		
 		TalentFlawPresentationModel talentPresModel = new TalentFlawPresentationModel(getRMSheetAdapter(), enableValueHolder, this, data);
-		TalentFlawPanel talentPanel = new TalentFlawPanel(talentPresModel);
+		TalentFlawPanel talentPanel = new TalentFlawPanel(talentPresModel, data, getRMSheetAdapter());
 		characteristicsTabs.addTab(RESOURCE.getString("ui.tab.talentflaws"), null, createNorthPanel( talentPanel ));
 		tabbedPane.addTab(RESOURCE.getString("ui.tab.characteristics"), null, characteristicsTabs);
 		/* stats */

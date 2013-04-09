@@ -37,7 +37,7 @@ public abstract class AbstractPanel<T> extends JPanel {
 	private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	
 	protected static final String ROW = "fill:15dlu";
-	protected static final String ROW_WITH_GAP = ROW + ", 2dlu, ";
+	public static final String ROW_WITH_GAP = ROW + ", 2dlu, ";
 	protected static final String COL_WITH_EXT = "pref, 3dlu, 90dlu, 3dlu, 35dlu";
 	protected static final String COLGROUP_GAP = "9dlu, ";
 	protected static final String HEADLINE_SEPARATOR = " 30dlu, ";

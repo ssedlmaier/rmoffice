@@ -15,7 +15,6 @@
  */
 package net.sf.rmoffice.ui.dialog;
 
-import java.awt.Component;
 import java.awt.Frame;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -50,6 +49,7 @@ import net.sf.rmoffice.ui.models.TalentFlawPresetValueTableAdapter;
 import net.sf.rmoffice.ui.models.TalentFlawPresetValueTableAdapter.SelectionHolder;
 import net.sf.rmoffice.ui.renderer.ColoredBooleanRenderer;
 import net.sf.rmoffice.ui.renderer.MultiLineTableCellRenderer;
+import net.sf.rmoffice.util.DialogUtils;
 
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.beans.BeanAdapter;
@@ -102,7 +102,7 @@ public class TalentFlawPresetDialog extends JDialog {
                 panel,
                 JOptionPane.PLAIN_MESSAGE,
                 JOptionPane.OK_CANCEL_OPTION, null, options );
-		final JButton okButton = getOKButton(optionPane, okText);
+		final JButton okButton = DialogUtils.getButton(optionPane, okText);
 		okButton.setEnabled(false);
 		final PropertyChangeListener enabledChangeListener = new PropertyChangeListener() {
 			@Override
@@ -120,7 +120,7 @@ public class TalentFlawPresetDialog extends JDialog {
 
 			            if (isVisible() 
 			             && (e.getSource() == optionPane)
-			             && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+			             && (JOptionPane.VALUE_PROPERTY.equals(prop))) {
 			                /* If you were going to check something
 			                 * before closing the window, you'd do
 			                 * it here. */
@@ -233,29 +233,4 @@ public class TalentFlawPresetDialog extends JDialog {
 		}
 		return talFlaw;
 	}
-	
-	/*
-	 * Returns the OK button from the dialog.
-	 */
-	private static JButton getOKButton(JComponent comp, String text) {
-	        if (comp == null) {
-	            return null;     
-	        }
-
-	        for (Component c : comp.getComponents()) {
-	            if (c instanceof JButton) {
-	            	JButton bt = (JButton)c;
-	            	if (text.equals(bt.getText())) {
-	            		return bt;
-	            	}
-	            } else if (c instanceof JComponent) {
-	                JButton bt = getOKButton((JComponent) c, text);
-	                if (bt != null) {
-	                	return bt;
-	                }
-	            }
-	        }
-	        return null;
-	    }
-
 }

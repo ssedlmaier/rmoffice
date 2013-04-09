@@ -35,13 +35,17 @@ import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.TalentFlawLevel;
 import net.sf.rmoffice.meta.enums.TalentFlawType;
 import net.sf.rmoffice.meta.talentflaw.BaseMoveRatePart;
+import net.sf.rmoffice.meta.talentflaw.BasemoverateMultiplierPart;
 import net.sf.rmoffice.meta.talentflaw.DBPart;
+import net.sf.rmoffice.meta.talentflaw.ExhaustionMultiplierPart;
 import net.sf.rmoffice.meta.talentflaw.ExhaustionPart;
 import net.sf.rmoffice.meta.talentflaw.InitiativePart;
 import net.sf.rmoffice.meta.talentflaw.ProgressionPart;
 import net.sf.rmoffice.meta.talentflaw.RecoveryPart;
 import net.sf.rmoffice.meta.talentflaw.ResistancePart;
 import net.sf.rmoffice.meta.talentflaw.ShieldDBPart;
+import net.sf.rmoffice.meta.talentflaw.SnapBonusPart;
+import net.sf.rmoffice.meta.talentflaw.SouldeparturePart;
 import net.sf.rmoffice.meta.talentflaw.TolerancePart;
 import net.sf.rmoffice.meta.talentflaw.WeightPenaltyPart;
 import net.sf.rmoffice.pdf.PDFCreator;
@@ -532,11 +536,13 @@ public class TalentFlaw extends Model {
 		addLine(db, DBPart.ID, null, content);
 		addLine(shieldDb, ShieldDBPart.ID, null, content);
 		addLine(exhaustion, ExhaustionPart.ID, null, content);
-		
+		addLine(exhaustionMultiplier, ExhaustionMultiplierPart.ID, "x ", content);
+		addLine(snapBonus, SnapBonusPart.ID, null, content);
 		addLine(weightPenalty, WeightPenaltyPart.ID, "x ", content);
 		if (baseMovement != null) {
 			addLine(BaseMoveRatePart.formatLU(baseMovement.floatValue()), BaseMoveRatePart.ID, null, content);
 		}
+		addLine(basemoverateMultiplier, BasemoverateMultiplierPart.ID, "x ", content);
 		addLine(recoveryMultiplier, RecoveryPart.ID, "x ", content);
 		if (tolerance != null) {
 			addLine(TolerancePart.formatValue(tolerance.floatValue()), TolerancePart.ID, "x ", content);
@@ -546,6 +552,7 @@ public class TalentFlaw extends Model {
 				addLine(line, ResistancePart.ID, null, content);
 			}
 		}
+		addLine(souldeparture, SouldeparturePart.ID, null, content);
 		if (progressionBody != null) {
 			addLine(progressionBody.getFormattedString(), ProgressionPart.BODY_ID, null, content);
 		}
