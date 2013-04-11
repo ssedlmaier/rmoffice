@@ -523,7 +523,9 @@ public class TalentFlaw extends Model {
 	public String asText(MetaData metaData, RMSheet sheet) {
 		StringBuilder content = new StringBuilder();
 		// Headline
-		content.append(getName());
+		if (getName() != null) {
+			content.append(getName());
+		}
 		String type = RESOURCE.getString("TalentFlawType."+getType().name());
 		String level = RESOURCE.getString("TalentFlawLevel."+getLevel().name());
 		content.append(" (").append(type).append(", ").append(level ).append(")");

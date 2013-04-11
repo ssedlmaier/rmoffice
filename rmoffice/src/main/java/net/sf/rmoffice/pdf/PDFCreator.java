@@ -195,12 +195,16 @@ public class PDFCreator extends AbstractPDFCreator {
 
 	private void page4PrintTalentFlaws(ColumnText ct, float fontSize) {
 		for (TalentFlaw tf : sheet.getTalentsFlaws()) {
-			String[] text = StringUtils.split(StringUtils.trim(tf.asText(data, sheet)), "\n", 2);
-			ct.addElement(new Paragraph(text[0], new Font(fontBold, fontSize + 0.5f)));
-			if (text.length > 1 && !StringUtils.isEmpty(text[1])) {
-				Paragraph pText = new Paragraph(text[1], new Font(fontUser, fontSize - 0.5f));
-				pText.setSpacingAfter(2);
-				ct.addElement(pText);
+			String[] text = StringUtils.splitPreserveAllTokens(StringUtils.trim(tf.asText(data, sheet)), "\n", 2);
+			if (text != null) {
+				if (text.length > 0 && !StringUtils.isEmpty(text[0])) {
+					ct.addElement(new Paragraph(text[0], new Font(fontBold, fontSize + 0.5f)));
+				}
+				if (text.length > 1 && !StringUtils.isEmpty(text[1])) {
+					Paragraph pText = new Paragraph(text[1], new Font(fontUser, fontSize - 0.5f));
+					pText.setSpacingAfter(2);
+					ct.addElement(pText);
+				}
 			}
 		}
 	}
