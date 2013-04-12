@@ -35,6 +35,9 @@ public class Rank {
 		rank = BigDecimal.valueOf(0);
 	}
 	
+	public Rank() {
+	}
+	
 	/**
 	 * 
 	 * @return the id of the skill or skill category
