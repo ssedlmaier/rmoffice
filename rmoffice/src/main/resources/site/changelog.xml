@@ -37,6 +37,27 @@
 	</section>
 	
 	 -->
+	 
+	 <section>
+		<title>Version 4.3.1 (Date)</title>
+		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		     <listitem><para></para></listitem>
+		    </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>PDF: Unicode font for user text [<ulink url="https://sourceforge.net/p/rmoffice/bugs/15/">&typeBug; #15</ulink>]</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>
+	 
 	 <section>
 		<title>Version 4.3.0 (2013-04-12)</title>
 		<section>

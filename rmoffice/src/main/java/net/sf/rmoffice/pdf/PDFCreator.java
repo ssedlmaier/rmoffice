@@ -696,7 +696,7 @@ public class PDFCreator extends AbstractPDFCreator {
 						if (sheet.getSkillItemBonus(skill) != null) {
 						   align = Element.ALIGN_LEFT;
 						   x = 476;
-						   canvas.setFontAndSize(fontUserPlain, 4.5f);
+						   canvas.setFontAndSize(fontUser, 4.5f);
 						   str = sheet.getSkillItemBonus(skill); 
 					    }
 					break;

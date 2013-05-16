@@ -91,7 +91,6 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 	protected BaseFont fontRegular;
 	protected BaseFont fontBold;
 	protected BaseFont fontUser;
-	protected BaseFont fontUserPlain;
 	protected BaseFont fontHeadline;
 	protected BaseFont fontWidget;
 
@@ -154,15 +153,14 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 	 */
 	protected void loadFonts() throws DocumentException, IOException {
 		if (log.isDebugEnabled()) log.debug("loading fonts");
-		/* available fonts: IPIAAF+TrajanPro-Regular     IPIACI+ACaslonPro-Regular   IPIADJ+ACaslonPro-Bold */
-		fontHeadline = BaseFont.createFont("fonts/TrajanPro-Regular.otf", BaseFont.WINANSI, BaseFont.EMBEDDED,true);
+		fontHeadline = BaseFont.createFont("fonts/TrajanPro-Regular.otf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 		fontHeadline.setSubset(true);
-		fontRegular = BaseFont.createFont("fonts/ACaslonPro-Regular.otf", BaseFont.WINANSI, BaseFont.EMBEDDED, true);
+		fontRegular = BaseFont.createFont("fonts/ACaslonPro-Regular.otf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 		fontRegular.setSubset(true);
-		fontBold = BaseFont.createFont("fonts/ACaslonPro-Bold.otf", BaseFont.WINANSI, BaseFont.EMBEDDED, true);
+		fontBold = BaseFont.createFont("fonts/ACaslonPro-Bold.otf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 		fontBold.setSubset(true);
-		fontUser = BaseFont.createFont( BaseFont.HELVETICA_OBLIQUE, BaseFont.WINANSI, false );
-		fontUserPlain = BaseFont.createFont( BaseFont.HELVETICA, BaseFont.WINANSI, false );
+		fontUser = BaseFont.createFont("fonts/LiberationSans-Italic.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+		fontUser.setSubset(true);
 		fontWidget = BaseFont.createFont( BaseFont.ZAPFDINGBATS, BaseFont.WINANSI, false );
 	}
 	
