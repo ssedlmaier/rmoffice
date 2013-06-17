@@ -39,15 +39,7 @@
 	 -->
 	 
 	 <section>
-		<title>Version 4.3.1 (Date)</title>
-		<section>
-		  <title>&features;</title>
-		  <para>
-		    <itemizedlist>
-		     <listitem><para></para></listitem>
-		    </itemizedlist>
-		 </para>
-	    </section>
+		<title>Version 4.3.1 (2013-06-17)</title>
 	    <section>
 		 <title>&bugfixes;</title>
 		 <para>
