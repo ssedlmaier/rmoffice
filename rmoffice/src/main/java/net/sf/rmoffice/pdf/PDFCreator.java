@@ -73,7 +73,7 @@ import com.itextpdf.text.pdf.PdfWriter;
  * 
  */
 public class PDFCreator extends AbstractPDFCreator {
-	final static Logger log = LoggerFactory.getLogger(PDFCreator.class);
+	private final static Logger log = LoggerFactory.getLogger(PDFCreator.class);
 	static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 
 	public PDFCreator(RMSheet sheet, MetaData data, JFrame parent, LongRunningUIModel longRunningModel) {
@@ -422,15 +422,15 @@ public class PDFCreator extends AbstractPDFCreator {
 		return BOTTOM_Y;
 	}
 
-	private float page1Characteristics(PdfContentByte canvas, float y) {
+	protected float page1Characteristics(PdfContentByte canvas, float y, int leftX, int rightX) {
 		if (sheet.getCharacteristics() == null) return y;
 		
-		float x1 = LEFT_X + 4;
-		float x2 = PAGE1_LEFTBOX_RIGHTX - 3;
+		float x1 = leftX + 4;
+		float x2 = rightX - 3;
 		float centerX = x1 + (x2 - x1) / 2;
 		canvas.beginText();
 		canvas.setFontAndSize(fontHeadline, 8);
-		float center = LEFT_X + (PAGE1_LEFTBOX_RIGHTX - LEFT_X) / 2;
+		float center = leftX + (rightX - leftX) / 2;
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.characteristics.header"), center, y, 0);
 		canvas.endText();
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
@@ -497,7 +497,17 @@ public class PDFCreator extends AbstractPDFCreator {
 		
 		
 		/* -------------- */
-		hline(canvas, LEFT_X, y, PAGE1_LEFTBOX_RIGHTX);
+		y = page1Background(canvas, y, x1, x2, ch, leftX, rightX);
+		
+		return y;
+	}
+
+	/*
+	 * Returns the new y
+	 */
+	protected float page1Background(PdfContentByte canvas, float y, float labelTextX1, float labelTextX2, Characteristics ch, float leftX, float rightX) {
+		float center = leftX + (rightX - leftX) / 2; 
+		hline(canvas, leftX, y, rightX);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* Background */
 		canvas.beginText();
@@ -506,42 +516,41 @@ public class PDFCreator extends AbstractPDFCreator {
 		canvas.endText();
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.nationality")+":", ch.getNationality(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.nationality")+":", ch.getNationality(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.homeTown")+":", ch.getHomeTown(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.homeTown")+":", ch.getHomeTown(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.deity")+":", ch.getDeity(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.deity")+":", ch.getDeity(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("ui.basic.divinestatus")+":", sheet.getDivinestatus(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("ui.basic.divinestatus")+":", sheet.getDivinestatus(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.lord")+":", ch.getLord(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.lord")+":", ch.getLord(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.parent")+":", ch.getParent(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.parent")+":", ch.getParent(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.spouse")+":", ch.getSpouse(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.spouse")+":", ch.getSpouse(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.siblings")+":", ch.getSiblings(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.siblings")+":", ch.getSiblings(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.children")+":", ch.getChildren(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.children")+":", ch.getChildren(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.misc")+":", ch.getMisc1(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.characteristics.misc")+":", ch.getMisc1(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, "", ch.getMisc2(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, "", ch.getMisc2(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, "", ch.getMisc3(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, "", ch.getMisc3(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, "", ch.getMisc4(), x1, y, x2, fontRegular, 8);
+		labeledUserText(canvas, "", ch.getMisc4(), labelTextX1, y, labelTextX2, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		
 		return y;
 	}
 
-	private float page1RaceAttributes(PdfContentByte canvas, float y) {
-		float x = LEFT_X + 4;
-		float x1 = PAGE1_LEFTBOX_RIGHTX - 4;
+	protected float page1RaceAttributes(PdfContentByte canvas, float y, int leftX, int rightX) {
+		float x = leftX + 4;
+		float x1 = rightX - 4;
 		canvas.beginText();
 		canvas.setFontAndSize(fontHeadline, 8);
-		float center = LEFT_X + (PAGE1_LEFTBOX_RIGHTX - LEFT_X) / 2;
+		float center = leftX + (rightX - leftX) / 2;
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.raceinfo.header"), center, y, 0);
 		canvas.endText();
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
@@ -580,21 +589,21 @@ public class PDFCreator extends AbstractPDFCreator {
 		labeledUserText(canvas, RESOURCE.getString("ui.basic.progressionPower")+":", progM.getFormattedString(), x, y, x1, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
-		hline(canvas, LEFT_X, y, PAGE1_LEFTBOX_RIGHTX);
+		hline(canvas, leftX, y, rightX);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		return y;
 	}
 
-	private void page1drawHitsPPExhaust(PdfContentByte canvas, final float initialY, final float xImgPos) {
+	protected void page1drawHitsPPExhaust(PdfContentByte canvas, final float initialY, final float rightX, int leftX) {
 		/* hline until xImgPos */
-		hline(canvas, PAGE1_RIGHTBOX_LEFTX, initialY, xImgPos);
+		hline(canvas, leftX, 111, rightX);
 		float lineHeight = 11;
 		float y = initialY - lineHeight;
 		/* calculate x positions - distribute to given place */
-		float diff = (xImgPos - PAGE1_RIGHTBOX_LEFTX - 40) / 3;
-		float[] xVal = new float[]{PAGE1_RIGHTBOX_LEFTX + 4, PAGE1_RIGHTBOX_LEFTX + 5 + diff,
-                                                             PAGE1_RIGHTBOX_LEFTX + 5 + 2 * diff,
-                                                             PAGE1_RIGHTBOX_LEFTX + 5 + 3 * diff};
+		float diff = (rightX - leftX - 40) / 3;
+		float[] xVal = new float[]{leftX + 4, leftX + 5 + diff,
+                                                             leftX + 5 + 2 * diff,
+                                                             leftX + 5 + 3 * diff};
 		
 		canvas.beginText();
 		canvas.setFontAndSize(fontBold, 7);
@@ -911,14 +920,11 @@ public class PDFCreator extends AbstractPDFCreator {
 		return str;
 	}
 
-	private void drawNamesPage1(PdfContentByte canvas) {
+	protected void page1NameAndEP(PdfContentByte canvas) {
     	box(canvas, LEFT_X, 780, RIGHT_X, 750); /* top box */
     	vline(canvas, 165, 780, 750);
     	vline(canvas, 272, 780, 750);
     	
-    	box(canvas, LEFT_X, 740, PAGE1_LEFTBOX_RIGHTX, BOTTOM_Y); /* left col */
-    	box(canvas, PAGE1_RIGHTBOX_LEFTX, 740, RIGHT_X, BOTTOM_Y); /* right col */
-
     	canvas.beginText();              
     	canvas.setFontAndSize(fontHeadline, 8);
     	canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.exppoints"), 110, 771, 0);
@@ -935,10 +941,10 @@ public class PDFCreator extends AbstractPDFCreator {
 		showUserText(canvas, 18, 220, 754, ""+sheet.getLevel(), Element.ALIGN_CENTER);
 	}
 	
-	private float page1Stats(PdfContentByte canvas) {
+	protected float page1Stats(PdfContentByte canvas, int leftX, int rightX) {
 		float LINE_HEIGHT = 14.5f;
 		float y = 728f;		
-		float[] xVal = new float[] {PAGE1_RIGHTBOX_LEFTX + 4, 337,358,382,408,442,482};
+		float[] xVal = new float[] {leftX + 4, leftX + 97,leftX+118,leftX+142,leftX+168,leftX+202,leftX+242};
 		/* header (two lines)*/
 		canvas.beginText();
 		canvas.setFontAndSize(fontBold, 8);
@@ -1009,23 +1015,16 @@ public class PDFCreator extends AbstractPDFCreator {
 			y -= LINE_HEIGHT;
 		}
 		/* ---------- */
-		hline(canvas, PAGE1_RIGHTBOX_LEFTX, y, RIGHT_X);
+		hline(canvas, leftX, y, rightX);
 		y -= LINE_HEIGHT;
 		return y;
 	}
 	
-	private void createPage1(PdfContentByte canvas) throws BadElementException, MalformedURLException, IOException, DocumentException {
-		URL imageUrl = getClass().getResource( "/images/rmlogo.png" );
-		Image logo = Image.getInstance(imageUrl);
-		logo.setAbsolutePosition(328f, 782f);
-		logo.scaleToFit(226, 120);		
-		canvas.addImage(logo, false);
+	protected void createPage1(PdfContentByte canvas) throws BadElementException, MalformedURLException, IOException, DocumentException {
+		page1LogoAndHeader(canvas);
 		
-		canvas.beginText();              
-        canvas.setFontAndSize(fontHeadline, 14);
-        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page.title"), 92, 810, 0);
-        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page1.title2"), 92, 794, 0);
-        canvas.endText();
+		box(canvas, LEFT_X, 740, PAGE1_LEFTBOX_RIGHTX, BOTTOM_Y); /* left col */
+    	box(canvas, PAGE1_RIGHTBOX_LEFTX, 740, RIGHT_X, BOTTOM_Y); /* right col */
         
 		if (log.isDebugEnabled()) log.debug("loading image runes");
 		Image raceRune = loadImage("/images/runes/race/" + sheet.getCulture().getRune());
@@ -1044,11 +1043,11 @@ public class PDFCreator extends AbstractPDFCreator {
         if (log.isDebugEnabled()) log.debug("processing text page 1");
         float y = 0;
         /* left col*/
-        drawNamesPage1(canvas);
-        y = page1RaceProfArmorDB(canvas, 728f);            
-        y = page1Resistance(canvas, y, true);
-        y = page1RaceAttributes(canvas, y);
-        y = page1Characteristics(canvas, y);
+        page1NameAndEP(canvas);
+        y = page1RaceProfArmorDB(canvas, LEFT_X + 5, PAGE1_LEFTBOX_RIGHTX, 728f, LEFT_X);            
+        y = page1Resistance(canvas, y, true, LEFT_X, PAGE1_LEFTBOX_RIGHTX);
+        y = page1RaceAttributes(canvas, y, LEFT_X, PAGE1_LEFTBOX_RIGHTX);
+        y = page1Characteristics(canvas, y, LEFT_X, PAGE1_LEFTBOX_RIGHTX);
         /* fill rest with lines */
         int lineNumb = (int) Math.floor( (y - BOTTOM_Y) / PAGE1_LEFTBOX_LINE_HEIGHT );
         for (int i=0; i<lineNumb; i++) {
@@ -1057,8 +1056,8 @@ public class PDFCreator extends AbstractPDFCreator {
         }
         
         /* right col */
-        y = page1Stats(canvas);
-        y = page1Favorites(canvas, y, 120, true);
+        y = page1Stats(canvas, PAGE1_RIGHTBOX_LEFTX, RIGHT_X);
+        y = page1Favorites(canvas, y, 120, true, PAGE1_RIGHTBOX_LEFTX, RIGHT_X);
         if (y > 131) {
         	/* notes */
         	canvas.beginText();
@@ -1069,15 +1068,31 @@ public class PDFCreator extends AbstractPDFCreator {
         }
         float xImgPos = page1charImage(canvas, y + 8);
         /* */
-        page1drawHitsPPExhaust(canvas, 111, xImgPos);
+        page1drawHitsPPExhaust(canvas, 111, xImgPos, PAGE1_RIGHTBOX_LEFTX);
     	
     	footer(canvas);
+	}
+
+	protected void page1LogoAndHeader(PdfContentByte canvas) throws BadElementException, MalformedURLException, IOException, DocumentException {
+		URL imageUrl = getClass().getResource( "/images/rmlogo.png" );
+		Image logo = Image.getInstance(imageUrl);
+		logo.setAbsolutePosition(328f, 782f);
+		logo.scaleToFit(226, 120);		
+		canvas.addImage(logo, false);
+		
+		canvas.beginText();              
+        canvas.setFontAndSize(fontHeadline, 14);
+        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page.title"), 92, 810, 0);
+        canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("pdf.page1.title2"), 92, 794, 0);
+        canvas.endText();
+        
+        page1NameAndEP(canvas);
 	}
 	
 	/*
 	 * Returns the x value of the image.
 	 */
-	private float page1charImage(PdfContentByte canvas, final float y) throws IOException, DocumentException {
+	protected float page1charImage(PdfContentByte canvas, final float y) throws IOException, DocumentException {
 		if (sheet.getImagePos().isPage1() && sheet.getCharacteristics().getCharImage() != null) {
 			/* image */
 			Image charImage = Image.getInstance(sheet.getCharacteristics().getCharImage());
@@ -1181,7 +1196,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		footer(canvas);		
 	}
 	
-	private float page4TalentFlaws(PdfContentByte canvas, float rightX) throws DocumentException {
+	protected float page4TalentFlaws(PdfContentByte canvas, float rightX) throws DocumentException {
 		float upperY = BOTTOM_Y;
 		// first calculate
 		if (!(Boolean.TRUE.equals(sheet.getTalentFlawOwnPage())) && sheet.getTalentsFlaws().size() > 0) {

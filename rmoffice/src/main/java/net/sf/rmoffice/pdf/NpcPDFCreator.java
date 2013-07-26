@@ -86,14 +86,14 @@ public class NpcPDFCreator extends AbstractPDFCreator {
 
 		float y = upperY - 2 * LINE_HEIGHT;
         /* left col */
-        y = page1RaceProfArmorDB(canvas, y);            
-        y = page1Resistance(canvas, y, false);
+        y = page1RaceProfArmorDB(canvas, LEFT_X + 5, PAGE1_LEFTBOX_RIGHTX, y, LEFT_X);            
+        y = page1Resistance(canvas, y, false, LEFT_X, PAGE1_LEFTBOX_RIGHTX);
         combatUpperY = y;
 		
 		/* right col */
         y = upperY - 2 * LINE_HEIGHT;
         y = page1Stats(canvas, y);
-        y = page1Favorites(canvas, y, minCombatUpperY + LINE_HEIGHT, false);
+        y = page1Favorites(canvas, y, minCombatUpperY + LINE_HEIGHT, false, PAGE1_RIGHTBOX_LEFTX, RIGHT_X);
         
         y = Math.min(y, combatUpperY);
         box(canvas, LEFT_X, upperY - LINE_HEIGHT, PAGE1_LEFTBOX_RIGHTX, y); /* left col box */

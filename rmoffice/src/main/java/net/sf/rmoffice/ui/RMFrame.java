@@ -87,6 +87,7 @@ import net.sf.rmoffice.core.items.MagicalItem;
 import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.SkillCategory;
+import net.sf.rmoffice.pdf.PDFVersion;
 import net.sf.rmoffice.ui.actions.CharacterGeneratorAction;
 import net.sf.rmoffice.ui.actions.CharacterNameAction;
 import net.sf.rmoffice.ui.actions.CreatePDFAction;
@@ -701,16 +702,25 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		file.add(menuOpen);
 		
 		/* Export PDF */
+		JMenu menuExportPopup = new JMenu(RESOURCE.getString("ui.menu.exportpdf"));
+		file.add(menuExportPopup);
+		
 		JMenuItem menuCreatePDF = new JMenuItem(RESOURCE.getString("ui.menu.exportpdf"), UIConstants.ICON_PDF);
-		CreatePDFAction pdfCreateListener = new CreatePDFAction(this, data, getRMSheetAdapter(), true, longRunAdapter);
+		CreatePDFAction pdfCreateListener = new CreatePDFAction(this, data, getRMSheetAdapter(), PDFVersion.PDF_FULL_V1, longRunAdapter);
 		menuCreatePDF.addActionListener(pdfCreateListener);
-		file.add(menuCreatePDF);
+		menuExportPopup.add(menuCreatePDF);
 		Bindings.bind(menuCreatePDF, "enabled", enableMenuExportPDFValueHolder);
 		
+		JMenuItem menuCreatePDF2 = new JMenuItem(RESOURCE.getString("ui.menu.exportpdf") + " (v2)", UIConstants.ICON_PDF);
+		CreatePDFAction pdfCreateListener2 = new CreatePDFAction(this, data, getRMSheetAdapter(), PDFVersion.PDF_FULL_V2, longRunAdapter);
+		menuCreatePDF2.addActionListener(pdfCreateListener2);
+		menuExportPopup.add(menuCreatePDF2);
+		Bindings.bind(menuCreatePDF2, "enabled", enableMenuExportPDFValueHolder);
+		
 		JMenuItem menuCreatePDFShort = new JMenuItem(RESOURCE.getString("ui.menu.exportpdf.short"), UIConstants.ICON_PDF);
-		CreatePDFAction pdfCreateListenerNpc = new CreatePDFAction(this, data, getRMSheetAdapter(), false, longRunAdapter);
+		CreatePDFAction pdfCreateListenerNpc = new CreatePDFAction(this, data, getRMSheetAdapter(), PDFVersion.PDF_MINIMAL_V1, longRunAdapter);
 		menuCreatePDFShort.addActionListener(pdfCreateListenerNpc);
-		file.add(menuCreatePDFShort);
+		menuExportPopup.add(menuCreatePDFShort);
 		Bindings.bind(menuCreatePDFShort, "enabled", enableMenuExportPDFValueHolder);
 		
 		/* -------- SAVE --------- */

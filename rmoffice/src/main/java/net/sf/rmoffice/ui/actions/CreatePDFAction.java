@@ -35,6 +35,8 @@ import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.pdf.IPDFCreator;
 import net.sf.rmoffice.pdf.NpcPDFCreator;
 import net.sf.rmoffice.pdf.PDFCreator;
+import net.sf.rmoffice.pdf.PDFCreator2;
+import net.sf.rmoffice.pdf.PDFVersion;
 import net.sf.rmoffice.ui.RMFrame;
 import net.sf.rmoffice.ui.models.LongRunningUIModel;
 import net.sf.rmoffice.util.ExtensionFileFilter;
@@ -51,7 +53,7 @@ public class CreatePDFAction implements ActionListener {
 	private final RMFrame frame;
 	private final MetaData data;
 	private final BeanAdapter<RMSheet> adapter;
-	private final boolean fullVersion;
+	private final PDFVersion version;
 	private final LongRunningUIModel longRunAdapter;
 
 	/**
@@ -62,11 +64,11 @@ public class CreatePDFAction implements ActionListener {
 	 * @param longRunAdapter 
 	 * 
 	 */
-	public CreatePDFAction(RMFrame frame, MetaData data, BeanAdapter<RMSheet> adapter, boolean fullVersion, LongRunningUIModel longRunAdapter) {
+	public CreatePDFAction(RMFrame frame, MetaData data, BeanAdapter<RMSheet> adapter, PDFVersion version, LongRunningUIModel longRunAdapter) {
 		this.frame = frame;
 		this.data = data;
 		this.adapter = adapter;
-		this.fullVersion = fullVersion;
+		this.version = version;
 		this.longRunAdapter = longRunAdapter;
 	}
 	
@@ -74,10 +76,17 @@ public class CreatePDFAction implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			IPDFCreator pdf;
-			if (fullVersion) {
-				pdf = new PDFCreator(adapter.getBean(), data, frame, longRunAdapter);
-			} else {
+			switch (version) {
+			case PDF_FULL_V2:
+				pdf = new PDFCreator2(adapter.getBean(), data, frame, longRunAdapter);
+				break;
+			case PDF_MINIMAL_V1:
 				pdf = new NpcPDFCreator(adapter.getBean(), data, frame, longRunAdapter);
+				break;
+			case PDF_FULL_V1:
+			default:
+				pdf = new PDFCreator(adapter.getBean(), data, frame, longRunAdapter);
+				break;
 			}
 			JFileChooser fch = new JFileChooser(RMPreferences.getInstance().getLastDir());
 			fch.setDialogTitle("PDF Export");

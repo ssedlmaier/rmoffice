@@ -383,15 +383,15 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		Collections.sort(favsWepaons, comparator);
 	}
 
-	protected float page1Favorites(PdfContentByte canvas, float y, final float maxBottomY, boolean withEquipment) {
+	protected float page1Favorites(PdfContentByte canvas, float y, final float maxBottomY, boolean withEquipment, int leftX, int rightX) {
 		/* prepare list */
 		List<List<Object>> favSkills = new ArrayList<List<Object>>();
 		List<List<Object>> favSpelllists = new ArrayList<List<Object>>();
 		List<List<Object>> favsWepaons = new ArrayList<List<Object>>();
 		prepareFavorites(favSkills, favSpelllists, favsWepaons);
 		/* draw normal skills */
-		float centerX = PAGE1_RIGHTBOX_LEFTX + (RIGHT_X - PAGE1_RIGHTBOX_LEFTX ) / 2;
-		float[] xVal = new float[] {PAGE1_RIGHTBOX_LEFTX + 4, centerX - 42, centerX - 17, centerX + 6, RIGHT_X - 42, RIGHT_X - 15};
+		float centerX = leftX + (rightX - leftX ) / 2;
+		float[] xVal = new float[] {leftX + 4, centerX - 42, centerX - 17, centerX + 6, rightX - 42, rightX - 15};
 		/* Headline */
 		float lineHeight = 10.5f;
 		/* Headlines */		
@@ -415,7 +415,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		for (int k=0; k<2; k++) {
 			List<List<Object>> favs = (k == 0) ? favSkills : favSpelllists;
 			/* analyze line height (with magical items) */
-			int firstRightIndex = getIndexOfHalfSpace(favs, lineHeight, centerX - PAGE1_RIGHTBOX_LEFTX, canvas);
+			int firstRightIndex = getIndexOfHalfSpace(favs, lineHeight, centerX - leftX, canvas);
 			if (k == 1 && favs.size() > 0) {
 				/* headline for spell lists favorites */
 				canvas.beginText();
@@ -475,10 +475,10 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		}
 		/* ============================= */
 		if (favsWepaons.size() > 0 && y > maxBottomY) {
-			hline(canvas, PAGE1_RIGHTBOX_LEFTX, y, RIGHT_X);
+			hline(canvas, leftX, y, rightX);
 			y -= lineHeight;
 			/* ------ weapons */
-			xVal = new float[] {247,360,388,414,490};
+			xVal = new float[] {leftX+7,leftX+120,leftX+148,leftX+174,leftX+250};
 			/* header */
 			canvas.beginText();
 			canvas.setFontAndSize(fontHeadline, 8);
@@ -513,7 +513,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 						canvas.beginText();              
 						canvas.setFontAndSize(fontRegular, 7);
 						if (col+1 == xVal.length) {
-							canvas.showTextAligned(Element.ALIGN_RIGHT,"__________________________________", RIGHT_X - 4, y, 0);
+							canvas.showTextAligned(Element.ALIGN_RIGHT,"__________________________________", rightX - 4, y, 0);
 						} else {
 							canvas.showTextAligned(align,"______", xVal[col], y, 0);
 						}
@@ -524,7 +524,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 				@SuppressWarnings("unchecked")
 				List<String> items = (List<String>) weaponSkillArr.get(5);
 				for (String item : items) {
-					y = showMagicalItems(canvas, item, y, xVal[0], RIGHT_X - 4, false);					
+					y = showMagicalItems(canvas, item, y, xVal[0], rightX - 4, false);					
 				}
 				y -= lineHeight;
 			}
@@ -538,7 +538,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 				}
 			}
 			if (equipFavs.size() > 0 &&  y > maxBottomY) {
-				hline(canvas, PAGE1_RIGHTBOX_LEFTX, y, RIGHT_X);
+				hline(canvas, leftX, y, rightX);
 				y -= lineHeight;
 				/* ---------- header Equipment*/
 				canvas.beginText();
@@ -549,28 +549,28 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 				/* print the new header */
 				canvas.beginText();              
 				canvas.setFontAndSize(fontBold, 8);
-				canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("common.equipment.itemdesc"), 247, y, 0);
-				canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("common.equipment.location"), 485, y, 0);
-				canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("common.equipment.weight"), 530, y, 0);
+				canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("common.equipment.itemdesc"), leftX + 7, y, 0);
+				canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("common.equipment.location"), leftX + 245, y, 0);
+				canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("common.equipment.weight"), leftX + 290, y, 0);
 				canvas.endText();
 				y -= lineHeight;
 				/* equipment favorites */
 				for (int i=0; i<equipFavs.size() && y > maxBottomY; i++) {
 					Equipment eq = equipFavs.get(i);
-					labeledUserText(canvas, "", eq.getDescription(), 244, y, 460, fontRegular, 7);
-					showUserText(canvas, 7, 485, y, eq.getPlace(), Element.ALIGN_CENTER);
-					showUserText(canvas, 7, 530, y, sheet.getWeightUnit().getFormattedString( eq.getWeight() ), Element.ALIGN_CENTER);
+					labeledUserText(canvas, "", eq.getDescription(), leftX + 4, y, leftX + 220, fontRegular, 7);
+					showUserText(canvas, 7, leftX + 245, y, eq.getPlace(), Element.ALIGN_CENTER);
+					showUserText(canvas, 7, leftX + 290, y, sheet.getWeightUnit().getFormattedString( eq.getWeight() ), Element.ALIGN_CENTER);
 					canvas.beginText();              
 					canvas.setFontAndSize(fontRegular, 7);
-					canvas.showTextAligned(Element.ALIGN_CENTER, "___________", 485, y, 0);
-					canvas.showTextAligned(Element.ALIGN_CENTER, "__________", 530, y, 0);
+					canvas.showTextAligned(Element.ALIGN_CENTER, "___________", leftX + 245, y, 0);
+					canvas.showTextAligned(Element.ALIGN_CENTER, "__________", leftX + 290, y, 0);
 					canvas.endText();
 					y -= lineHeight;
 				}
 			}
 			/* ============================= */
 			if (y > (maxBottomY + lineHeight)) {
-				hline(canvas, PAGE1_RIGHTBOX_LEFTX, y, RIGHT_X);
+				hline(canvas, leftX, y, rightX);
 				y -= lineHeight;
 			}
 		}
@@ -759,23 +759,22 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 	 * @return the new y
 	 * @throws IOException 
 	 */
-	protected float page1RaceProfArmorDB(PdfContentByte canvas, final float initialY) throws IOException {
+	protected float page1RaceProfArmorDB(PdfContentByte canvas, float x, int rightX, float initialY, int borderLeftX) throws IOException {
 		/* race + profession */
 		float y = initialY;
-		float x = LEFT_X + 5;
 		String raceCulture = sheet.getRace().getName();
 		if (StringUtils.trimToNull(sheet.getCulture().getName()) != null) {
 			raceCulture += " (" + sheet.getCulture().getName() + ")";
 		}
-		labeledUserText(canvas, RESOURCE.getString("ui.basic.race")+":", raceCulture, x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("ui.basic.race")+":", raceCulture, x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-		labeledUserText(canvas, RESOURCE.getString("ui.basic.profession")+":", sheet.getProfession().getName(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("ui.basic.profession")+":", sheet.getProfession().getName(), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		if (!StringUtils.isBlank(sheet.getApprenticeShip())) {
 			labeledUserText(canvas, RESOURCE.getString("rolemaster.trainingpacks")+":", "", x, y, 0, fontRegular, 8);
 	    	y -= PAGE1_LEFTBOX_LINE_HEIGHT;
-	    	labeledUserText(canvas, "", sheet.getApprenticeShip(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+	    	labeledUserText(canvas, "", sheet.getApprenticeShip(), x, y, rightX, fontRegular, 8);
 			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		}
 		
@@ -787,15 +786,15 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 			}
 			magicRealm.append( RESOURCE.getString("MagicRealm."+stat.name()) );
 		}
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.realm")+":", magicRealm.toString(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.realm")+":", magicRealm.toString(), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* ----------- */
-		hline(canvas, LEFT_X, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , PAGE1_LEFTBOX_RIGHTX);
+		hline(canvas, borderLeftX, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , rightX);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		
 		/* armor */
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.armor")+":", "" + sheet.getArmor(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.armor")+":", "" + sheet.getArmor(), x, y, rightX, fontRegular, 8);
 		canvas.beginText();
 		canvas.setFontAndSize(fontUser, 6);
 		float x0 = x + 5 + fontRegular.getWidthPoint(RESOURCE.getString("rolemaster.armor")+": xyz", 8);
@@ -803,22 +802,22 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		canvas.endText();
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/**/
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.weight")+":", ""+sheet.getWeightPenalty(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.weight")+":", ""+sheet.getWeightPenalty(), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* base movement */
 		int mv = LengthUnit.CM.convertTo(sheet.getBaseMovement(), sheet.getLengthUnit());
 		String bmv = sheet.getLengthUnit().getFormattedString(mv);
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.basemovementrate")+":", bmv+RESOURCE.getString("rolemaster.basemovementrate.perrnd"), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.basemovementrate")+":", bmv+RESOURCE.getString("rolemaster.basemovementrate.perrnd"), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* maneuver */
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.moveingmaneuver")+":", format(sheet.getArmorManeuverModi(), false), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.moveingmaneuver")+":", format(sheet.getArmorManeuverModi(), false), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* missile penalty */
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.missile")+":", format(sheet.getArmorRangeModi(), false), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.missile")+":", format(sheet.getArmorRangeModi(), false), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		/* -------------- */
-		hline(canvas, LEFT_X, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , PAGE1_LEFTBOX_RIGHTX);
+		hline(canvas, borderLeftX, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , rightX);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		/*=Quickness Bonus
@@ -829,11 +828,11 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		rolemaster.db.total=Total DB*/
 		
 		/* reaction bonus */	
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.quickness.bonus")+":", format(sheet.getReactionBonus(), false), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.quickness.bonus")+":", format(sheet.getReactionBonus(), false), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		/* reaction armor modification */
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.quickness.armor")+":", ""+sheet.getArmorReactionModi(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.penalty.quickness.armor")+":", ""+sheet.getArmorReactionModi(), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
 		/* shield */
@@ -851,24 +850,24 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 			}
 			sb.append(")");
 		}
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.shield")+":", sb.toString(), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.shield")+":", sb.toString(), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.special")+":", format(sheet.getDefensiveBonusSpecial(), true), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.special")+":", format(sheet.getDefensiveBonusSpecial(), true), x, y, rightX, fontRegular, 8);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* defensive bonus */
-		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.total")+":", format(sheet.getDefensiveBonus(), false), x, y, PAGE1_LEFTBOX_RIGHTX, fontRegular, 8);
+		labeledUserText(canvas, RESOURCE.getString("rolemaster.db.total")+":", format(sheet.getDefensiveBonus(), false), x, y, rightX, fontRegular, 8);
 		/* db modifing items */
 		List<MagicalItem> items = sheet.getMagicalitems();
 		for (int i=0; i<items.size(); i++) {
 			MagicalItem item = items.get(i);
 			if (Boolean.TRUE.equals(item.getFavorite()) && item.hasDBModifier()) {
-				y = showMagicalItems(canvas, item.asOneLine(i+1), y, x + 10, PAGE1_LEFTBOX_RIGHTX - 6, false);
+				y = showMagicalItems(canvas, item.asOneLine(i+1), y, x + 10, rightX - 6, false);
 			}
 		}
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		/* -------------- */
-		hline(canvas, LEFT_X, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , PAGE1_LEFTBOX_RIGHTX);
+		hline(canvas, borderLeftX, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , rightX);
 		y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		return y;
 	}
@@ -881,13 +880,13 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 	 * @throws IOException 
 	 * @return the new y
 	 */
-	protected float page1Resistance(PdfContentByte canvas, final float initialY, boolean withBottomLine) throws IOException {
+	protected float page1Resistance(PdfContentByte canvas, final float initialY, boolean withBottomLine, int leftX, int rightX) throws IOException {
 		String line = "_____";
 		float lineWidth = fontRegular.getWidthPoint(line, 8);
-		float[] xVal = new float[] {LEFT_X + 4, 120, 145, 189, PAGE1_LEFTBOX_RIGHTX - 6 - (lineWidth / 2)};
+		float[] xVal = new float[] {leftX + 4, leftX + 65, leftX + 90, leftX + 134, rightX - 6 - (lineWidth / 2)};
 		float y = initialY;  
 		/* headline */
-		float center = LEFT_X + ((PAGE1_LEFTBOX_RIGHTX - LEFT_X) / 2);
+		float center = leftX + ((rightX - leftX) / 2);
 		canvas.beginText();
 		canvas.setFontAndSize(fontHeadline, 8);
 		canvas.showTextAligned(Element.ALIGN_CENTER, RESOURCE.getString("pdf.page1.resistance.headline"), center, y, 0);
@@ -917,7 +916,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 						canvas.showTextAligned(Element.ALIGN_CENTER, line, xVal[2], y, 0);
 						String stat = "(3x "+RESOURCE.getString("StatEnum."+res.getStat().name()+".short")+ ")";
 						canvas.showTextAligned(Element.ALIGN_LEFT, stat, xVal[2]+10, y, 0);
-						canvas.showTextAligned(Element.ALIGN_RIGHT, line, PAGE1_LEFTBOX_RIGHTX - 6, y, 0);
+						canvas.showTextAligned(Element.ALIGN_RIGHT, line, rightX - 6, y, 0);
 						canvas.endText();
 						break;
 					case 1:
@@ -943,7 +942,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 			for (int i=0; i<items.size(); i++) {
 				MagicalItem item = items.get(i);
 				if (Boolean.TRUE.equals(item.getFavorite()) && item.hasResistanceModifier(res)) {
-					y = showMagicalItems(canvas, item.asOneLine(i+1), y, LEFT_X + 6, PAGE1_LEFTBOX_RIGHTX - 6, false);
+					y = showMagicalItems(canvas, item.asOneLine(i+1), y, leftX + 6, rightX - 6, false);
 				}
 			}
 			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
@@ -972,7 +971,7 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 		}
 		/* -------------- */
 		if (withBottomLine) {
-			hline(canvas, LEFT_X, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , PAGE1_LEFTBOX_RIGHTX);
+			hline(canvas, leftX, y + (PAGE1_LEFTBOX_LINE_HEIGHT / 4) , rightX);
 			y -= PAGE1_LEFTBOX_LINE_HEIGHT;
 		}
 		return y;
