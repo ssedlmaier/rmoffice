@@ -551,11 +551,14 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		/* add skills */
 		if (sheet.getRace() != null) {
 			for (ISkill skill : data.getSkills()) {
-				if (   (skill.getScope() == null || skill.getScope() != null 
-						&& skill.getScope().equals(sheet.getRace().getScope())
-						) &&
-						( ! RMPreferences.getInstance().isExcluded(skill.getSource())) 
-						) {
+				if (
+				     (skill.getScope() == null || skill.getScope() != null 
+					  && skill.getScope().equals(sheet.getRace().getScope())
+					 ) && (
+						        ! RMPreferences.getInstance().isExcluded(skill.getSource())
+						     && ! RMPreferences.getInstance().isExcludedSkillId(skill.getId())
+					 )
+				   ) {
 					SkillTreeNode skillnode = new SkillTreeNode();
 					skillnode.setUserObject(skill);
 					SkillTreeNode parentNode = folders.get(sheet.getSkillcategory(skill));

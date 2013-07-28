@@ -115,6 +115,19 @@
 			</para>
 		</section>
 		<section>
+			<title>Skill exclusion</title>
+			<para>
+				Additionally you can exclude your own list of skills. Go to the user.properties and add a line
+				exclude_skills=SKILL-ID1, SKILL-ID2, SKILL-ID3.
+			</para>
+			<para>
+				You can find a list of all skill IDs in the locale files. Search for "skill.1=". Latest available files are here:
+				<ulink url="http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/i18n/">http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/i18n/</ulink>.
+			Example to exlude the Skill massage (skill.428=Massage) and Quickdraw (skill.57=Quickdraw):
+            exclude_skills=428,57
+			</para>
+		</section>
+		<section>
 			<title>DP costs of spell list ranks increases every 5 ranks</title>
 			<para>In the level up mode the costs of the spell lists DP costs will be increased every 5 ranks by default.
 			  For spell list rank 1-5 you have to pay 1 time cost, for 6-10 it will be 2 time costs, and so on.			  

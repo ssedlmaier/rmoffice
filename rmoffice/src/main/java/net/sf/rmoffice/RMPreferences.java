@@ -39,12 +39,14 @@ public class RMPreferences {
 	private static final String SEP = System.getProperty("file.separator");
 	private static final String RMOFFICE_USER_PROFILE = SEP + ".rmoffice" + SEP + "user.properties";
 	private static final String PREF_EXCLUDE = "excludes";
+	private static final String PREF_EXCLUDE_SKILLS = "exclude_skills";
 	private static final String PREF_SPELLLIST_DP_INCREASING = "spelllist-dp-increasing";
 	private static final String PREF_SHOW_OUTLINE_IMAGE = "outline-image";
 	private static final String PREF_SNAP_BONUS = "snapbonus";
 	
 	
 	private final Set<String> excludes = new HashSet<String>();
+	private final Set<Integer> exclude_skills = new HashSet<Integer>();
 	private File lastDir;
 	private int spelllistDPincreasing = 5;
 	private boolean printOutlineImage = true;
@@ -70,6 +72,7 @@ public class RMPreferences {
 				reader = new FileReader(prefFile);
 				props.load(reader);
 				loadExcludes(props);
+				loadExcludeSkills(props);
 				loadValues(props);
 			}
 		} catch (Exception e) {
@@ -119,6 +122,26 @@ public class RMPreferences {
 			if (log.isWarnEnabled()) log.warn("Could not read excludes from user.properties: "+e.getMessage());
 		}
 	}
+	
+	/* loads the skill excludes */
+	private static void loadExcludeSkills(Properties props) {
+		try {
+			if (props.containsKey(PREF_EXCLUDE_SKILLS)) {
+				String[] split = StringUtils.split(props.getProperty(PREF_EXCLUDE_SKILLS), ',');
+				for (String ex : split) {
+					try {
+					Integer id = Integer.valueOf(ex);
+					log.info("Excluding skill id "+id);
+					instance.exclude_skills.add(id);
+					} catch (Exception e) {
+						log.error("Could not parse exclude_skills: ["+ex+"]. Ignore this.");
+					}
+				}
+			}
+		} catch (Exception e) {
+			if (log.isWarnEnabled()) log.warn("Could not read excludes from user.properties: "+e.getMessage());
+		}
+	}
 
 	/**
 	 * 
@@ -137,12 +160,21 @@ public class RMPreferences {
 	}
 	
 	/**
-	 *  Returns false of the given source is {@code null}
+	 *  Returns false if the given source is {@code null}
 	 * @param source the source book string, may be {@code null}
 	 * @return whether the given source is excluded or not.
 	 */
 	public boolean isExcluded(String source) {
 		return excludes.contains(source);
+	}
+	
+	/**
+	 * Returns false if the given skill id is {@code null}.
+	 * @param skill id, may be {@code null}
+	 * @return whether the given id is excluded or not
+	 */
+	public boolean isExcludedSkillId(Integer id) {
+		return exclude_skills.contains(id);
 	}
 
 	
