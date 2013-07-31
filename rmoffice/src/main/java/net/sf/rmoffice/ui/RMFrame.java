@@ -662,18 +662,22 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 						freader = new BufferedReader(new InputStreamReader(in, ExportImport.ENCODING));
 						sheet = ExportImport.importXml(freader);
 						sheet.setMetaData(data);
-						updateAdapters();
-						setCurrentFile( selectedFile );
-						RMFrame.this.setTitle(selectedFile.getName());
-						initPropertyChangeListener();
-						toDoPanel.setSheet(sheet);
-						sheet.init();
-						if (refreshing) return;
-						refreshing = true;
-						skillModel.setSheet(sheet);
-						skillcatModel.setSheet(sheet);
-						if (RMSheet.State.NORMAL.equals(sheet.getState())) {
-							sheet2ui();
+						if (validateExclusions(sheet)) {
+							updateAdapters();
+							setCurrentFile( selectedFile );
+							RMFrame.this.setTitle(selectedFile.getName());
+							initPropertyChangeListener();
+							toDoPanel.setSheet(sheet);
+							sheet.init();
+							if (refreshing) return;
+							refreshing = true;
+							skillModel.setSheet(sheet);
+							skillcatModel.setSheet(sheet);
+							if (RMSheet.State.NORMAL.equals(sheet.getState())) {
+								sheet2ui();
+							}
+						} else {
+							sheet = null;
 						}
 					}
 				} catch (Exception ex) {
@@ -700,6 +704,18 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 						if (log.isDebugEnabled()) log.debug("ignoring Exception while closing file reader "+ex.getClass().getName()+":"+ex.getLocalizedMessage());
 					}
 				}
+			}
+
+			private boolean validateExclusions(RMSheet sheet) {
+				if (sheet.getRace() == null) {
+					JOptionPane.showMessageDialog(RMFrame.this, RESOURCE.getString("error.file.open")+": "+RESOURCE.getString("error.file.open.raceexcluded"));
+					return false;
+				}
+				if (sheet.getProfession() == null) {
+					JOptionPane.showMessageDialog(RMFrame.this, RESOURCE.getString("error.file.open")+": "+RESOURCE.getString("error.file.open.profexcluded"));
+					return false;
+				}
+				return true;
 			}
 		});
 		file.add(menuOpen);

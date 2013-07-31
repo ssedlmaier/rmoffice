@@ -40,6 +40,8 @@ public class RMPreferences {
 	private static final String RMOFFICE_USER_PROFILE = SEP + ".rmoffice" + SEP + "user.properties";
 	private static final String PREF_EXCLUDE = "excludes";
 	private static final String PREF_EXCLUDE_SKILLS = "exclude_skills";
+	private static final String PREF_EXCLUDE_PROF = "exclude_profs";
+	private static final String PREF_EXCLUDE_RACE = "exclude_races";
 	private static final String PREF_SPELLLIST_DP_INCREASING = "spelllist-dp-increasing";
 	private static final String PREF_SHOW_OUTLINE_IMAGE = "outline-image";
 	private static final String PREF_SNAP_BONUS = "snapbonus";
@@ -47,6 +49,8 @@ public class RMPreferences {
 	
 	private final Set<String> excludes = new HashSet<String>();
 	private final Set<Integer> exclude_skills = new HashSet<Integer>();
+	private final Set<Integer> exclude_profs = new HashSet<Integer>();
+	private final Set<Integer> exclude_race = new HashSet<Integer>();
 	private File lastDir;
 	private int spelllistDPincreasing = 5;
 	private boolean printOutlineImage = true;
@@ -72,7 +76,9 @@ public class RMPreferences {
 				reader = new FileReader(prefFile);
 				props.load(reader);
 				loadExcludes(props);
-				loadExcludeSkills(props);
+				loadExcludes(props, PREF_EXCLUDE_SKILLS, instance.exclude_skills);
+				loadExcludes(props, PREF_EXCLUDE_PROF, instance.exclude_profs);
+				loadExcludes(props, PREF_EXCLUDE_RACE, instance.exclude_race);
 				loadValues(props);
 			}
 		} catch (Exception e) {
@@ -124,17 +130,17 @@ public class RMPreferences {
 	}
 	
 	/* loads the skill excludes */
-	private static void loadExcludeSkills(Properties props) {
+	private static void loadExcludes(Properties props, String pref, Set<Integer> exclude_set) {
 		try {
-			if (props.containsKey(PREF_EXCLUDE_SKILLS)) {
-				String[] split = StringUtils.split(props.getProperty(PREF_EXCLUDE_SKILLS), ',');
+			if (props.containsKey(pref)) {
+				String[] split = StringUtils.split(props.getProperty(pref), ',');
 				for (String ex : split) {
 					try {
 					Integer id = Integer.valueOf(ex);
-					log.info("Excluding skill id "+id);
-					instance.exclude_skills.add(id);
+					log.info("Excluding "+pref+" id "+id);
+					exclude_set.add(id);
 					} catch (Exception e) {
-						log.error("Could not parse exclude_skills: ["+ex+"]. Ignore this.");
+						log.error("Could not parse "+pref+": ["+ex+"]. Ignoring this.");
 					}
 				}
 			}
@@ -176,7 +182,24 @@ public class RMPreferences {
 	public boolean isExcludedSkillId(Integer id) {
 		return exclude_skills.contains(id);
 	}
-
+	
+	/**
+	 * Returns false if the given profession id is {@code null}.
+	 * @param skill id, may be {@code null}
+	 * @return whether the given id is excluded or not
+	 */
+	public boolean isExcludedProfId(Integer id) {
+		return exclude_profs.contains(id);
+	}
+	
+	/**
+	 * Returns false if the given race id is {@code null}.
+	 * @param skill id, may be {@code null}
+	 * @return whether the given id is excluded or not
+	 */
+	public boolean isExcludedRaceId(Integer id) {
+		return exclude_race.contains(id);
+	}
 	
 	public File getLastDir() {
 		return lastDir;

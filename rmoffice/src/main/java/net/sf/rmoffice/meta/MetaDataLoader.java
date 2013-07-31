@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import net.sf.rmoffice.RMPreferences;
 import net.sf.rmoffice.generator.Name.Style;
 import net.sf.rmoffice.meta.TrainPack.Type;
 import net.sf.rmoffice.meta.enums.LengthUnit;
@@ -746,44 +747,46 @@ public class MetaDataLoader {
 				String[] split = StringUtils.splitPreserveAllTokens(line, ',');
 				if (split != null && split.length == (6 + StatEnum.values().length + ResistanceEnum.values().length) + 4 * 5 /* progression*/ + 6 ) {
 					try {
-					Race r = new Race();
-					int i = 0;
-					r.setId( Integer.valueOf(StringUtils.trim(split[i++])) );
-					String name = RESOURCE.getString(StringUtils.trim(split[i++]));
-					r.setName( name );
-					r.setScope( RaceScope.valueOf( StringUtils.trim(split[i++])) );
-					r.setSource( StringUtils.trimToEmpty( StringUtils.trim(split[i++])) );
-					r.setNameStyle( Style.valueOf(StringUtils.trim(split[i++])) );
-					r.setOutline( StringUtils.trimToNull(split[i++]) );
-					for (StatEnum at : StatEnum.values()) {
-						r.setAttributeBonus(at, Integer.valueOf(StringUtils.trim(split[i++])));
-					}
-					for (ResistanceEnum re : ResistanceEnum.values()) {
-						r.setResistanceBonus(re, Integer.valueOf(StringUtils.trim(split[i++])));
-					}
-					/* Progression Hits */
-					
-					int[][] tmp = new int[4][5];
-					for (int k=0; k<4; k++) {
-						for (int j=0; j<5; j++) {
-							tmp[k][j] = Integer.parseInt( StringUtils.trimToEmpty(split[i++]) ); 
+						Race r = new Race();
+						int i = 0;
+						r.setId( Integer.valueOf(StringUtils.trim(split[i++])) );
+						String name = RESOURCE.getString(StringUtils.trim(split[i++]));
+						r.setName( name );
+						r.setScope( RaceScope.valueOf( StringUtils.trim(split[i++])) );
+						r.setSource( StringUtils.trimToEmpty( StringUtils.trim(split[i++])) );
+						r.setNameStyle( Style.valueOf(StringUtils.trim(split[i++])) );
+						r.setOutline( StringUtils.trimToNull(split[i++]) );
+						for (StatEnum at : StatEnum.values()) {
+							r.setAttributeBonus(at, Integer.valueOf(StringUtils.trim(split[i++])));
 						}
-					}
-					r.setProgKoerperentw(new Progression(tmp[0][0], tmp[0][1], tmp[0][2], tmp[0][3], tmp[0][4]));
-					r.setProgMagic(StatEnum.INTUITION, new Progression(tmp[1][0], tmp[1][1], tmp[1][2], tmp[1][3], tmp[1][4]));
-					r.setProgMagic(StatEnum.EMPATHY, new Progression(tmp[2][0], tmp[2][1], tmp[2][2], tmp[2][3], tmp[2][4]));
-					r.setProgMagic(StatEnum.PRESENCE, new Progression(tmp[3][0], tmp[3][1], tmp[3][2], tmp[3][3], tmp[3][4]));
-					r.setSoulDeparture( Integer.parseInt(StringUtils.trim(split[i++])) );
-					r.setRecoveryMultiplier( Float.parseFloat(StringUtils.trim(split[i++])));
-					r.setBackgroundOptions( Integer.parseInt(StringUtils.trim(split[i++])));
-					r.setExhaustionPoints( Integer.parseInt(StringUtils.trim(split[i++])) );
-					i++; /* ignoring statloss */
-					/*  RR  */
-					String resLine = StringUtils.trimToNull(split[i++]);
-					if (resLine != null) {
-						r.addAdditionalResistanceLine(RESOURCE.getString(resLine));
-					}
-					races.add(r);
+						for (ResistanceEnum re : ResistanceEnum.values()) {
+							r.setResistanceBonus(re, Integer.valueOf(StringUtils.trim(split[i++])));
+						}
+						/* Progression Hits */
+
+						int[][] tmp = new int[4][5];
+						for (int k=0; k<4; k++) {
+							for (int j=0; j<5; j++) {
+								tmp[k][j] = Integer.parseInt( StringUtils.trimToEmpty(split[i++]) ); 
+							}
+						}
+						r.setProgKoerperentw(new Progression(tmp[0][0], tmp[0][1], tmp[0][2], tmp[0][3], tmp[0][4]));
+						r.setProgMagic(StatEnum.INTUITION, new Progression(tmp[1][0], tmp[1][1], tmp[1][2], tmp[1][3], tmp[1][4]));
+						r.setProgMagic(StatEnum.EMPATHY, new Progression(tmp[2][0], tmp[2][1], tmp[2][2], tmp[2][3], tmp[2][4]));
+						r.setProgMagic(StatEnum.PRESENCE, new Progression(tmp[3][0], tmp[3][1], tmp[3][2], tmp[3][3], tmp[3][4]));
+						r.setSoulDeparture( Integer.parseInt(StringUtils.trim(split[i++])) );
+						r.setRecoveryMultiplier( Float.parseFloat(StringUtils.trim(split[i++])));
+						r.setBackgroundOptions( Integer.parseInt(StringUtils.trim(split[i++])));
+						r.setExhaustionPoints( Integer.parseInt(StringUtils.trim(split[i++])) );
+						i++; /* ignoring statloss */
+						/*  RR  */
+						String resLine = StringUtils.trimToNull(split[i++]);
+						if (resLine != null) {
+							r.addAdditionalResistanceLine(RESOURCE.getString(resLine));
+						}
+						if (!RMPreferences.getInstance().isExcludedRaceId(r.getId())) {
+							races.add(r);
+						}
 					} catch (Exception e) {
 						if (log.isWarnEnabled()) log.warn("Could not load race line "+lineNo+": "+e.getClass().getName()+" "+e.getMessage());
 					}
@@ -912,7 +915,9 @@ public class MetaDataLoader {
 						}
 						idx++;
 					}
-					profs.add(p);
+					if (!RMPreferences.getInstance().isExcludedProfId(p.getId())) {
+						profs.add(p);
+					}
 				}
 			}
 		}

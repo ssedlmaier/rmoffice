@@ -45,7 +45,7 @@
 		   <itemizedlist>
 		     <listitem><para>LOCALE: Italian translation</para></listitem>
 		     <listitem><para>PDF: New PDF template with big character image on page 1</para></listitem>
-		     <listitem><para>Skills can be excluded by user.properties (see README)</para></listitem>
+		     <listitem><para>Skills, professions and races can be excluded by user.properties (see README)</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

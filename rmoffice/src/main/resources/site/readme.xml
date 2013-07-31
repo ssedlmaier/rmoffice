@@ -117,7 +117,7 @@
 		<section>
 			<title>Skill exclusion</title>
 			<para>
-				Additionally you can exclude your own list of skills. Go to the user.properties and add a line
+				Additionally you can exclude your own set of skills. Go to the user.properties and add a line
 				exclude_skills=SKILL-ID1, SKILL-ID2, SKILL-ID3.
 			</para>
 			<para>
@@ -125,6 +125,32 @@
 				<ulink url="http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/i18n/">http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/i18n/</ulink>.
 			Example to exlude the Skill massage (skill.428=Massage) and Quickdraw (skill.57=Quickdraw):
             exclude_skills=428,57
+			</para>
+		</section>
+		<section>
+			<title>Profession exclusion</title>
+			<para>
+				Additionally you can exclude your own set of professions. Go to the user.properties and add a line
+				exclude_profs=PROF-ID1, PROF-ID2, PROF-ID3.
+			</para>
+			<para>
+				You can find a list of all profession IDs in the locale files. Search for "profession.1=". Latest available files are here:
+				<ulink url="http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/i18n/">http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/i18n/</ulink>.
+			Example to exlude the profession babarian (profession.2=Barbarian):
+            exclude_skills=2
+			</para>
+		</section>
+		<section>
+			<title>Race exclusion</title>
+			<para>
+				Additionally you can exclude your own set of races. Go to the user.properties and add a line
+				exclude_races=RACE-ID1, RACE-ID2, RACE-ID3.
+			</para>
+			<para>
+				You can find a list of all race IDs in the race.conf. Each line starts with the race ID. Latest available files are here:
+				<ulink url="http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/race.conf">http://sourceforge.net/p/rmoffice/code/ci/master/tree/rmoffice/src/main/resources/conf/race.conf</ulink>.
+			Example to exlude the race dwarf (35,race.base.dwarf,BASE,.....):
+            exclude_skills=35
 			</para>
 		</section>
 		<section>
