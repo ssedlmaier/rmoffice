@@ -1253,7 +1253,9 @@ public class PDFCreator extends AbstractPDFCreator {
 		/* add custom skills */
 		List<String> skills = new ArrayList<String>();
 		for (ISkill skill : allSkills) {
-			if (!skill.isSpelllist() && (skill.getScope() == null || skill.getScope().equals(sheet.getRace().getScope()))) {
+			boolean isExcluded = RMPreferences.getInstance().isExcludedSkillId(skill.getId());
+			if (!skill.isSpelllist() && !isExcluded 
+					&& (skill.getScope() == null || skill.getScope().equals(sheet.getRace().getScope()))) {
 				/* not a spell && valid for the race */
 				SkillCategory category = sheet.getSkillcategory(skill);
 				if (!category.getRankType().isCostSwitchable()) {
@@ -1264,8 +1266,11 @@ public class PDFCreator extends AbstractPDFCreator {
 		}
 		Collections.sort(skills);
 		float lineHeight = 8;
+		int linesPerCol = (int)((UPPER_Y - BOTTOM_Y) / lineHeight);
+		int numberCols = (int)Math.ceil((float)skills.size() / (float)linesPerCol);
+		log.debug("page all skills: lines per column = "+linesPerCol + " number of cols = "+numberCols + " skills="+skills.size());
 		float fontSize = 7f;
-		int colWidth = (RIGHT_X - LEFT_X) / 5;
+		int colWidth = (RIGHT_X - LEFT_X) / numberCols;
 		/* print */
 		float x = LEFT_X + 2;
 		float y = UPPER_Y - 8;
