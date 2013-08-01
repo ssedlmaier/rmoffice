@@ -88,6 +88,7 @@ import net.sf.rmoffice.meta.ISkill;
 import net.sf.rmoffice.meta.MetaData;
 import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.pdf.PDFVersion;
+import net.sf.rmoffice.ui.actions.CharacterCharacteristicsAction;
 import net.sf.rmoffice.ui.actions.CharacterGeneratorAction;
 import net.sf.rmoffice.ui.actions.CharacterNameAction;
 import net.sf.rmoffice.ui.actions.CreatePDFAction;
@@ -762,6 +763,11 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		JMenuItem menuGenName = new JMenuItem(RESOURCE.getString("ui.menu.generatename"), UIConstants.ICON_GEN_NAME);
 		generatorMenu.add(menuGenName);
 		menuGenName.addActionListener(new CharacterNameAction(data, getCharacteristicsAdapter(), getRMSheetAdapter()));
+		
+		JMenuItem menuGenCharacteristics = new JMenuItem(RESOURCE.getString("ui.menu.generatecharacteristics"), UIConstants.ICON_GEN_CHARACTERISTICS);
+		generatorMenu.add(menuGenCharacteristics);
+		menuGenCharacteristics.addActionListener(new CharacterCharacteristicsAction(data, getCharacteristicsAdapter(), getRMSheetAdapter()));
+		Bindings.bind(menuGenCharacteristics, "enabled", enableValueHolder);
 		
 		JMenuItem menuGenNPC = new JMenuItem(RESOURCE.getString("ui.menu.generatecharacter"), UIConstants.ICON_GEN_ALL);
 		generatorMenu.add(menuGenNPC);

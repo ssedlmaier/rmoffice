@@ -39,8 +39,10 @@ import net.sf.rmoffice.meta.SkillCategory;
 import net.sf.rmoffice.meta.Skillcost;
 import net.sf.rmoffice.meta.Spelllist;
 import net.sf.rmoffice.meta.WeightHeight;
+import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.SkillType;
 import net.sf.rmoffice.meta.enums.StatEnum;
+import net.sf.rmoffice.meta.enums.WeightUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +109,7 @@ public class CharacterGenerator {
 		}
 		sheetAdapter.getBean().setCharacterName(Name.getName(style, isMale));
 	}
-
+	
 	/**
 	 * Distributes the start points 600 + 10d10 to the given stats. Current temp values not equals 0 are
 	 * used as minimum. Potential values not equals 0 are used as maximum, 
@@ -212,12 +214,20 @@ public class CharacterGenerator {
 			/* height = 85% of avg height + 2 x 0-15% of avg height; range: 85% - 115% */
 			int rnd = 85 + DiceUtils.roll(2, 15);
 			int height = (int) ((rnd / 100f) * avgH);
+			if (0 != sheetAdapter.getBean().getLengthUnit().compareTo(LengthUnit.CM)) {
+				// convert
+				height = LengthUnit.CM.convertTo(height, sheetAdapter.getBean().getLengthUnit());
+			}
 			characteristics.getBean().setHeight(height);
 			
 			/* weight */
 			int avgW = wh.getWeightAvg(isFemale);
 			rnd = 100 + DiceUtils.roll(1, 15) /* 100-115% */  - (rnd - 100) /* the diff from height */;
 			int weight = (int) ((rnd / 100f) * avgW);
+			if (0 != sheetAdapter.getBean().getWeightUnit().compareTo(WeightUnit.KILOGRAM)) {
+				// convert
+				weight = Math.round(WeightUnit.KILOGRAM.convertTo(weight, sheetAdapter.getBean().getWeightUnit()));
+			}
 			characteristics.getBean().setWeight(weight);
 		}
 	}
