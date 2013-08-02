@@ -55,6 +55,7 @@
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>
+		     <listitem><para>BASIC: fix dummy spell list for channeling and mentalism alchemist</para></listitem>
 		     <listitem><para>NPC: fix height and weight generation for lbs/inch settings</para></listitem>
 		   </itemizedlist>
 		 </para>
