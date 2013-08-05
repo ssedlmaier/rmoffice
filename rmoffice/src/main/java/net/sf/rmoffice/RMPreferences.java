@@ -18,7 +18,9 @@ package net.sf.rmoffice;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -37,7 +39,8 @@ public class RMPreferences {
 	private final static Logger log = LoggerFactory.getLogger(RMPreferences.class);
 	private static RMPreferences instance = new RMPreferences();
 	private static final String SEP = System.getProperty("file.separator");
-	private static final String RMOFFICE_USER_PROFILE = SEP + ".rmoffice" + SEP + "user.properties";
+	public static final String RMOFFICE_DIR = SEP + ".rmoffice" + SEP;
+	private static final String RMOFFICE_USER_PROFILE = RMOFFICE_DIR + "user.properties";
 	private static final String PREF_EXCLUDE = "excludes";
 	private static final String PREF_EXCLUDE_SKILLS = "exclude_skills";
 	private static final String PREF_EXCLUDE_PROF = "exclude_profs";
@@ -46,7 +49,7 @@ public class RMPreferences {
 	private static final String PREF_SHOW_OUTLINE_IMAGE = "outline-image";
 	private static final String PREF_SNAP_BONUS = "snapbonus";
 	
-	
+	private final List<String> errors = new ArrayList<String>();
 	private final Set<String> excludes = new HashSet<String>();
 	private final Set<Integer> exclude_skills = new HashSet<Integer>();
 	private final Set<Integer> exclude_profs = new HashSet<Integer>();
@@ -235,5 +238,12 @@ public class RMPreferences {
 
 	public int getSnapBonus() {
 		return snapBonus;
+	}
+	
+	public void addError(String message) {
+		errors.add(message);
+	}
+	public List<String> getErrors() {
+		return errors;
 	}
 }

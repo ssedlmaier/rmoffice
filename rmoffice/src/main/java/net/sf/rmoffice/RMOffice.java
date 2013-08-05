@@ -85,14 +85,19 @@ public class RMOffice {
 		log.error(t.getMessage(), t);
 		Writer sOut = new StringWriter();
 		t.printStackTrace(new PrintWriter(sOut ));
-		JTextArea ta = new JTextArea(t.getClass().getName()+" "+sOut.toString());
+		String text = t.getClass().getName()+" "+sOut.toString();
+		showError("error.application", text);
+	}
+
+	public static void showError(String labelResKey, String text) {
+		JTextArea ta = new JTextArea(text);
 		JScrollPane sp = new JScrollPane(ta);
 		sp.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(new JLabel(RESOURCE.getString("error.application")), BorderLayout.NORTH);
+		panel.add(new JLabel(RESOURCE.getString(labelResKey)), BorderLayout.NORTH);
 		panel.add(sp, BorderLayout.CENTER);
 		sp.setPreferredSize(new Dimension(400, 200));
-		JOptionPane.showMessageDialog(frame, panel, RESOURCE.getString("error.application"), JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, panel, RESOURCE.getString(labelResKey), JOptionPane.ERROR_MESSAGE);
 	}
 	
 	private static void checkForUpdate(final RMFrame frame) {		

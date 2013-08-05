@@ -58,5 +58,6 @@ public final class UIConstants {
 	public static final ImageIcon ICON_GEN_CHARACTERISTICS = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/gen-characteristics.png"));
 	public static final ImageIcon ICON_GEN_ALL = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/gen.png"));
 	public static final ImageIcon ICON_HELP = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/help.png"));
+	public static final ImageIcon ICON_IMPORTANT = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/important.png"));
 	public static final ImageIcon ICON_HELP_SMALL = new ImageIcon(InfoPagePanel.class.getResource("/images/icons/help_22.png"));
 }

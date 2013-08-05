@@ -777,6 +777,21 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		/* ---- About ---- */
 		JMenu helpMenu = new JMenu(RESOURCE.getString("ui.meni.help"));
 		bar.add(helpMenu);
+
+		JMenuItem showCustomConfigErrors = new JMenuItem(RESOURCE.getString("ui.menu.errors"), UIConstants.ICON_IMPORTANT);
+		helpMenu.add(showCustomConfigErrors);
+		showCustomConfigErrors.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				StringBuilder sb = new StringBuilder();
+				for (String err : RMPreferences.getInstance().getErrors()) {
+					sb.append(err).append("\n");
+				}
+				RMOffice.showError("ui.menu.errors", sb.toString());
+			}
+		});
+
 		
 		JMenuItem aboutMenu = new JMenuItem(RESOURCE.getString("ui.menu.about"), UIConstants.ICON_HELP);
 		helpMenu.add(aboutMenu);
@@ -794,10 +809,9 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		});
 		
 		/* New Version Menu*/
-		
 		newLatestVersionMenu = new JMenu(RESOURCE.getString("ui.menu.newversion"));
-		newLatestVersionMenu.setVisible(false);
 		bar.add(newLatestVersionMenu);
+		newLatestVersionMenu.setVisible(false);
 		
 		JMenuItem getNewVersionMenu = new JMenuItem(RESOURCE.getString("ui.menu.getnewversion"), UIConstants.ICON_ARRDOWN);
 		newLatestVersionMenu.add(getNewVersionMenu);

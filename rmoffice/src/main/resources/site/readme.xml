@@ -114,6 +114,7 @@
 			  &quot;excludes=RMC,ARCC,ALCC,ELEMC,MENTC,ESSC,MAC,R&amp;C,CONSC,C&amp;R,MIDDLEEARTH,SHADOWWORLD&quot;
 			</para>
 		</section>
+		<anchor id="skillexclusion"/>
 		<section>
 			<title>Skill exclusion</title>
 			<para>
@@ -437,44 +438,48 @@
 	</section>
 	<section>
 	  <title>6 Customize &product;</title>
+	  <anchor id="howtoaddcustomraces"/>
 	  <section>
-	     <title>How can I add my own races?</title>
+	     <title>How can I add my own races or cultures?</title>
 	     <para>
 	       <orderedlist>
 	         <listitem>
-	           <para>Download latest race.ods from <ulink url="http://rmoffice.git.sourceforge.net/git/gitweb.cgi?p=rmoffice/rmoffice;a=tree;f=rmoffice/src/main/resources/conf-src;hb=HEAD">Git</ulink></para>
+	           <para> Copy from the downloaded zip the folder templates/conf/ to your user.dir (e.g. C:\Users\Daniel\.rmoffice / see path in About Dialog in &product;).
+	            Now, you should have two files user.dir/.rmoffice/conf/race.conf and user.dir/.rmoffice/conf/cultures.conf</para>
 	         </listitem>
 	         <listitem>
-	           <para>Open race.ods with OpenOffice or LibreOffice and add your races. In column A you have to use a unique race ID (Example: start at 100). In column B use a resource key like &quot;customized.race.myname&quot;</para>
+	            <para>Quickstart: Uncomment (remove #) line 2+3 in cultures.conf and line 2 in race.conf.</para>
 	         </listitem>
 	         <listitem>
-	           <para>Option a) Now add a culture to the tab &quot;CultureData&quot;. If the race has 1 culture use same ID in column A (culture ID) and B (race ID) (Example: both 100). Put the
+	            <para>Quickstart: Start &product; and you can select the race MyHumanRace which has 2 cultures. </para>
+	         </listitem>
+	         <listitem>
+	            <para>The easiest way it to get a copy from the latest race.ods from
+	            <ulink url="http://rmoffice.git.sourceforge.net/git/gitweb.cgi?p=rmoffice/rmoffice;a=tree;f=rmoffice/src/main/resources/conf-src;hb=HEAD">Git</ulink>.
+	            Just click on the name race.ods.
+	            </para>
+	         </listitem>
+	         <listitem>
+	           <para>Open race.ods with OpenOffice or LibreOffice and add your races. In column A you have to use a unique race ID (MUST greater or equals 1000). In column B add the races name</para>
+	         </listitem>
+	         <listitem>
+	           <para>Option a) Now add a culture to the tab &quot;CultureData&quot;. If the race has 1 culture use same ID in column A (culture ID) and B (race ID) (MUST greater or equals 1000). Put the
 	           youth ranks in the table (Number for youth ranks, r for restricted, e for everyman; 2-e for 2 youth ranks and everyman)</para>
 	         </listitem>
 	         <listitem>
 	           <para>Option b) You want to use an existing culture? Add the race ID to column B separated with &quot;-&quot; (Example: 35-100 will assign the dwarf culture to your race with the ID 100)</para>
 	         </listitem>
 	         <listitem>
-	           <para>Now we prepare RMO to load your race and culture data. Create a new directory &quot;conf&quot; and a sub-directory &quot;i18n&quot;.</para>
-	         </listitem>
-	         <listitem>
-	           <para>Open the jar file with WinRar/7Zip or similar (or rename it to zip) and extract the files race.conf and culture.conf from conf directory. Copy it to a new directory &quot;conf&quot;. Copy from &quot;i18n&quot; all files to the &quot;i18n&quot; outside the jar.</para>
-	         </listitem>
-	         <listitem>
-	           <para>Open race.conf in a text editor (not windows editor, use Notpad++ or similar). Select/copy your new race rows from Open/LibreOffice column A to AV and paste it at the end of the race.conf and replace all tabs by &quot;,&quot;</para>
+	           <para>Open race.conf in a text editor (not windows editor, use Notpad++ or similar). Select/copy your new race rows from Open/LibreOffice column A to AV and paste it into race.conf and replace all tabs by &quot;,&quot;</para>
 	         </listitem>
 	         <listitem>
 	           <para>Open culture.conf in the text editor. Select and copy your new culture (if you have new ones) rows from Open/LibreOffice tab &quot;culture.conf&quot; column A to GS and paste it to culture.conf. The format is well-formed; you just have to remove the tabs.</para>
 	         </listitem>
 	         <listitem>
-	           <para>Add the resource key with the localization (Example: customized.race.myname=My Race Name) at the end of the locale files</para>
+	           <para>Start &product; and you can see the new races</para>
 	         </listitem>
 	         <listitem>
-	           <para>Windows: Now modify your start-rmoffice.bat to: <code>java -cp .;./rmoffice-&version;.jar net.sf.rmoffice.RMOffice</code></para>
-	           <para>Linux/Mac: Now modify your start-rmoffice.sh to: <code>java -cp .:./rmoffice-&version;.jar net.sf.rmoffice.RMOffice</code></para>
-	         </listitem>
-	         <listitem>
-	           <para>Start &product; by using your new start script.</para>
+	           <para>You can see all configuration errors in &product; under Help > Error Protocol</para>
 	         </listitem>
 	       </orderedlist>
 	     </para>

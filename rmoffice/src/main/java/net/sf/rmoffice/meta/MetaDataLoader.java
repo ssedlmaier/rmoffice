@@ -16,6 +16,8 @@
 package net.sf.rmoffice.meta;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,6 +58,7 @@ import org.slf4j.LoggerFactory;
  * The meta data loader reads all configuration files and parses them.
  */
 public class MetaDataLoader {
+	private static final int MIN_USER_RACE_CULTURE_ID = 1000;
 	private static final String CONF_SKILLCOSTS = "/conf/skillcosts.csv";
 	private static final String CONF_PROF = "/conf/prof.conf";
 	private static final String CONF_RACE = "/conf/race.conf";
@@ -564,7 +567,20 @@ public class MetaDataLoader {
 	}
 
 	private void loadCultures(MetaData metaData) throws IOException {
-		BufferedReader reader = getReader(CONF_CULTURES);
+		List<Culture> cultures = loadCultureFromReader(metaData, getReader(CONF_CULTURES), false);
+		// load from user.dir
+		File customCultures = new File(System.getProperty("user.home") + RMPreferences.RMOFFICE_DIR + CONF_CULTURES);
+		if (customCultures.exists() && customCultures.isFile()) {
+			BufferedReader cr = new BufferedReader( new InputStreamReader(new FileInputStream(customCultures), CHARSET) );
+			cultures.addAll(loadCultureFromReader(metaData, cr, true));
+		} else {
+			log.debug(customCultures.getAbsolutePath()+" is not a file. ignoring user cultures.");
+		}
+		// add all culture
+		metaData.setCultures(cultures);
+	}
+
+	private List<Culture> loadCultureFromReader(MetaData metaData, BufferedReader reader, boolean isUserFile) throws IOException {
 		String line = null;
 		int lineNo = 0;
 		List<Culture> cultures = new ArrayList<Culture>(); 
@@ -576,6 +592,10 @@ public class MetaDataLoader {
 					line = StringUtils.trimToEmpty(line);				
 					String[] split = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, ",");
 					Integer cultureId = Integer.valueOf( StringUtils.trim(split[i++]));
+					if (isUserFile && cultureId.intValue() < MIN_USER_RACE_CULTURE_ID) {
+						String msg = "Custom culture id ["+cultureId+"] must be greater or equals "+MIN_USER_RACE_CULTURE_ID;
+						throw new IllegalArgumentException(msg);
+					}
 					Culture culture = new Culture();
 					culture.setId(cultureId);
 					cultures.add(culture);	
@@ -587,16 +607,21 @@ public class MetaDataLoader {
 						if (race != null) {
 							culture.addValidRace(race);
 						} else {
-							if (log.isWarnEnabled()) log.warn(CONF_CULTURES+": Ignoring Race for Culture ID "+cultureId+". Race ID "+raceIdStr+" is not available. line "+lineNo);
+							String msg = CONF_CULTURES+": Ignoring race for Culture ID "+cultureId+". Race ID "+raceIdStr+" is not available. line "+lineNo;
+							log.warn(msg);
+							if (isUserFile) {
+								RMPreferences.getInstance().addError(msg);
+							}
 						}
 					}
 					/* name */
 					if (StringUtils.trimToNull(split[i]) != null) {
-						culture.setName(RESOURCE.getString(StringUtils.trimToEmpty(split[i++])));
+						String resKey = StringUtils.trimToEmpty(split[i]);
+						culture.setName(getResKey(resKey, isUserFile));
 					} else {
 						culture.setName("");
-						i++;
 					}
+					i++;
 					/* rune */
 					culture.setRune(StringUtils.trimToEmpty(split[i++]));
 					/* weight */
@@ -626,7 +651,7 @@ public class MetaDataLoader {
 							if (idString.length() > 1) {
 								if (idString.charAt(0) == 'T') {
 									String ext = (rank == 0) ? "" : (" " + rank);
-									culture.addTodo(RESOURCE.getString(idString.substring(1)) + ext);
+									culture.addTodo(getResKey(idString.substring(1), isUserFile) + ext);
 								} else if ("HOBBY".equals(idString)) {
 									culture.setHobbyRanks(rank);
 									culture.addTodo(RESOURCE.getString("todo.hobbies") + rank);
@@ -649,7 +674,11 @@ public class MetaDataLoader {
 												culture.addSkillgroupType(skillgroup, skillType);
 											}
 										} else {
-											if (log.isWarnEnabled()) log.warn(CONF_CULTURES+": Could not find skillgroup with ID "+idObj+" line "+lineNo);
+											String msg = CONF_CULTURES+": Could not find skillgroup with ID "+idObj+" line "+lineNo;
+											log.warn(msg);
+											if (isUserFile) {
+												RMPreferences.getInstance().addError(msg);
+											}
 										}
 									} else if (idString.charAt(0) == 'S') {
 										ISkill skill = metaData.getSkill(idObj);
@@ -661,7 +690,11 @@ public class MetaDataLoader {
 												culture.addSkillType(skill, skillType);
 											}
 										} else {
-											if (log.isWarnEnabled()) log.warn(CONF_CULTURES+": Could not find skill with ID "+idObj+" line "+lineNo);
+											String msg = CONF_CULTURES+": Could not find skill with ID "+idObj+" line "+lineNo;
+											log.warn(msg);
+											if (isUserFile) {
+												RMPreferences.getInstance().addError(msg);
+											}
 										}
 									}
 								}
@@ -669,11 +702,15 @@ public class MetaDataLoader {
 						}
 					}
 				} catch (Exception e) {
-					log.error(CONF_CULTURES+": Could not convert lineNo "+lineNo+" i="+i+": "+e.getClass().getName()+" "+e.getMessage(), e);
+					String msg = CONF_CULTURES+": Could not convert lineNo "+lineNo+" i="+i+": "+e.getClass().getName()+" "+e.getMessage();
+					log.error(msg, e);
+					if (isUserFile) {
+						RMPreferences.getInstance().addError(msg);
+					}
 				}
 			}
 		}
-		metaData.setCultures(cultures);
+		return cultures;
 	}
 
 	private List<ISkill> loadSkills(MetaData metaData) throws IOException {
@@ -737,7 +774,35 @@ public class MetaDataLoader {
 
 	private List<Race> loadRaces() throws IOException {
 		List<Race> races = new ArrayList<Race>();
-		BufferedReader reader = getReader(CONF_RACE);
+		// load the custom races
+		loadRaceFromReader(races, getReader(CONF_RACE), false);
+		// load from user.dir
+		File customRaces = new File(System.getProperty("user.home") + RMPreferences.RMOFFICE_DIR + CONF_RACE);
+		if (customRaces.exists() && customRaces.isFile()) {
+			BufferedReader cr = new BufferedReader( new InputStreamReader(new FileInputStream(customRaces), CHARSET) );
+			loadRaceFromReader(races, cr, true);
+		} else {
+			log.debug(customRaces.getAbsolutePath()+" is not a file. ignoring user races.");
+		}
+	    // 
+		if (races.size() == 0) {
+			throw new RuntimeException("Could not load any race, will exit");
+		}
+		/* sort */
+		Collections.sort(races, new Comparator<Race>() {
+			@Override
+			public int compare(Race r1, Race r2) {
+				if (r1.getScope().equals(r2.getScope())) {
+					return r1.getName().compareTo(r2.getName());
+				} else {
+					return r1.getScope().compareTo(r2.getScope());
+				}
+			}
+		});
+		return races;
+	}
+
+	protected void loadRaceFromReader(List<Race> races, BufferedReader reader, boolean isUserFile) throws IOException {
 		String line = null;
 		int lineNo = 0;
 		while ( (line = reader.readLine()) != null ) {
@@ -749,9 +814,13 @@ public class MetaDataLoader {
 					try {
 						Race r = new Race();
 						int i = 0;
-						r.setId( Integer.valueOf(StringUtils.trim(split[i++])) );
-						String name = RESOURCE.getString(StringUtils.trim(split[i++]));
-						r.setName( name );
+						Integer id = Integer.valueOf(StringUtils.trim(split[i++]));
+						if (isUserFile && id.intValue() < MIN_USER_RACE_CULTURE_ID) {
+							String msg = "custom race id ["+id+"] must be greater or equals "+MIN_USER_RACE_CULTURE_ID;
+							throw new IllegalArgumentException(msg);
+						}
+						r.setId( id );
+						r.setName( getResKey(StringUtils.trim(split[i++]), isUserFile) );
 						r.setScope( RaceScope.valueOf( StringUtils.trim(split[i++])) );
 						r.setSource( StringUtils.trimToEmpty( StringUtils.trim(split[i++])) );
 						r.setNameStyle( Style.valueOf(StringUtils.trim(split[i++])) );
@@ -782,34 +851,27 @@ public class MetaDataLoader {
 						/*  RR  */
 						String resLine = StringUtils.trimToNull(split[i++]);
 						if (resLine != null) {
-							r.addAdditionalResistanceLine(RESOURCE.getString(resLine));
+							r.addAdditionalResistanceLine(getResKey(resLine, isUserFile));
 						}
 						if (!RMPreferences.getInstance().isExcludedRaceId(r.getId())) {
 							races.add(r);
 						}
 					} catch (Exception e) {
-						if (log.isWarnEnabled()) log.warn("Could not load race line "+lineNo+": "+e.getClass().getName()+" "+e.getMessage());
+						String msg = CONF_RACE+": Could not load race line "+lineNo+": "+e.getClass().getName()+" "+e.getMessage();
+						log.warn(msg);
+						if (isUserFile) {
+							RMPreferences.getInstance().addError(msg);
+						}
 					}
 				} else {
-					if (log.isWarnEnabled()) log.warn("Ignoring race lineNo "+lineNo+". Cause: Wrong format. Wrong number of token ("+(split==null?"0":""+split.length)+"). ");
+					String msg = CONF_RACE+": Ignoring race lineNo "+lineNo+". Cause: Wrong format. Wrong number of token ("+(split==null?"0":""+split.length)+"). ";
+					log.warn(msg);
+					if (isUserFile) {
+						RMPreferences.getInstance().addError(msg);
+					}
 				}
 			}
 		}
-		if (races.size() == 0) {
-			throw new RuntimeException("Could not load any race, will exit");
-		}
-		/* sort */
-		Collections.sort(races, new Comparator<Race>() {
-			@Override
-			public int compare(Race r1, Race r2) {
-				if (r1.getScope().equals(r2.getScope())) {
-					return r1.getName().compareTo(r2.getName());
-				} else {
-					return r1.getScope().compareTo(r2.getScope());
-				}
-			}
-		});
-		return races;
 	}
 
 	private boolean isValidLine(String line) {
@@ -1059,5 +1121,17 @@ public class MetaDataLoader {
 		InputStream res = getClass().getResourceAsStream( file );
 		if (res == null) throw new RuntimeException("Could not find the "+file);
 		return new BufferedReader( new InputStreamReader(res, CHARSET) );
+	}
+	
+	private String getResKey(String resKey, boolean isUserFile) {
+		if (isUserFile) {
+			if (RESOURCE.containsKey(resKey)) {
+				return RESOURCE.getString(resKey);
+			} else {
+				return resKey;
+			}
+		} else {
+			return RESOURCE.getString(resKey);
+		}
 	}
 }
