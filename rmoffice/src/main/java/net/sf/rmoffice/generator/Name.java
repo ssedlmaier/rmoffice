@@ -19,10 +19,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Generates styled names that sound like the Tolkien names.
  */
 public class Name {
+	private final static Logger log = LoggerFactory.getLogger(Name.class);
 
 	public static enum Style {
 		HUMAN, ELVES, DWARF, HOBBIT, ORC
@@ -153,7 +157,10 @@ public class Name {
 			syllable = syllablesFemale.get(style);	
 		}
 		for (int i = 0; i < 3; i++) {
-			sb.append(syllable[i][(int) (rand.nextDouble() * syllable[i].length)]);
+			int ix = (int) (rand.nextDouble() * syllable[i].length);
+			String str = syllable[i][ix];
+			log.debug("name generator: "+i+"/"+ix+"="+str);
+			sb.append(str);
 		}
 		return sb.toString();
 	}
