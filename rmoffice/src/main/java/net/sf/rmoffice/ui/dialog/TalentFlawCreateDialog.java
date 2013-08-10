@@ -158,7 +158,8 @@ public class TalentFlawCreateDialog extends JDialog {
 		panel.add(talentFlawCosts, CC.xy(3, 7));
 		
 		// tf value input field
-		JideButton link = new JideButton(RESOURCE.getString("ui.talentflaw.encoding")+": ", UIConstants.ICON_HELP_SMALL);
+		String text = "<html><u>"+RESOURCE.getString("ui.talentflaw.encoding")+"</u></html>:";
+		JideButton link = new JideButton(text, UIConstants.ICON_HELP_SMALL);
 		link.setButtonStyle(ButtonStyle.HYPERLINK_STYLE);
 		link.addActionListener(new ActionListener() {
 			

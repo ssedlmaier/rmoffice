@@ -51,6 +51,7 @@
 		     <listitem><para>Skills, professions and races can be excluded by user.properties
 		                  (see <ulink url="http://rmoffice.sourceforge.net/readme.html#skillexclusion">README</ulink>)</para></listitem>
 		     <listitem><para>UI: Generator for characteristics (height, weight, appearance, age)</para></listitem>
+		     <listitem><para>UI: Talent/Flaw Wizard - Help-Link (Label: Encoding) underline</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
