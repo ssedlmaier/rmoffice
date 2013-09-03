@@ -37,6 +37,27 @@
 	</section>
 	
 	 -->
+	 
+	<section>
+		<title>Version 4.3.3 (Date)</title>
+		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		     <listitem><para></para></listitem>
+		    </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>LOCALE: Outrider and Swashbuckler (en, es, it) fixed (were cross-wired)</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>
+	 
 	<section>
 		<title>Version 4.3.2 (2013-08-10)</title>
 	    <section>
