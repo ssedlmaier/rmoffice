@@ -39,12 +39,12 @@
 	 -->
 	 
 	<section>
-		<title>Version 4.3.3 (Date)</title>
+		<title>Version 4.3.3 (2013-10-27)</title>
 		<section>
 		  <title>&features;</title>
 		  <para>
 		    <itemizedlist>
-		     <listitem><para></para></listitem>
+		     <listitem><para>README: Add two FAQ to <ulink url="http://rmoffice.sourceforge.net/readme.html#faq">README</ulink>.</para></listitem>
 		    </itemizedlist>
 		 </para>
 	    </section>
