@@ -485,4 +485,24 @@
 	     </para>
 	  </section>
 	</section>
+	<section>
+	  <title>7 FAQ</title>
+	  <anchor id="faq"/>
+	  <section>
+	     <anchor id="faq1"/>
+	     <title>Question 1: Why is the magical bonus of an item is not included in the total bonus of a skill. (Example: Spear +10)</title>
+	     <para>Answer 1: The character could have three spears (+5/+10/+15) but can only wear one. Which bonus should be used?
+	       Yes, you could mark one as carried. But in-game can all three be broken/thrown/lost or simple not available so
+	       you would have to substract the bonus from your total bonus. This means, on the PDF this favorite must be
+	       mentioned with its bonus. The players have to substract this bonus from the total bonus and add the bonus from
+	       the non-favorite bonus. I don't like that idea.</para>
+	      <para>So I decided to only include a bonus of un-removable things like talents/flaws into the total bonus</para>
+	  </section>
+	  <section>
+	     <anchor id="faq2"/>
+	     <title>Question 2: But my suer-special-magical-equipment is un-removable, I really want this bonus to be included in my total skill. What can I do?</title>
+	     <para>Answer 2: Yes, you can do this. Use the column Special bonus (background yellow) and you can add this bonus. The bonus on the super-special-magical-equipment
+	          shouldn't have a skill-related bonus but a descriptive bonus</para>
+	  </section>
+	</section>  
 </article>
