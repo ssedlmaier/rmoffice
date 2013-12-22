@@ -39,6 +39,18 @@
 	 -->
 	 
 	<section>
+		<title>Version 4.3.4 (Date)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>BASIC: Switch Magent cost for technical vocational and technical professional</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section> 
+	 
+	<section>
 		<title>Version 4.3.3 (2013-10-27)</title>
 		<section>
 		  <title>&features;</title>
