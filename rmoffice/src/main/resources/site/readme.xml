@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY product "Rolemaster Office">
-<!ENTITY version "4.3.3">
+<!ENTITY version "4.3.4">
 <!ENTITY usrprops "user.properties">
 ]>
 
@@ -110,8 +110,12 @@
 		         <listitem><para>BASE Races with BASE-Scope</para></listitem>
 		         <listitem><para>SHADOWWORLD Races with Shadowworld-Scope</para></listitem>
 		      </itemizedlist>
-		      Example for german publications: 
-			  &quot;excludes=RMC,ARCC,ALCC,ELEMC,MENTC,ESSC,MAC,R&amp;C,CONSC,C&amp;R,MIDDLEEARTH,SHADOWWORLD&quot;
+		      <para>Example for german publications: 
+			  excludes=RMC,ARCC,ALCC,ELEMC,MENTC,ESSC,MAC,R&amp;C,CONSC,C&amp;R,MIDDLEEARTH,SHADOWWORLD
+			  </para>
+			  <para>Example for middle earth setting:
+			  excludes=RMC,ARCC,ALCC,ELEMC,MENTC,ESSC,MAC,R&amp;C,CONSC,C&amp;R,SHADOWWORLD,BASE
+			  </para>
 			</para>
 		</section>
 		<anchor id="skillexclusion"/>
