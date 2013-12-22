@@ -45,6 +45,7 @@
 		 <para>
 		   <itemizedlist>
 		     <listitem><para>BASIC: Switch Magent cost for technical vocational and technical professional</para></listitem>
+		     <listitem><para>BASIC: Fix priest costs: directed spell to 3, influence to 2/4</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
