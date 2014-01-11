@@ -37,6 +37,18 @@
 	</section>
 	
 	 -->
+	<section>
+		<title>Version 4.3.5 (2014-)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>LOCALE: Outrider and Swashbuckler were switched</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section> 
+
 	 
 	<section>
 		<title>Version 4.3.4 (2013-12-22)</title>
