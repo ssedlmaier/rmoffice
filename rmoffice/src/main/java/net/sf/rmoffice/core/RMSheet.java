@@ -55,6 +55,7 @@ import net.sf.rmoffice.meta.enums.MagicalItemFeatureType;
 import net.sf.rmoffice.meta.enums.RankType;
 import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.enums.SkillType;
+import net.sf.rmoffice.meta.enums.SpellUserType;
 import net.sf.rmoffice.meta.enums.StatEnum;
 import net.sf.rmoffice.meta.enums.ToDoType;
 import net.sf.rmoffice.meta.enums.WeightUnit;
@@ -1251,6 +1252,10 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		}
 	}
 
+	/**
+	 * Returns a set of magic realms.
+	 * @return set of magic realm, not {@code null}
+	 */
 	public Set<StatEnum> getMagicRealm() {
 		if (magicrealm == null) {
 			return new HashSet<StatEnum>();
@@ -1592,6 +1597,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	void updateMagicProgessionAndRealm() {
 		Progression progr = null;
 		Set<StatEnum> mb = new HashSet<StatEnum>();
+		boolean realmEditable = true;
 		/* we resolve the attributes */
 		if (getProfession() != null && getRace() != null) {
 			for (StatEnum stat : getProfession().getStats()) {
@@ -1600,15 +1606,19 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 					/* search the lowest progression */
 					if (progr == null || p.compareTo(progr) < 0) {
 						progr = p;
+						if ( ! SpellUserType.NONE.equals(getProfession().getSpellUserType())) {
+							realmEditable = false;
+						}
 					}
 					mb.add(stat);
 				}
 			}
 		}
 		/* the user may choose the magical realm (magicrealm) (e.g. fighter) */
-		setMagicRealmEditable(progr == null);
-		if (mb.size() > 0) {
-			/* we have to set after setting the realm-editability*/
+		setMagicRealmEditable(realmEditable);
+		/* we have to set after setting the realm-editability*/
+		/* automatically set the realm only in race/prof state*/
+		if (mb.size() > 0 && State.RACE_PROF_SELECTION.equals(getState())) {
 			setMagicRealm(mb);
 		}
 		if (progr == null && getProfession() != null && getRace() != null) {
