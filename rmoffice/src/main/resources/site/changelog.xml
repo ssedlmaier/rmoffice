@@ -45,6 +45,7 @@
 		   <itemizedlist>
 		     <listitem><para>LOCALE: Outrider and Swashbuckler were switched</para></listitem>
 		     <listitem><para>BASIC: Realm of power can be edited for NON-Spelluser with stats IN, EM, or PR</para></listitem>
+		     <listitem><para>BASIC: Fixed stats of Science/Analytic from Me/Re/Me to Re/Me/Re</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
