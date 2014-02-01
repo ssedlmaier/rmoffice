@@ -1564,15 +1564,16 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			boolean success = false;
 			if (ToDoType.RACE_PROF.equals(todo.getType())) {
 				if (professionId != null && raceId != null && cultureId != null) {
-					setState(State.NORMAL);
 					success = true;
 					addToDo(new ToDo(RESOURCE.getString("todo.backgroundoptions")+" "+getRace().getBackgroundOptions(), ToDoType.SYSTEM));
 					for (String todoString : getCulture().getTodos()) {
 						addToDo(new ToDo(todoString, ToDoType.SYSTEM));
 					}
-					/* reset the realm */
+					/* reset the realm in Prof-Selection Mode (for final update) */
 					this.magicrealm = new HashSet<StatEnum>();
 					updateMagicProgessionAndRealm();
+					// set mode to normal
+					setState(State.NORMAL);
 					updateYouthRanks();		
 					updateProgressionBody();		
 					firePropertyChange(PROPERTY_SHEET_ENABLE_ALL, null, Boolean.TRUE);
@@ -2385,7 +2386,8 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	private int getProgressionBodyTotalBonus() {
 		ISkill skillHits = null;
 		for (ISkill skill : data.getSkills()) {
-			if (getSkillcategory(skill).getRankType().isProgressionBody()) {
+			SkillCategory sc = getSkillcategory(skill);
+			if (sc.getRankType().isProgressionBody()) {
 				skillHits = skill;				
 			}
 		}
