@@ -2387,7 +2387,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		return hits;
 	}
 
-	private int getProgressionBodyTotalBonus() {
+	protected int getProgressionBodyTotalBonus() {
 		ISkill skillHits = null;
 		for (ISkill skill : data.getSkills()) {
 			SkillCategory sc = getSkillcategory(skill);

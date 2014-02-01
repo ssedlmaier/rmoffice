@@ -99,4 +99,30 @@ public class RMSheetTest {
 		assertEquals(1f, progMagie.getDigit(4), 0.01f);
 		
 	}
+	
+	public void testHitPoints() {
+		RMSheet sheet = new RMSheet() {
+			@Override
+			protected int getProgressionBodyTotalBonus() {
+				return 5;
+			}
+		};
+		assertEquals(5, sheet.getHitPoints());
+		
+		sheet = new RMSheet() {
+			@Override
+			protected int getProgressionBodyTotalBonus() {
+				return 3;
+			}
+			@Override
+			public List<TalentFlaw> getTalentsFlaws() {
+				ArrayList<TalentFlaw> l = new ArrayList<TalentFlaw>();
+				TalentFlaw t = new TalentFlaw();
+				t.setTolerance(Float.valueOf(0.5f));
+				l.add(t);
+				return l;
+			}
+		};
+		assertEquals(2, sheet.getHitPoints());
+	}
 }
