@@ -48,6 +48,7 @@
 		     <listitem><para>BASIC: Fixed stats of Science/Analytic from Me/Re/Me to Re/Me/Re</para></listitem>
 		     <listitem><para>BASIC: Fixed Armsmaster's Artistic Active category from 2/4 to 2/5</para></listitem>
 		     <listitem><para>BASIC: Reversed costs of Tech./Trade - Profes. and Tech./Trade - Vocati.</para></listitem>
+		     <listitem><para>BASIC: Armor penalty updated after skill category special bonus modification</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

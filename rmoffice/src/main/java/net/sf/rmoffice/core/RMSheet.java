@@ -1962,6 +1962,10 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		rankObj.setSpecialBonus(Integer.valueOf(bonus));
 		firePropertyChange(PROPERTY_SKILLCATEGORY_CHANGED, null, rankObj);
 		firePropertyChange(PROPERTY_SKILLS_CHANGED, null, null);
+		/* check, if the modified skill is for current armor */
+		if (data.getArmorSkill(getArmor()) != null && getSkillcategory(data.getArmorSkill(getArmor())).equals(category)) {
+			firePropertyChange(PROPERTY_ARMOR_SKILL, null, null);
+		}
 	}
 
 	/**
