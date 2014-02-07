@@ -100,6 +100,7 @@ public class RMSheetTest {
 		
 	}
 	
+	@Test
 	public void testHitPoints() {
 		RMSheet sheet = new RMSheet() {
 			@Override
@@ -124,5 +125,33 @@ public class RMSheetTest {
 			}
 		};
 		assertEquals(2, sheet.getHitPoints());
+	}
+	
+	@Test
+	public void testGetDevPoint_Rounding_5point6() {
+		RMSheet sheet = new RMSheet() {
+			@Override
+			public int getStatTemp(StatEnum stat) {
+				if (StatEnum.REASONING.equals(stat)) {
+					return 8;
+				}
+				return 5;
+			}
+		};
+		assertEquals(6, sheet.getDevPoints());
+	}
+	
+	@Test
+	public void testGetDevPoint_Rounding_5point4() {
+		RMSheet sheet = new RMSheet() {
+			@Override
+			public int getStatTemp(StatEnum stat) {
+				if (StatEnum.REASONING.equals(stat)) {
+					return 7;
+				}
+				return 5;
+			}
+		};
+		assertEquals(5, sheet.getDevPoints());
 	}
 }

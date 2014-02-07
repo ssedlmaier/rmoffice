@@ -732,7 +732,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 				count++;
 			}
 		}
-		return Math.round( ap / count );
+		return Math.round( (float)ap / count );
 	}
 
 	public int getSkillcategoryStatBonus(SkillCategory category) {
