@@ -32,6 +32,10 @@ public enum RankType {
 	Y(true, false, false, false, false, false, false, false, true, false),
 	/** Arcane */
 	A(true, false, false, false, false, false, false, false, true, false),
+	/** Training package (own) */
+	T(true, false, false, false, false, false, false, false, true, true),
+	/** Training package (others) */
+	P(true, false, false, false, false, false, false, false, true, false),
 	/** Weapon */
 	W(false, false, true, true, true, false, false, false, false, false),
 	/** Weapon (switchable costs) */

@@ -1100,7 +1100,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			Spelllist spelllist = (Spelllist) skill;
 			/* compare magic realm */
 			boolean spelllistIsOwnRealm = false;
-			if (getMagicRealm().containsAll(spelllist.getAttributes())) {
+			if (spelllist.getAttributes() != null && getMagicRealm().containsAll(spelllist.getAttributes())) {
 				spelllistIsOwnRealm = true;
 			}
 			boolean charIsArcane = false;
@@ -1138,6 +1138,14 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 							}
 						}
 					}
+				}
+				// training package
+				if (sg.getRankType().isMagical()
+						&& spelllist.getSpelllistType().isTrainingPackage()
+						&& (sg.getRankType().equals(RankType.T) ||
+						    sg.getRankType().equals(RankType.P))
+						&& sg.getId().equals(spelllist.getSpelllistType().getTrainingPackageSpelllistId())) {
+					return sg;
 				}
 			}
 		} else if (skill instanceof Skill) {

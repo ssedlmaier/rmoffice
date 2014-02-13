@@ -554,6 +554,9 @@ public class MetaDataLoader {
 							} else if (val.startsWith("P")) {
 								builder.setProf();
 								builder.addProfessionId( Integer.valueOf(val.substring(1)) );
+							} else if (val.startsWith("T")) {
+								builder.setTrainingpack();
+								builder.setTraingpackageSpelllist( Integer.valueOf(val.substring(1)) );
 							}
 						}
 					}

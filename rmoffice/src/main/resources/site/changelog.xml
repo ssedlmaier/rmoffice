@@ -39,6 +39,14 @@
 	 -->
 	<section>
 		<title>Version 4.3.5 (2014-)</title>
+		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		     <listitem><para>BASIC: Add training package spell lists</para></listitem>
+		    </itemizedlist>
+		 </para>
+	    </section>
 	    <section>
 		 <title>&bugfixes;</title>
 		 <para>
@@ -51,6 +59,7 @@
 		     <listitem><para>BASIC: Armor penalty updated after skill category special bonus modification</para></listitem>
 		     <listitem><para>BASIC: fix development points rounding (66.5 is now 67)</para></listitem>
 		     <listitem><para>BASIC: add stats St/Ag/SD to skill category special attacks</para></listitem>
+		     <listitem><para>BASIC: fix spell list profession bonus for all professions</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

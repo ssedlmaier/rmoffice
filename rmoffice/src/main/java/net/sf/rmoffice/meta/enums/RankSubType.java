@@ -26,7 +26,8 @@ public enum RankSubType {
 	O(SpelllistType.OPEN),
 	C(SpelllistType.CLOSED),
 	P(SpelllistType.PROFESSION),
-	B(SpelllistType.BASE);
+	B(SpelllistType.BASE),
+	T(SpelllistType.TRAINING);
 	
 	private final int type;
 	
@@ -49,6 +50,10 @@ public enum RankSubType {
 	
 	public boolean isBase() {
 		return type == SpelllistType.BASE;
+	}
+	
+	public boolean isTraining() {
+		return type == SpelllistType.TRAINING;
 	}
 	
 	public int getTypeOrdinal() {
