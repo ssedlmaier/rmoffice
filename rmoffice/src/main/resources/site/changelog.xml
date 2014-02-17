@@ -60,6 +60,7 @@
 		     <listitem><para>BASIC: fix development points rounding (66.5 is now 67)</para></listitem>
 		     <listitem><para>BASIC: add stats St/Ag/SD to skill category special attacks</para></listitem>
 		     <listitem><para>BASIC: fix spell list profession bonus for all professions</para></listitem>
+		     <listitem><para>NPC: All weapons are marked as favorite to avoid non-weapon characters</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

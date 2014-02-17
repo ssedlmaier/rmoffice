@@ -488,6 +488,16 @@ public class CharacterGenerator {
 				rank.setFavorite(Boolean.TRUE);
 			}
 		}
+		/* set all weapons as favorite (to avoid empty favorite weapons) */
+		for (ISkill skill : bean.getSkills()) {
+			SkillCategory cat = bean.getSkillcategory(skill);
+			if (cat.getRankType().isWeapon()) {
+				Rank rank = bean.getSkillRank(skill);
+				if (rank.getRank().intValue() > 0) {
+					rank.setFavorite(Boolean.TRUE);
+				}
+			}
+		}
 		/* remove todos */
 		while (bean.getToDos().size() > 0) {
 		   ToDo t = bean.getToDos().get(0);
