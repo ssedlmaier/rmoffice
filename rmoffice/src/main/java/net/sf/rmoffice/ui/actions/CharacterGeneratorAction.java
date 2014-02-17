@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import net.sf.rmoffice.RMOffice;
 import net.sf.rmoffice.core.Characteristics;
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.generator.CharacterGenerator;
@@ -123,6 +124,9 @@ public class CharacterGeneratorAction implements ActionListener {
 						log.error(e.getMessage(), e);
 					} catch (InvocationTargetException e) {
 						log.error(e.getMessage(), e);
+					}
+					catch (Exception e) {
+						RMOffice.handleException(e);
 					} finally {
 						longRunningModel.done();
 					}

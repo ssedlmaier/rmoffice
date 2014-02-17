@@ -17,6 +17,7 @@ package net.sf.rmoffice.pdf;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -114,6 +115,11 @@ public abstract class AbstractPDFCreator implements IPDFCreator {
 					outputFileStream = new FileOutputStream(outputFilePath);
 					internalCreate(outputFileStream, longRunningModel);
 					new DesktopAction(new File(outputFilePath)).actionPerformed(new ActionEvent(parent, 0, "open.pdf"));
+				} catch (FileNotFoundException e) {
+					log.error(e.getMessage(), e);
+					Writer sOut = new StringWriter();
+					e.printStackTrace(new PrintWriter(sOut ));
+					JOptionPane.showMessageDialog(parent, RESOURCE.getString("error.file.save")+"\n\n"+e.getClass().getName()+" "+sOut.toString());
 				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 					Writer sOut = new StringWriter();

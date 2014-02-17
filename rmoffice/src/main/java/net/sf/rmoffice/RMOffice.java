@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -63,6 +64,8 @@ public class RMOffice {
 		}
 		// install AWT error handler
 		System.setProperty("sun.awt.exception.handler", AWTExceptionHandler.class.getName());
+		// for Java 7+
+		Thread.setDefaultUncaughtExceptionHandler(new AWTExceptionHandler());
 		try {
 			frame = new RMFrame();
 			RMPreferences.init();
@@ -81,7 +84,7 @@ public class RMOffice {
 		}
 	}
 
-	private static void handleException(Throwable t) {
+	public static void handleException(Throwable t) {
 		log.error(t.getMessage(), t);
 		Writer sOut = new StringWriter();
 		t.printStackTrace(new PrintWriter(sOut ));
@@ -158,10 +161,15 @@ public class RMOffice {
 		return MessageFormat.format(RESOURCE.getString("rolemaster.versioninfo"), RESOURCE.getString("rolemaster.version"));
 	}
 	
-	public static class AWTExceptionHandler {
+	public static class AWTExceptionHandler implements UncaughtExceptionHandler {
 
 		public void handle(Throwable t) {
 			RMOffice.handleException(t);
+		}
+
+		@Override
+		public void uncaughtException(Thread t, Throwable e) {
+			RMOffice.handleException(e);
 		}
 	}
 }
