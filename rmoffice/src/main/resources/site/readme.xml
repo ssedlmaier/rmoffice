@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY product "Rolemaster Office">
-<!ENTITY version "4.3.4">
+<!ENTITY version "4.3.5">
 <!ENTITY usrprops "user.properties">
 ]>
 
@@ -504,7 +504,7 @@
 	  </section>
 	  <section>
 	     <anchor id="faq2"/>
-	     <title>Question 2: But my suer-special-magical-equipment is un-removable, I really want this bonus to be included in my total skill. What can I do?</title>
+	     <title>Question 2: But my super-special-magical-equipment is un-removable, I really want this bonus to be included in my total skill. What can I do?</title>
 	     <para>Answer 2: Yes, you can do this. Use the column Special bonus (background yellow) and you can add this bonus. The bonus on the super-special-magical-equipment
 	          shouldn't have a skill-related bonus but a descriptive bonus</para>
 	  </section>
