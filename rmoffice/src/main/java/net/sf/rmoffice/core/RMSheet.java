@@ -1577,6 +1577,9 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 					for (String todoString : getCulture().getTodos()) {
 						addToDo(new ToDo(todoString, ToDoType.SYSTEM));
 					}
+					for (String addInfo : getProfession().getAdditionInfo()) {
+						addToDo(new ToDo(addInfo, ToDoType.SYSTEM));
+					}
 					/* reset the realm in Prof-Selection Mode (for final update) */
 					this.magicrealm = new HashSet<StatEnum>();
 					updateMagicProgessionAndRealm();

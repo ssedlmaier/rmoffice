@@ -38,6 +38,27 @@
 	
 	 -->
 	<section>
+		<title>Version 4.3.6 (2014-05-02)</title>
+		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		     <listitem><para>BASIC: Additional information for professions are shown as [SYSTEM] ToDo (but they are not localized, yet)</para></listitem>
+		    </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>LOCALE: Add blank after : (culture ToDo)</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section> 
+	 
+	 
+	<section>
 		<title>Version 4.3.5 (2014-02-23)</title>
 		<section>
 		  <title>&features;</title>

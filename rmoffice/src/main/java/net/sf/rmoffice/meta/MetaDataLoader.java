@@ -657,13 +657,13 @@ public class MetaDataLoader {
 									culture.addTodo(getResKey(idString.substring(1), isUserFile) + ext);
 								} else if ("HOBBY".equals(idString)) {
 									culture.setHobbyRanks(rank);
-									culture.addTodo(RESOURCE.getString("todo.hobbies") + rank);
+									culture.addTodo(RESOURCE.getString("todo.hobbies") + " " + rank);
 								} else if ("LANG".equals(idString)) {
 									culture.setLanguageRanks(rank);
-									culture.addTodo(RESOURCE.getString("todo.language") + rank);
+									culture.addTodo(RESOURCE.getString("todo.language") + " " + rank);
 								} else if ("SPELL".equals(idString)) {
 									culture.setOpenSpellRanks(rank);
-									culture.addTodo(RESOURCE.getString("todo.openspelllist") + rank);
+									culture.addTodo(RESOURCE.getString("todo.openspelllist") + " " + rank);
 								} else {
 									Integer idObj = Integer.valueOf( idString.substring(1) );
 
