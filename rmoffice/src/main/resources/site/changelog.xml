@@ -38,6 +38,26 @@
 	
 	 -->
 	<section>
+		<title>Version 4.3.7 (2014-)</title>
+		<section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		    </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>LOCALE: Typo in Characteristics fixed</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+	 
+	 
+	<section>
 		<title>Version 4.3.6 (2014-05-02)</title>
 		<section>
 		  <title>&features;</title>
