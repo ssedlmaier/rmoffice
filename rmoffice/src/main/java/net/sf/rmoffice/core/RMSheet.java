@@ -995,10 +995,12 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 				}
 			} else if (skill instanceof Spelllist) {
 				Spelllist spelllist = (Spelllist)skill;
-				for (StatEnum stat : spelllist.getAttributes()) {
-					Integer spellBonus = tf.getSpellRealmBonus(stat);
-					if (spellBonus != null) {
-						bonus += spellBonus.intValue();
+				if (spelllist.getAttributes() != null) {
+					for (StatEnum stat : spelllist.getAttributes()) {
+						Integer spellBonus = tf.getSpellRealmBonus(stat);
+						if (spellBonus != null) {
+							bonus += spellBonus.intValue();
+						}
 					}
 				}
 			}
