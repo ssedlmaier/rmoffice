@@ -67,6 +67,12 @@ public class SkillcategorySpelllistPartKey {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SpelllistPartKey[").append(category).append("/").append(part).append("/").append(type).append("]");
+		return sb.toString();
+	}
 	
 	
 }

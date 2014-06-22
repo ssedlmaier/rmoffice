@@ -190,7 +190,9 @@ public class MetaData {
 			SpelllistPart spelllistPart = SpelllistPart.getPartForRank(rank.intValue() + 1);
 			SpellUserType spellUserType = profession.getSpellUserType();
 			Skillcost baseCosts = getSkillcost(profession, cat);
-			if (SpellUserType.NONE.equals(spellUserType)) {
+			if (cat.getRankSubType().isTraining()) {
+				return baseCosts;				
+			} else if (SpellUserType.NONE.equals(spellUserType)) {
 				/* we have to calculate the costs from base */
 				int[] newCosts = new int[baseCosts.size()];
 				for (int i = 0; i < newCosts.length; i++) {

@@ -38,19 +38,14 @@
 	
 	 -->
 	<section>
-		<title>Version 4.3.7 (2014-)</title>
-		<section>
-		  <title>&features;</title>
-		  <para>
-		    <itemizedlist>
-		    </itemizedlist>
-		 </para>
-	    </section>
+		<title>Version 4.3.7 (2014-06-22)</title>
 	    <section>
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>
 		     <listitem><para>LOCALE: Typo in Characteristics fixed</para></listitem>
+		     <listitem><para>BASIC: Fixed internal error if you want to add training package dummy spell lists</para></listitem>
+		     <listitem><para>BASIC: DP costs for training package dummy spell lists are now displayed in skill table</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
