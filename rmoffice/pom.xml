@@ -3,7 +3,7 @@
   <groupId>net.sf.rmoffice</groupId>
   <artifactId>rmoffice</artifactId>
   <name>RoleMaster Office</name>
-  <version>4.3.7</version>
+  <version>4.3.8</version>
   <scm>
   	<connection>git://rmoffice.git.sourceforge.net/gitroot/rmoffice/rmoffice </connection>
   	<url>http://rmoffice.git.sourceforge.net/git/gitweb-index.cgi</url>
