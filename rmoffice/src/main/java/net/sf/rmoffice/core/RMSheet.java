@@ -1367,9 +1367,19 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		
 		// talent flaw
 		if (talentsFlaws != null) {
+			boolean foundSkillReplacement = false;
 			for (TalentFlaw tf : talentsFlaws) {
 				if (tf.getSkillCostReplacement(skill) != null) {
 					returnValue = tf.getSkillCostReplacement(skill);
+					foundSkillReplacement = true;
+				}
+			}
+			if (!foundSkillReplacement) {
+				// if there is no skill replacement, search for an category replacement
+				for (TalentFlaw tf : talentsFlaws) {
+					if (tf.getSkillCategoryCostReplacement(cat) != null) {
+						returnValue = tf.getSkillCategoryCostReplacement(cat);
+					}
 				}
 			}
 		}

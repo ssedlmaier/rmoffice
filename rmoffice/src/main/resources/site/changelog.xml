@@ -37,6 +37,21 @@
 	</section>
 	
 	 -->
+	 
+	 
+    <section>
+		<title>Version 4.3.8 (2014-07-22)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>BASIC: Fix talent Archmage Abilities DP costs of arcane spell lists in the skill table</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+	 
+	 
 	<section>
 		<title>Version 4.3.7 (2014-06-22)</title>
 	    <section>
