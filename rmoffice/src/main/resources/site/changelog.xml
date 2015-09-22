@@ -11,7 +11,7 @@
 		<title>Changelogs</title>
 		<author>
 			<firstname>Daniel</firstname>
-			<surname>Golesny</surname>
+			<surname>Nettesheim</surname>
 		</author>
 	</articleinfo>	
 	
@@ -37,7 +37,18 @@
 	</section>
 	
 	 -->
-	 
+
+    <section>
+		<title>Version 4.3.9 (2015-09-22)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>LOCALE: Fix skill Adrenal Stabilization [<ulink url="https://sourceforge.net/p/rmoffice/bugs/22/">&typeBug; #22</ulink>]</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  	 
 	 
     <section>
 		<title>Version 4.3.8 (2014-07-22)</title>
