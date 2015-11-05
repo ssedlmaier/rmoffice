@@ -39,6 +39,19 @@
 	 -->
 
     <section>
+		<title>Version 4.3.10 (2015-11-05)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>LOCALE: Revert (Wrong fix from version 4.3.5) Outrider and Swashbuckler were switched</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+
+
+    <section>
 		<title>Version 4.3.9 (2015-09-22)</title>
 	    <section>
 		 <title>&bugfixes;</title>
