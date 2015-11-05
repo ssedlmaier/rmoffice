@@ -39,6 +39,18 @@
 	 -->
 
     <section>
+		<title>Version 4.3.11 (2015-11-05)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>BASE: Fix Outrider and Swashbuckler prof bonus (were switched)</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section> 
+
+    <section>
 		<title>Version 4.3.10 (2015-11-05)</title>
 	    <section>
 		 <title>&bugfixes;</title>
