@@ -1965,13 +1965,18 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * @param sendChangeEvent whether to send a propertyChangeEvent for the value itself or not
 	 */
 	public void setStatMiscBonus(StatEnum stat, int bonus, boolean sendChangeEvent) {
-		Object oldValue = miscAttrBonus.get(stat);
+		Integer oldValue = miscAttrBonus.get(stat);
 		Integer newValue = Integer.valueOf(bonus);
 		miscAttrBonus.put(stat, newValue);
 		if (sendChangeEvent) {			
 			firePropertyChange(PROPERTY_STAT_MISCBONUS_PREFIX+stat, oldValue, newValue);
 		}
 		firePropertyChange(PROPERTY_STAT_BONUS_PREFIX+stat.name(), null, Integer.valueOf(getStatBonusTotal(stat)));
+		if (! newValue.equals(oldValue)) {
+			/* one bonus has changed, so possible all skills and skillgroups changed, too*/
+			firePropertyChange(PROPERTY_SKILLCATEGORY_CHANGED, null, null);
+			firePropertyChange(PROPERTY_SKILLS_CHANGED, null, null);
+		}
 	}
 
 	/**
