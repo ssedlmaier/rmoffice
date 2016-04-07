@@ -489,6 +489,33 @@
 	     </para>
 	  </section>
 	</section>
+	<anchor id="howtoaddcustomraces"/>
+	  <section>
+	     <title>How can I add my own skill categories or skills?</title>
+	     <para>
+	       <orderedlist>
+	         <listitem>
+	           <para> Copy from the downloaded zip the files templates/conf/skillcosts.csv and templates/conf/skills.conf to your user.dir (e.g. C:\Users\Daniel\.rmoffice / see path in About Dialog in &product;).</para>
+	         </listitem>
+	         <listitem>
+	            <para>Quickstart: Uncomment (remove #) last line in skillcosts.csv and skills.conf.</para>
+	         </listitem>
+	         <listitem>
+	            <para>Quickstart: Start &product; and you can select the skill My new Skill from category My-New-Skillcategory</para>
+	         </listitem>
+	         <listitem>
+	             <para>Edit the skills.conf in a text editor (like Notepad++). The skillcosts.csv is openable in Excel or Open/LibreOffice. Attention: Please compare the original file with the new saved file! Normally Excel will destroy the format of the format.</para>
+	         </listitem>
+	     	 <listitem>
+	           <para>Start &product; and you can see the new skill categories and skills</para>
+	         </listitem>
+	         <listitem>
+	           <para>You can see all configuration errors in &product; under Help > Error Protocol</para>
+	         </listitem>
+	       </orderedlist>
+	     </para>
+	  </section>
+	</section>
 	<section>
 	  <title>7 FAQ</title>
 	  <anchor id="faq"/>

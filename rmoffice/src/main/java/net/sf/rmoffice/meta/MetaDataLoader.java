@@ -720,6 +720,22 @@ public class MetaDataLoader {
 		List<ISkill> skills = new ArrayList<ISkill>();
 		List<Integer> id = new ArrayList<Integer>();
 		BufferedReader reader = getReader(CONF_SKILLS);
+		internalLoadSkills(metaData, skills, id, reader, false);
+		
+		// load from user.dir
+		File customSkills = new File(System.getProperty("user.home") + RMPreferences.RMOFFICE_DIR + CONF_SKILLS);
+		if (customSkills.exists() && customSkills.isFile()) {
+			reader = new BufferedReader( new InputStreamReader(new FileInputStream(customSkills), CHARSET) );
+			internalLoadSkills(metaData, skills, id, reader, true);
+		} else {
+			log.debug(customSkills.getAbsolutePath()+" is not a file. ignoring user cultures.");
+		}
+		
+		loadSpelllists(skills);
+		return skills;
+	}
+
+	private void internalLoadSkills(MetaData metaData, List<ISkill> skills, List<Integer> id, BufferedReader reader, boolean isUserFile) throws IOException {
 		String line = null;
 		int lineNo = 0;
 		while ( (line = reader.readLine()) != null ) {
@@ -746,18 +762,24 @@ public class MetaDataLoader {
 					}
 					loadSkillDescriptions(s);
 					if (id.contains(s.getId())) {
-						log.warn("Duplicate skill id "+s.getId()+". Ignoring line "+lineNo); 
+						String msg = "Duplicate skill id "+s.getId()+". Ignoring line "+lineNo;
+						log.warn(msg);
+						if (isUserFile) {
+							RMPreferences.getInstance().addError(msg);
+						}
 					} else {
 						skills.add(s);
 						id.add(s.getId());
 					}					
 				} catch (Exception e) {
-					log.error(CONF_SKILLS+": Could not read line "+lineNo+", cause "+e.getClass().getName()+": "+e.getMessage(), e);
+					String msg = CONF_SKILLS+": Could not read line "+lineNo+", cause "+e.getClass().getName()+": "+e.getMessage();
+					log.error(msg, e);
+					if (isUserFile) {
+						RMPreferences.getInstance().addError(msg);
+					}
 				}
 			}
 		}
-		loadSpelllists(skills);
-		return skills;
 	}
 
 	private void loadSkillDescriptions(Skill s) {
@@ -1002,7 +1024,39 @@ public class MetaDataLoader {
 		List<SkillCategory> skillcategories = new ArrayList<SkillCategory>();
 		List<Integer> skillgroupIds = new ArrayList<Integer>();
 
+		/* internal skillcategories */
 		BufferedReader reader = getReader(CONF_SKILLCOSTS);
+		internalReadSkillcosts(data, skillcategories, skillgroupIds, reader, false);
+		// load from user.dir
+		File customSkillcosts = new File(System.getProperty("user.home") + RMPreferences.RMOFFICE_DIR + CONF_SKILLCOSTS);
+		if (customSkillcosts.exists() && customSkillcosts.isFile()) {
+			reader = new BufferedReader( new InputStreamReader(new FileInputStream(customSkillcosts), CHARSET) );
+			internalReadSkillcosts(data, skillcategories, skillgroupIds, reader, true);
+		} else {
+			log.debug(customSkillcosts.getAbsolutePath()+" is not a file. ignoring user cultures.");
+		}
+		/* sort skill categories */
+		Collections.sort(skillcategories, new Comparator<SkillCategory>() {
+
+			@Override
+			public int compare(SkillCategory sc1, SkillCategory sc2) {
+				if (sc1 == null || sc2 == null) {
+					return 0;
+				}
+				boolean sg1IsSpell = sc1.getRankType().isMagical() && !sc1.getRankType().isProgressionMagic();
+				boolean sg2IsSpell = sc2.getRankType().isMagical() && !sc2.getRankType().isProgressionMagic();
+				if (sg1IsSpell && !sg2IsSpell) {
+					return 1;
+				}
+				if (!sg1IsSpell && sg2IsSpell) {
+					return -1;
+				}
+				return sc1.getName().compareTo(sc2.getName());
+			}});
+		return skillcategories;
+	}
+
+	private void internalReadSkillcosts(MetaData data, List<SkillCategory> skillcategories, List<Integer> skillgroupIds, BufferedReader reader, boolean isUserFile) throws IOException {
 		String line = null;
 		int lineNo = 0;
 		/* first header line */
@@ -1021,7 +1075,11 @@ public class MetaDataLoader {
 					SkillCategory skillgroup = new SkillCategory();
 					Integer id = Integer.valueOf( StringUtils.trim(sgParts[col++]) );
 					if (skillgroupIds.contains(id)) {
-						log.warn("Duplicate skillgroup id "+id+". Because the was loaded before. lineNo="+lineNo);
+						String msg = "Duplicate skillgroup id "+id+". Because the was loaded before. lineNo="+lineNo;
+						log.warn(msg);
+						if (isUserFile) {
+							RMPreferences.getInstance().addError(msg);
+						}
 					} else {
 						skillgroupIds.add(id);
 						skillgroup.setId(id);
@@ -1029,7 +1087,7 @@ public class MetaDataLoader {
 						try {
 							skillgroup.setName(RESOURCE.getString("skillgroup."+id));
 						} catch (MissingResourceException e) {
-							if (log.isWarnEnabled()) log.warn("No translation for key skillgroup."+id);
+							log.warn("No translation for key skillgroup."+id);
 						}
 						/* */
 						String rankChars = StringUtils.trimToEmpty(sgParts[col++]);
@@ -1049,7 +1107,12 @@ public class MetaDataLoader {
 									skillgroup.getAttributes().add(StatEnum.valueOf(StringUtils.trim(sgParts[col])));
 								}
 							} catch (RuntimeException e) {
-								log.error("Could not decode '"+sgParts[col]+"' in line "+lineNo+" "+line, e);
+								String msg = "Could not decode '"+sgParts[col]+"' in line "+lineNo+" "+line;
+								log.error(msg, e);
+								if (isUserFile) {
+									RMPreferences.getInstance().addError(msg);
+									RMPreferences.getInstance().addError("Check logfile for Stacktrace: " + e.getMessage());
+								}
 								throw e;
 							}
 							col++;
@@ -1087,35 +1150,24 @@ public class MetaDataLoader {
 									costArr.clear();
 								}
 							} else if (! "0".equals(StringUtils.trimToEmpty(firstLine[headerIdx]))) {
-								if (log.isWarnEnabled()) log.warn("ignoring costs for profession id '"+firstLine[headerIdx]+"' in line "+lineNo+ " token="+i);
+								String msg = "ignoring costs for profession id '"+firstLine[headerIdx]+"' in line "+lineNo+ " token="+i;
+								log.warn(msg);
+								if (isUserFile) {
+									RMPreferences.getInstance().addError(msg);
+								}
 							}
 						}
 					}
 				} catch (RuntimeException e) {
-					log.error("Could not read line "+lineNo+": "+e.getClass().getName()+" "+e.getMessage(),e );
+					String msg = "Could not read line "+lineNo+": "+e.getClass().getName()+" "+e.getMessage();
+					log.error(msg,e );
+					if (isUserFile) {
+						RMPreferences.getInstance().addError(msg);
+					}
 					throw e;
 				}
 			}
 		}
-		/* sort skill categories */
-		Collections.sort(skillcategories, new Comparator<SkillCategory>() {
-
-			@Override
-			public int compare(SkillCategory sc1, SkillCategory sc2) {
-				if (sc1 == null || sc2 == null) {
-					return 0;
-				}
-				boolean sg1IsSpell = sc1.getRankType().isMagical() && !sc1.getRankType().isProgressionMagic();
-				boolean sg2IsSpell = sc2.getRankType().isMagical() && !sc2.getRankType().isProgressionMagic();
-				if (sg1IsSpell && !sg2IsSpell) {
-					return 1;
-				}
-				if (!sg1IsSpell && sg2IsSpell) {
-					return -1;
-				}
-				return sc1.getName().compareTo(sc2.getName());
-			}});
-		return skillcategories;
 	}
 	
 
