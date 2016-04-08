@@ -50,8 +50,8 @@ import org.slf4j.LoggerFactory;
 public class RMOffice {
 	private final static Logger log = LoggerFactory.getLogger(RMOffice.class);
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
-	private static final String LATEST_VERSION_CHECK_URL = "http://sourceforge.net/projects/rmoffice/files/old/lv.nfo/download";
-
+	private static final String LATEST_VERSION_CHECK_URL = "http://downloads.sourceforge.net/project/rmoffice/old/lv.nfo?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Frmoffice%2Ffiles%2Fold%2F&ts="+getTS()+"&use_mirror=tenet";
+	
 	private static RMFrame frame = null;
 	/**
 	 * 
@@ -82,6 +82,10 @@ public class RMOffice {
 		} catch (Exception e) {
 			handleException(e);
 		}
+	}
+	
+	protected static String getTS() {
+		return Long.toString(System.currentTimeMillis()).substring(0,10);
 	}
 
 	public static void handleException(Throwable t) {
@@ -121,7 +125,7 @@ public class RMOffice {
 								final String latestVersion = new String(b, 0, len);
 								log.debug("received latest version is "+latestVersion);
 								if (!RESOURCE.getString("rolemaster.version").equals(latestVersion)) {
-									SwingUtilities.invokeLater(new Runnable() {
+									SwingUtilities.invokeAndWait(new Runnable() {
 
 										@Override
 										public void run() {

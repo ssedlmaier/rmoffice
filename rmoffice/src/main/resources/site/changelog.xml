@@ -53,6 +53,7 @@
 		 <para>
 		   <itemizedlist>
 		     <listitem><para>BASE: Fix missing Elementalists that were lost since version 4.3.4</para></listitem>
+		     <listitem><para>BASE: Fix New version checker</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

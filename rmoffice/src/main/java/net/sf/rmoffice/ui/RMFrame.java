@@ -1005,5 +1005,6 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 		String menuLabel = MessageFormat.format(RESOURCE.getString("ui.menu.newversion"), latestVersion);
 		newLatestVersionMenu.setText(menuLabel);
 		newLatestVersionMenu.setVisible(true);
+		newLatestVersionMenu.getParent().repaint();
 	}
 }
