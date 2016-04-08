@@ -39,12 +39,20 @@
 	 -->
 
     <section>
-		<title>Version 4.3.13 ()</title>
+		<title>Version 4.3.13 (2016-04-08)</title>
 	    <section>
 		 <title>&features;</title>
 		 <para>
 		   <itemizedlist>
 		     <listitem><para>BASE: Support for custom skill categories and skills [<ulink url="https://sourceforge.net/p/rmoffice/feature-requests/14/">&typeFeature; #14</ulink>]</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>BASE: Fix missing Elementalists that were lost since version 4.3.4</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
