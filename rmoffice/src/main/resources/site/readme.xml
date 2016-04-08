@@ -448,8 +448,7 @@
 	     <para>
 	       <orderedlist>
 	         <listitem>
-	           <para> Copy from the downloaded zip the folder templates/conf/ to your user.dir (e.g. C:\Users\Daniel\.rmoffice / see path in About Dialog in &product;).
-	            Now, you should have two files user.dir/.rmoffice/conf/race.conf and user.dir/.rmoffice/conf/cultures.conf</para>
+	           <para> Copy from the downloaded zip the files templates/conf/race.conf and templates/conf/cultures.conf into folder templates/conf/ to your user.dir (e.g. C:\Users\Daniel\.rmoffice / see path in About Dialog in &product;).</para>
 	         </listitem>
 	         <listitem>
 	            <para>Quickstart: Uncomment (remove #) line 2+3 in cultures.conf and line 2 in race.conf.</para>
@@ -474,7 +473,7 @@
 	           <para>Option b) You want to use an existing culture? Add the race ID to column B separated with &quot;-&quot; (Example: 35-100 will assign the dwarf culture to your race with the ID 100)</para>
 	         </listitem>
 	         <listitem>
-	           <para>Open race.conf in a text editor (not windows editor, use Notpad++ or similar). Select/copy your new race rows from Open/LibreOffice column A to AV and paste it into race.conf and replace all tabs by &quot;,&quot;</para>
+	           <para>Open race.conf in a text editor (not windows editor, use Notepad++ or similar). Select/copy your new race rows from Open/LibreOffice column A to AV and paste it into race.conf and replace all tabs by &quot;,&quot;</para>
 	         </listitem>
 	         <listitem>
 	           <para>Open culture.conf in the text editor. Select and copy your new culture (if you have new ones) rows from Open/LibreOffice tab &quot;culture.conf&quot; column A to GS and paste it to culture.conf. The format is well-formed; you just have to remove the tabs.</para>
@@ -488,8 +487,7 @@
 	       </orderedlist>
 	     </para>
 	  </section>
-	</section>
-	<anchor id="howtoaddcustomraces"/>
+	  <anchor id="howtoaddcustomskills"/>
 	  <section>
 	     <title>How can I add my own skill categories or skills?</title>
 	     <para>
