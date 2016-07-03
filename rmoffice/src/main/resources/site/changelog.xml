@@ -37,6 +37,18 @@
 	</section>
 	
 	 -->
+	 
+	<section>
+		<title>Version 4.3.14 (2016-07-03)</title>
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>BASE: Fix training packs only increase skill ranks by 1</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section> 
 
     <section>
 		<title>Version 4.3.13 (2016-04-08)</title>

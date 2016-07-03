@@ -845,8 +845,23 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 * @return the rank object of skill, not {@code null}
 	 */
 	public Rank getSkillRank(ISkill skill) {
+		return getSkillRank(skill, false);
+	}
+	
+	/*
+	 * Return the current rank object or creates a new rank object for the given skill. 
+	 * 
+	 * @param skill the skill
+	 * @param createRank creates the skill rank if its not available
+	 * @return the rank object of skill, not {@code null}
+	 */
+	protected Rank getSkillRank(ISkill skill, boolean createRank) {
 		if (skillRanks.containsKey(skill.getId())) {
 			return skillRanks.get(skill.getId());
+		} else if (createRank) {
+			Rank newValue = new Rank(skill.getId());
+			skillRanks.put(skill.getId(), newValue);
+			return newValue;
 		}
 		return new Rank(skill.getId());
 	}
@@ -867,25 +882,19 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	 */
 	public void setSkillRank(ISkill skill, BigDecimal rank) throws LevelUpVetoException {
 		boolean needSecondRun = levelUp.modifySkillRank(skill, rank);
-		internalSetSkillRank(skill, rank);
+		internalModifySkillRank(skill, rank);
 		if (needSecondRun) {
 			levelUp.decreaseSkillRankSecondRun(skill);
 		}
 	}
-
+	
 	/*
-	 * Fires {@link #PROPERTY_SKILLS_CHANGED} property change event.
+	 * Fires {@link #PROPERTY_SKILLS_CHANGED} and {@link #PROPERTY_ARMOR_SKILL} property change event.
 	 * @param skill the skill to set the rank for 
-	 * @param rank the new rank
+	 * @param rank positive or negative number (effective number depends on the steps (everyman, etc,.))
 	 */
-	private void internalSetSkillRank(ISkill skill, BigDecimal rank) {
-		Rank r = null;
-		if (skillRanks.containsKey(skill.getId())) {
-			 r = skillRanks.get(skill.getId());
-		} else {
-			r = new Rank(skill.getId());
-			skillRanks.put(skill.getId(), r);
-		}
+	private void internalModifySkillRank(ISkill skill, BigDecimal rank) {
+		Rank r = getSkillRank(skill, true);
 		BigDecimal delta = rank.subtract(r.getRank());
 		if (delta.doubleValue() > 0) {
 			/* increase */
@@ -895,10 +904,11 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 		} else if (delta.doubleValue() < 0) {
 			/* decrease */
 			BigDecimal newRank = r.getRank().subtract( getSkillType(skill).getStep() );
-			if (newRank.floatValue() >= 0) {
-				r.setRank(newRank);
-				if (log.isDebugEnabled()) log.debug("decreased rank of skill "+skill.getName()+" to "+newRank);
+			if (newRank.floatValue() < 0) {
+				newRank = BigDecimal.ZERO;
 			}
+			r.setRank(newRank);
+			if (log.isDebugEnabled()) log.debug("decreased rank of skill "+skill.getName()+" to "+newRank);
 		}
 		firePropertyChange(PROPERTY_SKILLS_CHANGED, null, null);
 		/* check, if the modified skill is for current armor */
@@ -906,7 +916,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 			firePropertyChange(PROPERTY_ARMOR_SKILL, null, null);
 		}
 	}
-
+	
 	/**
 	 * Returns an unmodifiable collection of the current ranks.
 	 * 
@@ -1863,12 +1873,15 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 				addToDo(new ToDo(todo, ToDoType.TRAINPACK));
 			}
 			for (Integer id : trainPack.getSkills().keySet()) {
-				Integer rank = trainPack.getSkills().get(id);
+				Integer tpRank = trainPack.getSkills().get(id);
 				ISkill skill = getSkill(id);
-				Rank skillRank = getSkillRank(skill);
-				BigDecimal newRank = BigDecimal.valueOf(rank.longValue()).add( skillRank.getRank() );
-				/* no further level-up validation */
-				internalSetSkillRank(skill, newRank);
+				Rank skillRank = getSkillRank(skill, true);
+				BigDecimal newRank = BigDecimal.valueOf(tpRank.longValue()).add( skillRank.getRank() );
+				if (newRank.floatValue() < 0) {
+					newRank = BigDecimal.ZERO;
+				}
+				skillRank.setRank(newRank);
+				if (log.isDebugEnabled()) log.debug("set rank of skill "+skill.getName()+" to "+newRank);
 			}
 			for (Integer id : trainPack.getSkillsGroups().keySet()) {
 				Integer rank = trainPack.getSkillsGroups().get(id);
@@ -1883,6 +1896,7 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 				skillTypes.put(skillId, st.get(skillId));			
 			}
 			firePropertyChange(PROPERTY_SKILL_STRUCTURE_CHANGED, null, null);
+			firePropertyChange(PROPERTY_ARMOR_SKILL, null, null);
 		} catch (LevelUpVetoException veto) {
 			if (log.isDebugEnabled()) log.debug(veto.getMessage());
 		}
