@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 public class RMOffice {
 	private final static Logger log = LoggerFactory.getLogger(RMOffice.class);
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
-	private static final String LATEST_VERSION_CHECK_URL = "http://downloads.sourceforge.net/project/rmoffice/old/lv.nfo?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Frmoffice%2Ffiles%2Fold%2F&ts="+getTS()+"&use_mirror=tenet";
+	private static final String LATEST_VERSION_CHECK_URL = "http://freefr.dl.sourceforge.net/project/rmoffice/old/lv.nfo";
 	
 	private static RMFrame frame = null;
 	/**
