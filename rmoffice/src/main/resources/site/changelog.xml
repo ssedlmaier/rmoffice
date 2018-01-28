@@ -40,6 +40,14 @@
 	<section>
 		<title>Version 4.3.16 ()</title>
 	    <section>
+		  <title>&features;</title>
+		  <para>
+		    <itemizedlist>
+		     <listitem><para>BASIC: Add Shadowworld race Kuluku</para></listitem>
+		    </itemizedlist>
+		 </para>
+	    </section>
+	    <section>
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>
