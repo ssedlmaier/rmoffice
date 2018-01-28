@@ -51,6 +51,7 @@
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>
+		     <listitem><para>LOCALE: update developer e-mail address</para></listitem>
 		     <listitem><para>LOCALE: Fix several italian entries</para></listitem>
 		   </itemizedlist>
 		 </para>
