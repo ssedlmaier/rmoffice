@@ -52,6 +52,7 @@
 		 <para>
 		   <itemizedlist>
 		     <listitem><para>LOCALE: update developer e-mail address</para></listitem>
+		     <listitem><para>BASIC: fix latest update check and add error message if its broken again</para></listitem>
 		     <listitem><para>LOCALE: Fix several italian entries</para></listitem>
 		     <listitem><para>LOCALE: Missing resource for training pack [<ulink url="https://sourceforge.net/p/rmoffice/bugs/26/">&typeBugfix; #26</ulink>]</para></listitem>
 		   </itemizedlist>

@@ -124,14 +124,20 @@ public class RMOffice {
 							if (len > 0) {
 								final String latestVersion = new String(b, 0, len);
 								log.debug("received latest version is "+latestVersion);
+								// sometimes the download link is not working anymore and returns a webpage: <html>								
 								if (!RESOURCE.getString("rolemaster.version").equals(latestVersion)) {
-									SwingUtilities.invokeAndWait(new Runnable() {
+									if (latestVersion.startsWith("<html>")) {
+										// Warning
+										handleException(new IllegalArgumentException("Latest version check not working: "+latestVersion));
+									} else {
+									  SwingUtilities.invokeAndWait(new Runnable() {
 
 										@Override
 										public void run() {
 											frame.newLatestVersion(latestVersion);
-										}
-									});
+										  }
+									  });
+									}
 								} else {
 									log.debug("current version is up to date");
 								}
