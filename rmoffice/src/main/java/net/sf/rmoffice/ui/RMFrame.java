@@ -190,15 +190,9 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 
 	private static void setLookAndFeel() {
 		try {
-			String osName = System.getProperty("os.name");
-
-			/*if (osName.startsWith("Windows")) {
-				UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
-			} else */if (osName.startsWith("Mac")) {
-				// do nothing, use the Mac Aqua L&f
-			} else {
-				UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
-			}
+			String osName = System.getProperty("os.name").toLowerCase();
+			log.info("os.name = {}", osName);
+			UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");			
 		} catch (ClassNotFoundException e) {
 			log.error("Can't initialize Look and Feel. Using Java-LaF.", e);
 		} catch (InstantiationException e) {

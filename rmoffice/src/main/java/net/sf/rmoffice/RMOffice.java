@@ -92,8 +92,13 @@ public class RMOffice {
 		log.error(t.getMessage(), t);
 		Writer sOut = new StringWriter();
 		t.printStackTrace(new PrintWriter(sOut ));
-		String text = t.getClass().getName()+" "+sOut.toString();
-		showError("error.application", text);
+		StringBuilder sb = new StringBuilder();
+		sb.append("os.name = ").append(System.getProperty("os.name")).append("\n");
+		sb.append("java.version = ").append(System.getProperty("java.version")).append("\n");		
+		sb.append("\n");		
+		sb.append(t.getClass().getName()).append(" ").append(sOut.toString());
+		
+		showError("error.application", sb.toString());
 	}
 
 	public static void showError(String labelResKey, String text) {
