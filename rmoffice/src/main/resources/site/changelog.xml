@@ -38,7 +38,7 @@
 	
 	 -->
 	<section>
-		<title>Version 4.3.16 ()</title>
+		<title>Version 4.3.16 (2018-09-30)</title>
 	    <section>
 		  <title>&features;</title>
 		  <para>
@@ -54,7 +54,9 @@
 		     <listitem><para>LOCALE: update developer e-mail address</para></listitem>
 		     <listitem><para>BASIC: fix latest update check and add error message if its broken again</para></listitem>
 		     <listitem><para>LOCALE: Fix several italian entries</para></listitem>
-		     <listitem><para>LOCALE: Missing resource for training pack [<ulink url="https://sourceforge.net/p/rmoffice/bugs/26/">&typeBugfix; #26</ulink>]</para></listitem>
+		     <listitem><para>LOCALE: Missing resource for training pack [<ulink url="https://sourceforge.net/p/rmoffice/bugs/26/">&typeBug; #26</ulink>]</para></listitem>
+		     <listitem><para>BASIC: Extend error dialog with os and java version</para></listitem>
+		     <listitem><para>BASIC: Look and Feel fix to JGoodies Plastic, to fix issues on Mac (hopefully)</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
