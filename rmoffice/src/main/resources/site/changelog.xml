@@ -38,6 +38,20 @@
 	
 	 -->
 	<section>
+		<title>Version 4.3.17 ()</title>	    
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>LOCALE: update italian translation</para></listitem>
+		     <listitem><para>BASIC: fix character name generation encoding</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+	 
+	 
+	<section>
 		<title>Version 4.3.16 (2018-09-30)</title>
 	    <section>
 		  <title>&features;</title>
