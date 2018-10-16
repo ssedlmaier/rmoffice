@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -61,6 +62,7 @@ public class RMOffice {
 		if (log.isInfoEnabled()) {
 			log.info("starting "+getProgramString());
 			log.info("locale: "+Locale.getDefault());
+			log.info("Default Charset:  " + Charset.defaultCharset());
 		}
 		// install AWT error handler
 		System.setProperty("sun.awt.exception.handler", AWTExceptionHandler.class.getName());
