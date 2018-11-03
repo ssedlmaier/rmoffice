@@ -4,7 +4,7 @@ To setup the project with maven/m2e:
 
 1. Jide Common Layer (Maven-Repo is not uptodate)
 Download jar from http://java.net/projects/jide-oss/
-mvn install:install-file -Dfile=jide-oss-3.3.2.jar -DgroupId=com.jidesoft -DartifactId=jide-oss -Dversion=3.3.2 -Dpackaging=jar
+mvn install:install-file -Dfile=jide-oss-3.6.18.jar -DgroupId=com.jidesoft -DartifactId=jide-oss -Dversion=3.6.18 -Dpackaging=jar
 
 2. JGoodies Common, Looks, Forms (Maven-Repo is not uptodate)
 Download jars from http://www.jgoodies.com

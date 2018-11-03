@@ -38,13 +38,15 @@
 	
 	 -->
 	<section>
-		<title>Version 4.3.17 ()</title>	    
+		<title>Version 4.3.17 (2018-11-03)</title>	    
 	    <section>
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>
 		     <listitem><para>LOCALE: update italian translation</para></listitem>
 		     <listitem><para>BASIC: fix character name generation encoding</para></listitem>
+		     <listitem><para>BASIC: update jide-oss to 3.6.18 due to bug in UIDefaultsLookup in combination with Java 11 (NoClassDefFoundError: sun/reflect/Reflection)</para></listitem>
+		     <listitem><para>BASIC: update to Java 8 as minimum java version</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

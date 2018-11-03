@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
 <!ENTITY product "Rolemaster Office">
-<!ENTITY version "4.3.16">
+<!ENTITY version "4.3.17">
 <!ENTITY usrprops "user.properties">
 ]>
 
@@ -35,9 +35,9 @@
 			<para>
 				To launch &product; double-click the file rmoffice-&version;.jar.
 				It is an executable java archive.
-				If you don't have Java installed on you computer, download it from
+				If you don't have Java (Java 8 or newer) installed on you computer, download it from
 				<ulink
-					url="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html
+					url="https://java.com/de/download/">https://java.com/de/download/
 				</ulink>
 			</para>
 			<para>
@@ -54,7 +54,7 @@
 			</para>
 			<para>
 				Example (for Windows):
-				<code>start "C:\Programme (x64)\Java\jre\1.6\bin\javaw.exe" -jar rmoffice-&version;.jar</code>
+				<code>start "C:\Programme (x64)\Java\jre\1.8\bin\javaw.exe" -jar rmoffice-&version;.jar</code>
 			</para>
 			<para>
 				or
