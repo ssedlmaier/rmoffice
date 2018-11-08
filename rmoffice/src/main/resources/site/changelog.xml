@@ -38,6 +38,19 @@
 	
 	 -->
 	<section>
+		<title>Version 4.3.18 (2018-11-08)</title>	    
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>BASIC: latest version check was broken again on sf.net. Switch to own webserver.</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+	 
+
+	<section>
 		<title>Version 4.3.17 (2018-11-03)</title>	    
 	    <section>
 		 <title>&bugfixes;</title>

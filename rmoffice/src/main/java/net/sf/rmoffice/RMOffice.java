@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public class RMOffice {
 	private final static Logger log = LoggerFactory.getLogger(RMOffice.class);
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
-	private static final String LATEST_VERSION_CHECK_URL = "http://freefr.dl.sourceforge.net/project/rmoffice/old/lv.nfo";
+	private static final String LATEST_VERSION_CHECK_URL = "http://www.nettesheim.name/rmoffice/latestversion.php?locale="+Locale.getDefault();
 	
 	private static RMFrame frame = null;
 	/**
@@ -110,7 +110,7 @@ public class RMOffice {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(new JLabel(RESOURCE.getString(labelResKey)), BorderLayout.NORTH);
 		panel.add(sp, BorderLayout.CENTER);
-		sp.setPreferredSize(new Dimension(400, 200));
+		sp.setPreferredSize(new Dimension(600, 300));
 		JOptionPane.showMessageDialog(frame, panel, RESOURCE.getString(labelResKey), JOptionPane.ERROR_MESSAGE);
 	}
 	
@@ -131,7 +131,7 @@ public class RMOffice {
 							if (len > 0) {
 								final String latestVersion = new String(b, 0, len);
 								log.debug("received latest version is "+latestVersion);
-								// sometimes the download link is not working anymore and returns a webpage: <html>								
+								// sometimes the download link from sf.net was not working anymore and returns a webpage: <html>								
 								if (!RESOURCE.getString("rolemaster.version").equals(latestVersion)) {
 									if (latestVersion.startsWith("<html>")) {
 										// Warning
@@ -151,13 +151,13 @@ public class RMOffice {
 							}
 						}
 					} catch (Exception e) {
-						log.error("Could not check for update: "+e.getMessage());
+						log.error("Could not check for update", e);
 					} finally {
 						if (is != null) {
 							try {
 								is.close();
 							} catch (IOException e) {
-								log.warn(e.getMessage(), e);
+								log.warn("unknown IO Exception", e);
 							}
 						}
 					}
@@ -166,7 +166,7 @@ public class RMOffice {
 			t.setDaemon(true);
 			t.start();
 		} catch (Exception e) {
-			log.error("Could not check for update: "+e.getMessage());
+			log.error("Could not check for update", e);
 		}
 	}
 	

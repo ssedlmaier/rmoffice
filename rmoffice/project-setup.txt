@@ -32,7 +32,7 @@ Run the default target from build.xml to generate the html sites. (check the con
 Howto Release:
 You have to change the new version in following files:
 /pom.xml (the main version)
-/lv.nfo (for the update notification)
+/src/main/resources/site/nettesheim.name/rmoffice/latestversion.php (for the update notification)
 /src/main/resources/site/readme.xml (for up-to-date readme)
 /src/main/resources/site/changelog.xml (the current date)
 /src/main/resources/conf/i18n/locale.properties (for the update notification)
