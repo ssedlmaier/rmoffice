@@ -86,7 +86,7 @@ public class ChoosePart extends AbstractTalentFlawPart {
 			selectableList = allSkills.toArray();
 		}
 		if (isSkill) {
-			SelectionDialog<ISkill> dialog = new SelectionDialog<ISkill>(context.getOwner(), amount, selectableList);
+			SelectionDialog<ISkill> dialog = new SelectionDialog<ISkill>(context.getOwner(), amount, (ISkill[])selectableList);
 			dialog.setVisible(true);
 			for (ISkill skill : dialog.getCheckedItems()) {
 				if (type != null) {
@@ -96,7 +96,7 @@ public class ChoosePart extends AbstractTalentFlawPart {
 				}
 			}
 		} else {
-			SelectionDialog<SkillCategory> dialog = new SelectionDialog<SkillCategory>(context.getOwner(), amount, selectableList);
+			SelectionDialog<SkillCategory> dialog = new SelectionDialog<SkillCategory>(context.getOwner(), amount, (SkillCategory[])selectableList);
 			dialog.setVisible(true);
 			for (SkillCategory cat : dialog.getCheckedItems()) {
 				if (type != null) {

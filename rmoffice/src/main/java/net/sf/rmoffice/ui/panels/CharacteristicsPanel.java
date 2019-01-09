@@ -55,6 +55,7 @@ import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -82,7 +83,7 @@ public class CharacteristicsPanel extends AbstractPanel<Characteristics> {
 
 		// PanelBuilder just for the border
 		PanelBuilder builder = new PanelBuilder(layout, this);
-		builder.setDefaultDialogBorder();
+		builder.border(Borders.DIALOG);
 
 		/* Characteristics */
 		int row = 1;

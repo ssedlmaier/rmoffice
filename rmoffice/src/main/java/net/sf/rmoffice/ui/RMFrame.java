@@ -74,6 +74,18 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.beans.BeanAdapter;
+import com.jgoodies.binding.value.ValueHolder;
+import com.jidesoft.dialog.JideOptionPane;
+import com.jidesoft.swing.JideTabbedPane;
+import com.jidesoft.swing.SearchableBar;
+import com.jidesoft.swing.SearchableUtils;
+import com.jidesoft.swing.TreeSearchable;
+
 import net.sf.rmoffice.RMOffice;
 import net.sf.rmoffice.RMPreferences;
 import net.sf.rmoffice.core.Characteristics;
@@ -123,18 +135,6 @@ import net.sf.rmoffice.ui.renderer.NumberSpinnerTableRenderer;
 import net.sf.rmoffice.ui.renderer.SkillTreeRenderer;
 import net.sf.rmoffice.ui.renderer.SkillnameTableRenderer;
 import net.sf.rmoffice.util.RMOFileFilter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.beans.BeanAdapter;
-import com.jgoodies.binding.value.ValueHolder;
-import com.jidesoft.dialog.JideOptionPane;
-import com.jidesoft.swing.JideTabbedPane;
-import com.jidesoft.swing.SearchableBar;
-import com.jidesoft.swing.SearchableUtils;
-import com.jidesoft.swing.TreeSearchable;
 
 
 /**
@@ -795,7 +795,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				String about = RMOffice.getProgramString() + "\n\n" + 
 			RESOURCE.getString("ui.about.configfilepath") + "\n" +
-						RMPreferences.getPropertiesFilePath();
+						RMPreferences.getPropertiesFilePath() + "\n\nJava-Home: "+System.getProperty("java.home");
 				JideOptionPane.showMessageDialog(RMFrame.this, about, RESOURCE.getString("ui.menu.about"),
 						JideOptionPane.INFORMATION_MESSAGE, UIConstants.RMO_LOGO125);
 			}

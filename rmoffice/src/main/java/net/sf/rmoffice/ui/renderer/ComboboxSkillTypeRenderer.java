@@ -28,7 +28,7 @@ import net.sf.rmoffice.meta.enums.SkillType;
 /**
  * 
  */
-public class ComboboxSkillTypeRenderer extends JLabel implements ListCellRenderer {
+public class ComboboxSkillTypeRenderer<E> extends JLabel implements ListCellRenderer<E> {
 	private static final long serialVersionUID = 1L;
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	
@@ -43,8 +43,8 @@ public class ComboboxSkillTypeRenderer extends JLabel implements ListCellRendere
 	 */
 	@Override
 	public Component getListCellRendererComponent(
-			JList list,
-			Object value,
+			JList<? extends E> list,
+			E value,
 			int index,
 			boolean isSelected,
 			boolean cellHasFocus) {
@@ -66,7 +66,6 @@ public class ComboboxSkillTypeRenderer extends JLabel implements ListCellRendere
 		} else {
 			setText(RESOURCE.getString("SkillType.inherit.combobox"));
 		}
-
 		return this;
 	}
 }

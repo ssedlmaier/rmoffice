@@ -33,20 +33,20 @@ import javax.swing.JTable;
 import javax.swing.ListModel;
 import javax.swing.table.TableCellRenderer;
 
-import net.sf.rmoffice.core.Herb;
-import net.sf.rmoffice.core.RMSheet;
-import net.sf.rmoffice.ui.UIConstants;
-import net.sf.rmoffice.ui.converters.SelectionIndexToEnabledListener;
-import net.sf.rmoffice.ui.editor.NumberSpinnerTableCellEditor;
-import net.sf.rmoffice.ui.renderer.NumberSpinnerTableRenderer;
-
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueHolder;
-import com.jgoodies.forms.builder.ButtonBarBuilder2;
+import com.jgoodies.forms.builder.ButtonBarBuilder;
+
+import net.sf.rmoffice.core.Herb;
+import net.sf.rmoffice.core.RMSheet;
+import net.sf.rmoffice.ui.UIConstants;
+import net.sf.rmoffice.ui.converters.SelectionIndexToEnabledListener;
+import net.sf.rmoffice.ui.editor.NumberSpinnerTableCellEditor;
+import net.sf.rmoffice.ui.renderer.NumberSpinnerTableRenderer;
 
 public class HerbsPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -71,7 +71,7 @@ public class HerbsPanel extends JPanel implements ActionListener {
 		btDel.setActionCommand(DEL_LINE);
 		btDel.addActionListener(this);
 		
-		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
+		ButtonBarBuilder builder = new ButtonBarBuilder();
 		builder.addButton(btNew, btDel);
 		
 		GridBagConstraints gc = new GridBagConstraints();

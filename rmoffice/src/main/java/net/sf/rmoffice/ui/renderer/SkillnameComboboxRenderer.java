@@ -20,9 +20,9 @@ import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
-import net.sf.rmoffice.meta.ISkill;
-
 import com.itextpdf.text.Font;
+
+import net.sf.rmoffice.meta.ISkill;
 
 /**
  * Spells are italic.
@@ -32,7 +32,7 @@ public class SkillnameComboboxRenderer  extends BasicComboBoxRenderer {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		if (value != null && value instanceof ISkill) {
 			ISkill skill = (ISkill)value;

@@ -32,7 +32,7 @@ public class RaceCellRenderer extends DefaultListCellRenderer {
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	/** {@inheritDoc} */
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		Race r = null;
 		if (value instanceof Race) {
 			r = (Race)value;

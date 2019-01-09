@@ -15,10 +15,10 @@ import javax.swing.UIManager;
 /**
  * Checkbox list component that displays a list of selectable objects.
  */
-public class CheckBoxList<T> extends JList {
+public class CheckBoxList<T> extends JList<CheckboxItem<T>> {
 	private static final long serialVersionUID = 1L;
 	public static final String ITEMS_CHECKED_PROP = "itemsChecked";
-	private DefaultListModel choiceListModel = new DefaultListModel();
+	private DefaultListModel<CheckboxItem<T>> choiceListModel = new DefaultListModel<CheckboxItem<T>>();
 	private List<T> selection =new ArrayList<T>();
 	private int itemsChecked = -1;
 	
@@ -29,16 +29,15 @@ public class CheckBoxList<T> extends JList {
 		setModel(choiceListModel);
 		setCellRenderer(new CellRenderer());
 		addMouseListener(new MouseAdapter() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void mousePressed(MouseEvent e) {
 				int index = locationToIndex(e.getPoint());
 				if (index != -1) {
-					CheckboxItem cbItem = (CheckboxItem) getModel().getElementAt(index);
+					CheckboxItem<T> cbItem = getModel().getElementAt(index);
 					cbItem.setSelected(!cbItem.isSelected());
 					if (cbItem.isSelected()) {
 						/* add object to selection */
-						selection.add((T)cbItem.getObject());
+						selection.add(cbItem.getObject());
 					} else {
 						/* remove object from selection */
 						selection.remove(cbItem.getObject());
@@ -73,39 +72,24 @@ public class CheckBoxList<T> extends JList {
 	}
 
 
-	public void setSelectableValues(Object... choiceables) {
-		for (Object choiceable : choiceables) {
-			choiceListModel.addElement(new CheckboxItem(choiceable));	
+	public void setSelectableValues(T[] choiceables) {
+		for (T choiceable : choiceables) {
+			choiceListModel.addElement(new CheckboxItem<T>(choiceable));	
 		}
 		selection.clear();
 		setItemsChecked(0);
 	}
 
-	private static class CellRenderer implements ListCellRenderer {
+	private static class CellRenderer implements ListCellRenderer<JCheckBox> {
+
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
-			JCheckBox checkbox = (JCheckBox) value;
+		public Component getListCellRendererComponent(JList<? extends JCheckBox> list, JCheckBox value, int index, boolean isSelected, boolean cellHasFocus) {
+			JCheckBox checkbox = value;
 
 			if (!isSelected) {
 				checkbox.setBackground(UIManager.getColor("List.background"));
 			}
 			return checkbox;
-		}
-	}
-	
-	private static class CheckboxItem extends JCheckBox{
-		private static final long serialVersionUID = 1L;
-		
-		private Object object;
-		
-		public CheckboxItem (Object object){
-			this.object = object;
-			this.setText(object.toString());
-		}
-		
-		public Object getObject() {
-			return object;
 		}
 	}
 }

@@ -24,6 +24,19 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueHolder;
+import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.Borders;
+import com.jgoodies.forms.factories.CC;
+import com.jgoodies.forms.layout.FormLayout;
+
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.meta.Culture;
 import net.sf.rmoffice.meta.Profession;
@@ -41,18 +54,6 @@ import net.sf.rmoffice.ui.models.BasicPresentationModel;
 import net.sf.rmoffice.ui.renderer.ArmorListCellRenderer;
 import net.sf.rmoffice.ui.renderer.EnumListCellRenderer;
 import net.sf.rmoffice.ui.renderer.RaceCellRenderer;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.list.SelectionInList;
-import com.jgoodies.binding.value.AbstractValueModel;
-import com.jgoodies.binding.value.ValueHolder;
-import com.jgoodies.binding.value.ValueModel;
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.factories.CC;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * 
@@ -74,14 +75,14 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 
 		// PanelBuilder just for the border
 		PanelBuilder builder = new PanelBuilder(layout, this);
-		builder.setDefaultDialogBorder();
+		builder.border(Borders.DIALOG);
 
 		int row = 1;
 		
 		/* Race */
 		AbstractValueModel raceVM = basicModel.getModel(RMSheet.PROPERTY_RACE);
 		SelectionInList<Race> selModelRaces = new SelectionInList<Race>(basicModel.getAvailableRaces(), raceVM);
-		JComboBox cbRace = BasicComponentFactory.createComboBox(selModelRaces, new RaceCellRenderer());
+		JComboBox<?> cbRace = BasicComponentFactory.createComboBox(selModelRaces, new RaceCellRenderer());
 		builder.addLabel(RESOURCE.getString(getResKeyPrefix() + RMSheet.PROPERTY_RACE), CC.xy(COL_LBL_L, row));
 		Bindings.bind(cbRace, "enabled", basicModel.getRaceProfEnabledValueHolder());
 		builder.add(cbRace, CC.xyw(COL_COMP_L, row, 3));
@@ -90,7 +91,7 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		AbstractValueModel culturesVM = basicModel.getModel(RMSheet.PROPERTY_CULTURE);
 		ValueModel cultures = basicModel.getAvailableCultures();
 		SelectionInList<Culture> selModelCultures = new SelectionInList<Culture>(cultures, culturesVM);
-		JComboBox cbCulture = BasicComponentFactory.createComboBox(selModelCultures);
+		JComboBox<?> cbCulture = BasicComponentFactory.createComboBox(selModelCultures);
 		builder.addLabel(RESOURCE.getString(getResKeyPrefix() + RMSheet.PROPERTY_CULTURE), CC.xy(COL_LBL_R, row));
 		Bindings.bind(cbCulture, "enabled", basicModel.getCultureEnabledValueHolder());
 		builder.add(cbCulture, CC.xyw(COL_COMP_R, row, 3));
@@ -99,7 +100,7 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		/* Profession */		
 		AbstractValueModel profVM = basicModel.getModel(RMSheet.PROPERTY_PROFESSION);
 		SelectionInList<Profession> selModelProfs = new SelectionInList<Profession>(basicModel.getAvailableProfession(), profVM);
-		JComboBox cbProf = BasicComponentFactory.createComboBox(selModelProfs);
+		JComboBox<?> cbProf = BasicComponentFactory.createComboBox(selModelProfs);
 		builder.addLabel(RESOURCE.getString(getResKeyPrefix() + RMSheet.PROPERTY_PROFESSION), CC.xy(COL_LBL_L, row));
 		Bindings.bind(cbProf, "enabled", basicModel.getRaceProfEnabledValueHolder());
 		builder.add(cbProf, CC.xyw(COL_COMP_L, row, 3));
@@ -161,7 +162,7 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		/* Shield */
 		builder.addLabel(RESOURCE.getString("rolemaster.shield"), CC.xy(COL_LBL_L, row));
 		SelectionInList<Shield> selShield = new SelectionInList<Shield>(basicModel.getAvailableShields(), basicModel.getModel(RMSheet.PROPERTY_SHIELD));
-		JComboBox cbShield = BasicComponentFactory.createComboBox(selShield);
+		JComboBox<?> cbShield = BasicComponentFactory.createComboBox(selShield);
 		Bindings.bind(cbShield, "enabled", enabledValueHolder);
 		builder.add(cbShield, CC.xyw(COL_COMP_L, row, 3));
 		
@@ -173,7 +174,7 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		/* Armor */
 		builder.addLabel(RESOURCE.getString("rolemaster.armor"), CC.xy(COL_LBL_L, row));
 		SelectionInList<Integer> selArmor = new SelectionInList<Integer>(basicModel.getAvailableArmors(), basicModel.getModel(RMSheet.PROPERTY_ARMOR));
-		JComboBox cbArmor = BasicComponentFactory.createComboBox(selArmor,new ArmorListCellRenderer());
+		JComboBox<?> cbArmor = BasicComponentFactory.createComboBox(selArmor,new ArmorListCellRenderer());
 		Bindings.bind(cbArmor, "enabled", enabledValueHolder);
 		builder.add(cbArmor, CC.xyw(COL_COMP_L, row, 3));
 		
@@ -200,14 +201,14 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		/* Length Unit */
 		builder.addLabel(RESOURCE.getString("ui.basic.lengthunit"), CC.xy(COL_LBL_L, row));
 		SelectionInList<LengthUnit> selLengUnits = new SelectionInList<LengthUnit>(basicModel.getAvailableLengthUnits(), basicModel.getModel(RMSheet.PROPERTY_LENGTH_UNIT));
-		JComboBox cbLength = BasicComponentFactory.createComboBox(selLengUnits,new EnumListCellRenderer());
+		JComboBox<?> cbLength = BasicComponentFactory.createComboBox(selLengUnits,new EnumListCellRenderer());
 		Bindings.bind(cbLength, "enabled", enabledValueHolder);
 		builder.add(cbLength, CC.xyw(COL_COMP_L, row, 3));
 		
 		/* Weight Unit */
 		builder.addLabel(RESOURCE.getString("ui.basic.weightunit"), CC.xy(COL_LBL_R, row));
 		SelectionInList<WeightUnit> selWeightUnits = new SelectionInList<WeightUnit>(basicModel.getAvailableWeightUnits(), basicModel.getModel(RMSheet.PROPERTY_WEIGHT_UNIT));
-		JComboBox cbWeight = BasicComponentFactory.createComboBox(selWeightUnits, new EnumListCellRenderer());
+		JComboBox<?> cbWeight = BasicComponentFactory.createComboBox(selWeightUnits, new EnumListCellRenderer());
 		Bindings.bind(cbWeight, "enabled", enabledValueHolder);
 		builder.add(cbWeight, CC.xyw(COL_COMP_R, row, 3));
 		
@@ -222,7 +223,7 @@ public class BasicPanel extends AbstractPanel<RMSheet> {
 		/* image position */
 		builder.addLabel(RESOURCE.getString("ui.basic.imagepos"), CC.xy(COL_LBL_R, row));
 		SelectionInList<CharImagePos> selCharImgList = new SelectionInList<CharImagePos>(basicModel.getAvailableCharImgPos(), basicModel.getModel(RMSheet.IMG_POS_PROP));
-		JComboBox cbCharImg = BasicComponentFactory.createComboBox(selCharImgList, new EnumListCellRenderer());
+		JComboBox<?> cbCharImg = BasicComponentFactory.createComboBox(selCharImgList, new EnumListCellRenderer());
 		Bindings.bind(cbCharImg, "enabled", enabledValueHolder);
 		builder.add(cbCharImg, CC.xyw(COL_COMP_R, row, 3));
 	}

@@ -15,10 +15,10 @@
  */
 package net.sf.rmoffice.ui.converters;
 
-import net.sf.rmoffice.meta.TalentFlawPreset;
-
 import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueModel;
+
+import net.sf.rmoffice.meta.TalentFlawPreset;
 
 public class TalentFlawPresetConverter extends AbstractConverter {
 	private static final long serialVersionUID = 1L;

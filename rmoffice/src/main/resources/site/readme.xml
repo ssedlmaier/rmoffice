@@ -533,5 +533,34 @@
 	     <para>Answer 2: Yes, you can do this. Use the column Special bonus (background yellow) and you can add this bonus. The bonus on the super-special-magical-equipment
 	          shouldn't have a skill-related bonus but a descriptive bonus</para>
 	  </section>
+	  <section>
+	     <anchor id="faq3"/>
+	     <title>Question 3: I have a high-DPI screen and the application window opens quite small and looks weird.</title>
+	     <para>Answer 3: According to <link>https://superuser.com/a/1207925</link> this is a known Bug in Java 8 and fixed in Java 9 and newer. For Java 8 there is a quite simple workaround to fix this. Follow previous link or do following steps: 
+	        <itemizedlist>
+	         <listitem>
+	           <para>Start RMOffice > Help Menu > About Rolemaster Office</para>
+	         </listitem>
+	         <listitem>
+	           <para>Go to Java-Home Path (with Explorer - only Windows 10)</para>
+	         </listitem>
+	         <listitem>
+	           <para>Go to bin folder</para>
+	         </listitem>
+	         <listitem>
+	           <para>OR: Go to task manager and open details on Java, right click and open path of Rolemaster Office</para>
+	         </listitem>
+	         <listitem>
+	           <para>In both ways you'll find a javaw.exe which you should right click Properties</para>
+	         </listitem>
+	         <listitem>
+	           <para>Go to Compatibility tab and click the Button Change high DPI scaling</para>
+	         </listitem>
+	         <listitem>
+	           <para>Check Override high DPI scaling behavior and choose System</para>
+	         </listitem>
+	       </itemizedlist>
+	     </para>
+	  </section>
 	</section>  
 </article>

@@ -56,7 +56,7 @@ public class ChooseStatPart extends AbstractTalentFlawPart {
 	}
 
 	protected List<StatEnum> showStatsSelectionDialog(TalentFlawContext context) {
-		SelectionDialog<StatEnum> dialog = new SelectionDialog<StatEnum>(context.getOwner(), amount, (Object[]) StatEnum.values());
+		SelectionDialog<StatEnum> dialog = new SelectionDialog<StatEnum>(context.getOwner(), amount, StatEnum.values());
 		dialog.setVisible(true);
 		List<StatEnum> checkedItems = dialog.getCheckedItems();
 		return checkedItems;

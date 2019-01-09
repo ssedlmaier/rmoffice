@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 
 import net.sf.rmoffice.RMPreferences;
 import net.sf.rmoffice.generator.Name.Style;
@@ -654,7 +655,8 @@ public class MetaDataLoader {
 							if (idString.length() > 1) {
 								if (idString.charAt(0) == 'T') {
 									String ext = (rank == 0) ? "" : (" " + rank);
-									culture.addTodo(getResKey(idString.substring(1), isUserFile) + ext);
+									String todo = getResKey(idString.substring(1), isUserFile);
+									culture.addTodo(todo + ext);
 								} else if ("HOBBY".equals(idString)) {
 									culture.setHobbyRanks(rank);
 									culture.addTodo(RESOURCE.getString("todo.hobbies") + " " + rank);
@@ -792,7 +794,7 @@ public class MetaDataLoader {
 			try {
 				s.setDescription(lu, RESOURCE.getString("skill."+s.getId()+".descr."+lu.name()));
 			} catch (MissingResourceException e) {
-				// ignore, description is not mandatory
+				// ignore, description is not mandatory (error is intended)
 			}
 		}
 	}
@@ -1178,15 +1180,58 @@ public class MetaDataLoader {
 		return new BufferedReader( new InputStreamReader(res, CHARSET) );
 	}
 	
-	private String getResKey(String resKey, boolean isUserFile) {
+	/* package private */ String getResKey(String resKey, boolean isUserFile) {
+		String ret = resKey;
 		if (isUserFile) {
 			if (RESOURCE.containsKey(resKey)) {
-				return RESOURCE.getString(resKey);
-			} else {
-				return resKey;
+				ret = RESOURCE.getString(resKey);
 			}
 		} else {
-			return RESOURCE.getString(resKey);
+			ret = RESOURCE.getString(resKey);
 		}
+		// 
+		return replaceResToken(ret);
+	}
+	
+	/* package private */ String replaceResToken(String base) {
+		if (base != null && base.contains("{")) {
+			StringTokenizer t = new StringTokenizer(base, "{", true);
+			StringBuilder b = new StringBuilder();
+			boolean replaceMode = false;
+			while (t.hasMoreTokens()) {
+				String tok = t.nextToken();
+				if ("{".equals(tok)) {
+					replaceMode = true;
+					// and ignore this token
+				} else {
+					if (replaceMode) {
+						int endIdx = tok.indexOf("}");
+						String resKey;
+						switch (tok.charAt(0)) {
+						case 'G':
+							resKey = "skillgroup." + tok.substring(1, endIdx);
+							break;
+						case '=':
+							resKey = tok.substring(1, endIdx);
+							break;
+						default:
+							resKey = "{"+tok.substring(0, endIdx)+"}";
+						}
+						try {
+							b.append(getResKey(resKey, false));
+							b.append(tok.substring(endIdx + 1));
+						} catch (MissingResourceException e) {
+							b.append(resKey);
+							log.warn(e.getMessage());
+						}
+					} else {
+						b.append(tok);
+					}
+					replaceMode = false;
+				}
+			}
+			return b.toString();
+		}
+		return base;
 	}
 }

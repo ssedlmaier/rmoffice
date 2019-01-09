@@ -35,14 +35,6 @@ import javax.swing.JTable;
 import javax.swing.ListModel;
 import javax.swing.table.TableCellRenderer;
 
-import net.sf.rmoffice.core.Equipment;
-import net.sf.rmoffice.core.RMSheet;
-import net.sf.rmoffice.pdf.AbstractPDFCreator;
-import net.sf.rmoffice.ui.UIConstants;
-import net.sf.rmoffice.ui.converters.EnumValueConverter;
-import net.sf.rmoffice.ui.converters.SelectionIndexToEnabledListener;
-import net.sf.rmoffice.ui.renderer.ColoredBooleanRenderer;
-
 import com.jgoodies.binding.adapter.AbstractTableAdapter;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -50,7 +42,15 @@ import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueHolder;
-import com.jgoodies.forms.builder.ButtonBarBuilder2;
+import com.jgoodies.forms.builder.ButtonBarBuilder;
+
+import net.sf.rmoffice.core.Equipment;
+import net.sf.rmoffice.core.RMSheet;
+import net.sf.rmoffice.pdf.AbstractPDFCreator;
+import net.sf.rmoffice.ui.UIConstants;
+import net.sf.rmoffice.ui.converters.EnumValueConverter;
+import net.sf.rmoffice.ui.converters.SelectionIndexToEnabledListener;
+import net.sf.rmoffice.ui.renderer.ColoredBooleanRenderer;
 
 
 /**
@@ -84,7 +84,7 @@ public class EquipmentPanel extends JPanel implements ActionListener {
 		btDel.setActionCommand(DEL_LINE);
 		btDel.addActionListener(this);
 		JLabel lblUnit = BasicComponentFactory.createLabel(new EnumValueConverter(adapter.getValueModel(RMSheet.PROPERTY_WEIGHT_UNIT)));
-		ButtonBarBuilder2 builder = new ButtonBarBuilder2();
+		ButtonBarBuilder builder = new ButtonBarBuilder	();
 		builder.addButton(btNew, btDel).addRelatedGap();
 		builder.addFixed(new JLabel(RESOURCE.getString("common.equipment.weight.unit") + ": ")).addGlue().addFixed(lblUnit);
 		

@@ -29,11 +29,12 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 
-import net.sf.rmoffice.ui.components.CheckBoxList;
-
 import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
+
+import net.sf.rmoffice.ui.components.CheckBoxList;
 
 /**
  * Shows elements to select one or many in form of checkbox items.
@@ -45,7 +46,7 @@ public class SelectionDialog<T> extends JDialog {
 	private List<T> checkedItems;
 	
 
-	public SelectionDialog(Frame owner, int amount, Object... selectables) {
+	public SelectionDialog(Frame owner, int amount, T[] selectables) {
 		super(owner, RESOURCE.getString("ui.talentflaw.dialog.title"), true);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		setContentPane( createContentPane(amount, selectables) );
@@ -62,10 +63,10 @@ public class SelectionDialog<T> extends JDialog {
 	}
 
 
-	private Container createContentPane(final int amount, final Object... selectables) {
+	private Container createContentPane(final int amount, final T[] selectables) {
 		FormLayout layout = new FormLayout("150dlu", "15dlu,3dlu,fill:150dlu,5dlu,15dlu");
 		PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
+		builder.border(Borders.TABBED_DIALOG);
 		String msg = MessageFormat.format(RESOURCE.getString("ui.talentflaw.dialog.select"), ""+amount);
 		builder.addLabel(msg , CC.xy(1, 1));
 		checkBoxlist = new CheckBoxList<T>();

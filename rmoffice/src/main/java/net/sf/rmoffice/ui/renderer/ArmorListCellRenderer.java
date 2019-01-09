@@ -30,7 +30,7 @@ public class ArmorListCellRenderer extends DefaultListCellRenderer {
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	/** {@inheritDoc} */
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		return super.getListCellRendererComponent(list, value + " " + RESOURCE.getString("armor."+value), index, isSelected, cellHasFocus);
 	}
 }

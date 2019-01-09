@@ -38,7 +38,7 @@ public class ModifySkillDialog extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	private JTextField tfName;
-	private JComboBox cbSkillType;
+	private JComboBox<SkillType> cbSkillType;
 
 
 	/**
@@ -90,10 +90,10 @@ public class ModifySkillDialog extends JPanel {
 		choices[2] = SkillType.EVERYMAN;
 		choices[3] = SkillType.OCCUPATIONAL;
 		choices[4] = SkillType.RESTRICTED;
-		DefaultComboBoxModel model = new DefaultComboBoxModel(choices);
-		cbSkillType = new JComboBox(model);
+		DefaultComboBoxModel<SkillType> model = new DefaultComboBoxModel<>(choices);
+		cbSkillType = new JComboBox<SkillType>(model);
 		cbSkillType.setEditable(false);
-		cbSkillType.setRenderer(new ComboboxSkillTypeRenderer() );
+		cbSkillType.setRenderer(new ComboboxSkillTypeRenderer<SkillType>() );
 		if (rankType != null) {
 			/* select current value */
 			model.setSelectedItem(rankType);

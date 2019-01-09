@@ -23,22 +23,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
-import net.sf.rmoffice.core.RMSheet;
-import net.sf.rmoffice.core.TalentFlaw;
-import net.sf.rmoffice.meta.MetaData;
-import net.sf.rmoffice.ui.models.TalentFlawPresentationModel;
-import net.sf.rmoffice.ui.models.TalentFlawTableAdapter;
-
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueModel;
-import com.jgoodies.forms.builder.ButtonBarBuilder2;
+import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
+
+import net.sf.rmoffice.core.RMSheet;
+import net.sf.rmoffice.core.TalentFlaw;
+import net.sf.rmoffice.meta.MetaData;
+import net.sf.rmoffice.ui.models.TalentFlawPresentationModel;
+import net.sf.rmoffice.ui.models.TalentFlawTableAdapter;
 
 /**
  * Talent and flaw panel provides buttons for adding and removing the characters talents and flaws.
@@ -70,9 +71,9 @@ public class TalentFlawPanel extends JPanel {
 		setLayout(layout);
 		
 		PanelBuilder builder = new PanelBuilder(layout, this);
-		builder.setDefaultDialogBorder();
+		builder.border(Borders.DIALOG);
 		
-		ButtonBarBuilder2 btBuilder = new ButtonBarBuilder2();
+		ButtonBarBuilder btBuilder = new ButtonBarBuilder();
 		btBuilder.addButton(talentPresModel.getAddTalentFlawAction());
 		btBuilder.addRelatedGap();
 		btBuilder.addButton(talentPresModel.getDelTalentFlawAction());

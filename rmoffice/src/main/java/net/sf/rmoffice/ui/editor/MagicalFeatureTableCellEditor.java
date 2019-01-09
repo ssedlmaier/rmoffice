@@ -45,7 +45,7 @@ public class MagicalFeatureTableCellEditor extends AbstractComboBoxTableCellEdit
 	private final JTextField textfield = new JTextField();
 	private final AutoCompletionComboBox cbStat;
 	private AutoCompletionComboBox cbSkill;
-	private final JComboBox cbResistance;
+	private final JComboBox<?> cbResistance;
 	private MagicalItemFeatureType currentType;
 	private final BeanAdapter<RMSheet> rmSheetAdapter;
 	/**

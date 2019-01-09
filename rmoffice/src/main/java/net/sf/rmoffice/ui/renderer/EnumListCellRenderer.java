@@ -29,7 +29,7 @@ public class EnumListCellRenderer extends DefaultListCellRenderer {
 	private final static ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
 	
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value,
+	public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		if (value != null) {

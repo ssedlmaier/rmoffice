@@ -34,6 +34,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.adapter.ComboBoxAdapter;
+import com.jgoodies.binding.beans.BeanAdapter;
+import com.jgoodies.binding.value.ValueHolder;
+import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.forms.factories.CC;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jidesoft.swing.ButtonStyle;
+import com.jidesoft.swing.JideButton;
+import com.jidesoft.swing.OverlayTextField;
+
 import net.sf.rmoffice.core.RMSheet;
 import net.sf.rmoffice.core.TalentFlaw;
 import net.sf.rmoffice.meta.MetaData;
@@ -47,20 +60,6 @@ import net.sf.rmoffice.ui.actions.DesktopAction;
 import net.sf.rmoffice.ui.converters.IntegerToStringConverter;
 import net.sf.rmoffice.ui.panels.AbstractPanel;
 import net.sf.rmoffice.ui.renderer.EnumListCellRenderer;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.adapter.ComboBoxAdapter;
-import com.jgoodies.binding.beans.BeanAdapter;
-import com.jgoodies.binding.value.AbstractConverter;
-import com.jgoodies.binding.value.ValueHolder;
-import com.jgoodies.binding.value.ValueModel;
-import com.jgoodies.forms.factories.CC;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jidesoft.swing.ButtonStyle;
-import com.jidesoft.swing.JideButton;
-import com.jidesoft.swing.OverlayTextField;
 
 /**
  * Dialog to create a new talent flaw that can be added to the sheet.
@@ -126,6 +125,7 @@ public class TalentFlawCreateDialog extends JDialog {
 		return tf;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private JPanel createPanel() {
 		FormLayout layout = new FormLayout("pref, 3dlu, 250dlu", StringUtils.repeat(AbstractPanel.ROW_WITH_GAP, 5) +" 5dlu, fill:120dlu");
 		JPanel panel = new JPanel(layout);
@@ -137,16 +137,16 @@ public class TalentFlawCreateDialog extends JDialog {
 		// level
 		panel.add(new JLabel(RESOURCE.getString("ui.talentflaw.tablecol.level")+": "), CC.xy(1,3));
 		ComboBoxAdapter<TalentFlawLevel> lvl = new ComboBoxAdapter<TalentFlawLevel>(TalentFlawLevel.values(), talentFlawAdapter.getValueModel("level"));
-		JComboBox cbLevel = new JComboBox();
+		JComboBox<TalentFlawLevel> cbLevel = new JComboBox<>();
 		cbLevel.setRenderer(new EnumListCellRenderer());
-        cbLevel.setModel(lvl);
+		cbLevel.setModel(lvl);
         panel.add(cbLevel, CC.xy(3, 3));
         
 		// type
         
 		panel.add(new JLabel(RESOURCE.getString("ui.talentflaw.tablecol.type")+": "), CC.xy(1,5));
 		ComboBoxAdapter<TalentFlawType> type = new ComboBoxAdapter<TalentFlawType>(TalentFlawType.values(), talentFlawAdapter.getValueModel("type"));
-		JComboBox cbType = new JComboBox();
+		JComboBox<TalentFlawType> cbType = new JComboBox<>();
 		cbType.setRenderer(new EnumListCellRenderer());
 		cbType.setModel(type);
         panel.add(cbType, CC.xy(3, 5));
@@ -199,7 +199,8 @@ public class TalentFlawCreateDialog extends JDialog {
 	/*
 	 * 
 	 */
-	private static class TalentFlawConverter extends AbstractConverter {
+	@SuppressWarnings("deprecation")
+	private static class TalentFlawConverter extends com.jgoodies.binding.value.AbstractConverter {
 		
 		private final MetaData meta;
 

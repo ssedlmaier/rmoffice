@@ -70,7 +70,7 @@ public class ChooseResistancePart extends AbstractTalentFlawPart {
 	}
 	
 	protected List<ResistanceEnum> showSelectionDialog(TalentFlawContext context) {
-		SelectionDialog<ResistanceEnum> dialog = new SelectionDialog<ResistanceEnum>(context.getOwner(), amount, (Object[]) selectables);
+		SelectionDialog<ResistanceEnum> dialog = new SelectionDialog<ResistanceEnum>(context.getOwner(), amount, selectables);
 		dialog.setVisible(true);
 		List<ResistanceEnum> checkedItems = dialog.getCheckedItems();
 		return checkedItems;
