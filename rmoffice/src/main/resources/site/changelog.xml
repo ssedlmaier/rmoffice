@@ -38,6 +38,19 @@
 	
 	 -->
 	<section>
+		<title>Version 4.3.19 (2019-)</title>	    
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>
+		     <listitem><para>TALENT: Added talent Spatial Skill (minor) [<ulink url="https://sourceforge.net/p/rmoffice/bugs/27/">&typeBug; #27</ulink>]</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+	 
+	 
+	<section>
 		<title>Version 4.3.18 (2018-11-08)</title>	    
 	    <section>
 		 <title>&bugfixes;</title>
