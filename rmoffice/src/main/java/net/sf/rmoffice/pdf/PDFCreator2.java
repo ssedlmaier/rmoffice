@@ -110,14 +110,14 @@ public class PDFCreator2 extends PDFCreator {
 	}
 	
 	/*
-	 * Returns the buttom y value of the image.
+	 * Returns the bottom y value of the image.
 	 */
 	protected float page1UpperRightCharImage(PdfContentByte canvas, float y, float leftX) throws IOException, DocumentException {
 		if (sheet.getImagePos().isPage1() && sheet.getCharacteristics().getCharImage() != null) {
 			/* image */
 			Image charImage = Image.getInstance(sheet.getCharacteristics().getCharImage());
 			float maxWidth = RIGHT_X - leftX - 2;
-			float maxHeight = 235;
+			float maxHeight = 215;
 			// we have to reduce the additional lines for training packages and magical items
 			/*trainings packs */
 			if (!StringUtils.isBlank(sheet.getApprenticeShip())) {
@@ -179,6 +179,7 @@ public class PDFCreator2 extends PDFCreator {
 		float upperY = super.page4TalentFlaws(canvas, rightX);
 		// the background
 		upperY = page4BackgroundIgnoreEmpty(canvas, upperY, LEFT_X + 5, rightX - 5, sheet.getCharacteristics(), LEFT_X, rightX);
+		upperY += 1; // a small space
 		return upperY;
 	}
 	
