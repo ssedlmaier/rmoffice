@@ -654,8 +654,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		/* draw each col */
 		float y = 0;
 		for (int col=0; col < xVal.length; col++) {
-			boolean drawingSpelllists = false;
-			canvas.beginText();
+			boolean drawingSpelllists = false;			
 			canvas.setFontAndSize(fontUser, 8);	
             y = 738.8f;
 			/* draw skills */
@@ -669,7 +668,7 @@ public class PDFCreator extends AbstractPDFCreator {
 					if (col == 0) {
 						hline(canvas, LEFT_X, y + 8f + lineHeight, RIGHT_X);
 						canvas.setFontAndSize(fontBold, 8);	
-						canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString( "pdf.header.spelllists"), xVal[col], y, 0);
+						showTextAligned(canvas, Element.ALIGN_LEFT, RESOURCE.getString("pdf.header.spelllists"), xVal[col], y);
 						hline(canvas, LEFT_X, y + 8f, RIGHT_X);
 					}
 					y -= lineHeight;
@@ -714,11 +713,10 @@ public class PDFCreator extends AbstractPDFCreator {
 	            	hline(canvas, LEFT_X, y + 8f, RIGHT_X);
 	            }
 				if (str != null && str.length() > 0) {
-					canvas.showTextAligned(align, str, x, y, 0);
+					showTextAligned(canvas, align, str, x, y);
 				}
 				y -= lineHeight;
 			}
-			canvas.endText();
 		}
 		float y0 = UPPER_Y;
 		float y1 = y + 8f;
@@ -746,6 +744,12 @@ public class PDFCreator extends AbstractPDFCreator {
 		canvas.endText();
 	}
 
+	private void showTextAligned(PdfContentByte canvas, int alignment, String text, float x, float y) {
+		canvas.beginText();
+		canvas.showTextAligned(alignment, text, x, y, 0);
+		canvas.endText();
+	}
+
 	/**
 	 * skill categories
 	 */
@@ -753,7 +757,7 @@ public class PDFCreator extends AbstractPDFCreator {
 		float[] xVal = new float[] {60,215,261,299,331,363,406,454,498,538};
 		float y = 0;
 		for (int col=0; col < xVal.length; col++) {
-			canvas.beginText();
+			
 			canvas.setFontAndSize(fontUser, 8 );
 			y = 738.5f;
 			boolean spellsStarted = false;
@@ -827,19 +831,22 @@ public class PDFCreator extends AbstractPDFCreator {
 					spellsStarted = true;
 					if (col == 0) {
 						hline(canvas, LEFT_X, y + 8f, RIGHT_X);
+						canvas.beginText();
 						canvas.showTextAligned(Element.ALIGN_LEFT, RESOURCE.getString("rolemaster.spells"), xVal[col], y, 0);
+						canvas.endText();
 					}
 					y -= 10.68f;
 				}
 				if (str != null && str.length() > 0) {
+					canvas.beginText();
 					canvas.showTextAligned(align, str, xVal[col] + insets, y, 0);
+					canvas.endText();
 				}
 				if (col == 0) {
 					hline(canvas, LEFT_X, y + 8f, RIGHT_X);
 				}
 				y -= 10.68f;
 			}
-			canvas.endText();
 		}
 		float y0 = UPPER_Y;
 		float y1 = y + 8f;
@@ -1431,9 +1438,9 @@ public class PDFCreator extends AbstractPDFCreator {
 				canvas.showTextAligned(Element.ALIGN_CENTER, "_______________________________________", xColCenter[colIdx], y, 0);
 			}
 		}
+		canvas.endText();
 		hline(canvas, LEFT_X, y - 6, RIGHT_X); 
 		y -= 8;
-		canvas.endText();
 		return y;
 	}
 	

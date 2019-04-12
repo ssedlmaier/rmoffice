@@ -43,6 +43,7 @@
 		 <title>&bugfixes;</title>
 		 <para>
 		   <itemizedlist>
+		     <listitem><para>PDF: Fix pdf creation [<ulink url="https://sourceforge.net/p/rmoffice/bugs/6/">&typeBug; #6</ulink>]</para></listitem>
 		     <listitem><para>LOCALE: Fix Widerstand Mentalismus</para></listitem>
 		     <listitem><para>BASE: Added Talent Ensorcellment Cure [<ulink url="https://sourceforge.net/p/rmoffice/bugs/28/">&typeBug; #28</ulink>]</para></listitem>
 		     <listitem><para>BASE: Talent Dense (greater) applies now OB +10 [<ulink url="https://sourceforge.net/p/rmoffice/bugs/29/">&typeBug; #29</ulink>]</para></listitem>
