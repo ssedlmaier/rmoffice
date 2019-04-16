@@ -49,6 +49,7 @@
 		     <listitem><para>BASE: Added talent Spatial Skill (minor) [<ulink url="https://sourceforge.net/p/rmoffice/bugs/27/">&typeBug; #27</ulink>]</para></listitem>
 		     <listitem><para>PDF: Fix pdf creation [<ulink url="https://sourceforge.net/p/rmoffice/bugs/6/">&typeBug; #6</ulink>]</para></listitem>
 		     <listitem><para>PDF: Fix smaller layout bugs. On page 1 (pdf v2) was outside the box line. On page 4 (pdf v2) the weight modification line was overlaying the box.</para></listitem>
+		     <listitem><para>BASIC: Remove warning in Java 12: Illegal Access</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

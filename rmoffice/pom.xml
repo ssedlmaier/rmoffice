@@ -70,6 +70,14 @@
                   </manifestEntries>
                 </transformer>
               </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:jgoodies-common*</artifact>
+                  <excludes>
+                    <exclude>**/RenderingUtils.*</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>

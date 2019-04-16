@@ -193,7 +193,6 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 		addSkill(customSkill);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void addSkill(ISkill skill) {
 		/* add to sheet, if new */
 		if (! sheet.hasSkillRank(skill)) {
@@ -234,7 +233,6 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 		sortAndUpdate(getDataVector());
 	}
 
-	@SuppressWarnings("unchecked")
 	public void updateTable() {
 		/* remove all */
 		for (int row = getRowCount() - 1; row >= 0; row--) {
@@ -261,9 +259,8 @@ public class SkillsTableModel extends DefaultTableModel implements IOverlaySuppo
 		super.removeRow(row);
 	}
 	
-	@SuppressWarnings("unchecked")
-    private void sortAndUpdate(Vector<Object> v) {
-        Collections.sort(v, new Comparator<Object>() {
+    private void sortAndUpdate(Vector<Vector> vector) {
+        Collections.sort(vector, new Comparator<Object>() {
             @Override
 			public int compare(Object o1, Object o2) {
  

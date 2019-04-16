@@ -26,3 +26,6 @@ You have to change the new version in following files:
 /src/main/resources/site/readme.xml (for up-to-date readme)
 /src/main/resources/site/changelog.xml (the current date)
 /src/main/resources/conf/i18n/locale.properties (for the update notification)
+
+Maven build:
+Run Maven build > mvn clean package
