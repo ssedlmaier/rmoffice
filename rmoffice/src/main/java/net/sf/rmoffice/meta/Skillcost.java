@@ -19,14 +19,14 @@ package net.sf.rmoffice.meta;
 
 
 /**
- * 
+ *
  */
 public class Skillcost implements Comparable<Skillcost>{
 	private final int[] costs;
 	private final String name;
 
-	// This constructor is added as a fix for the import stuff
-	public Skillcost() {
+	// This constructor is added as a fix for the xStream bug
+	/* package */ Skillcost() {
 		costs = new int[3];
 		name = "";
 	}
@@ -38,31 +38,31 @@ public class Skillcost implements Comparable<Skillcost>{
 			if (sb.length() > 0) {
 				sb.append("/");
 			}
-			sb.append(""+c);			
+			sb.append(""+c);
 		}
 		this.name = sb.toString();
 	}
-	
+
 	/**
 	 * Returns the costs for the given index beginning with 0.
-	 * 
+	 *
 	 * @param idx less than {@link #size()}
 	 * @return the costs
 	 */
 	public int getCost(int idx) {
 		return costs[idx];
 	}
-	
+
 	public int size() {
 		if (costs == null) return 0;
 		return costs.length;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
 	}
-	
+
 	@Override
 	public int compareTo(Skillcost other) {
 		int maxSize = Math.max(size(), other.size());
