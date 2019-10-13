@@ -24,7 +24,13 @@ package net.sf.rmoffice.meta;
 public class Skillcost implements Comparable<Skillcost>{
 	private final int[] costs;
 	private final String name;
-	
+
+	// This constructor is added as a fix for the import stuff
+	public Skillcost() {
+		costs = new int[3];
+		name = "";
+	}
+
 	public Skillcost(int... costs) {
 		this.costs = costs;
 		StringBuilder sb = new StringBuilder();
