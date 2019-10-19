@@ -23,24 +23,21 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class ExportImportTest {
 
-	@Test
-	public void testImportOldVersions() throws Exception {
-		/* test if we can import old character files */
-		File file = new File( ExportImportTest.class.getResource("test404.rmo").toURI() );
-		Reader reader = new FileReader(file);
-		ExportImport.importXml(reader);
-		
-		file = new File( ExportImportTest.class.getResource("test415.rmo").toURI() );
-		reader = new FileReader(file);
-		ExportImport.importXml(reader);
-		
-		file = new File( ExportImportTest.class.getResource("test422.rmo").toURI() );
-		reader = new FileReader(file);
-		ExportImport.importXml(reader);
-	}
+    @Test
+    public void testImportOldVersions() throws Exception {
+        /* test if we can import old character files */
+        File file = new File(ExportImportTest.class.getResource("test404.rmo").toURI());
+        ExportImport.importFile(file);
+
+        file = new File(ExportImportTest.class.getResource("test415.rmo").toURI());
+        ExportImport.importFile(file);
+
+        file = new File(ExportImportTest.class.getResource("test422.rmo").toURI());
+        ExportImport.importFile(file);
+    }
 
 }

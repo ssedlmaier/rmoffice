@@ -1,5 +1,6 @@
 /*
  * Copyright 2012 Daniel Nettesheim
+ * Modifications Copyright 2019 Stefan Sedlmaier
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +28,9 @@ public class RMOFileFilter extends ExtensionFileFilter {
 	 * 
 	 */
 	public RMOFileFilter() {
-		super(new String[] {RMPreferences.RMO_EXTENSION}, "RoleMaster Office character (*.rmo)");
+		super(new String[] {
+				RMPreferences.RMO_EXTENSION,
+				"json"
+		}, "RoleMaster Office character (*.rmo), *.json");
 	}
 }
