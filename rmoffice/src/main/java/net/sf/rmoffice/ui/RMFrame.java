@@ -22,10 +22,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -43,28 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -653,7 +629,6 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
                             removePropertyChangeListener();
                         }
                         File selectedFile = fch.getSelectedFile();
-
                         RMPreferences.getInstance().setLastDir(selectedFile.getParentFile());
                         in = new FileInputStream(selectedFile);
                         freader = new BufferedReader(new InputStreamReader(in, ExportImport.ENCODING));
@@ -745,6 +720,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
         menuSave.setEnabled(false);
         SaveAction saveAction = new SaveAction(this, getRMSheetAdapter());
         menuSave.addActionListener(saveAction);
+        menuSave.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         file.add(menuSave);
         Bindings.bind(menuSave, "enabled", enableMenuSaveValueHolder);
         /* -------- SAVE  AS --------- */
