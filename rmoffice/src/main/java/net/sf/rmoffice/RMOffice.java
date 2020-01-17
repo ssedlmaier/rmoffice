@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public class RMOffice {
 	private final static Logger log = LoggerFactory.getLogger(RMOffice.class);
 	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("conf.i18n.locale"); //$NON-NLS-1$
-	private static final String LATEST_VERSION_CHECK_URL = "http://www.nettesheim.name/rmoffice/latestversion.php?locale="+Locale.getDefault();
+	private static final String LATEST_VERSION_CHECK_URL = "https://www.nettesheim.name/rmoffice/latestversion.php?locale="+Locale.getDefault();
 	
 	private static RMFrame frame = null;
 	/**
@@ -96,7 +96,8 @@ public class RMOffice {
 		t.printStackTrace(new PrintWriter(sOut ));
 		StringBuilder sb = new StringBuilder();
 		sb.append("os.name = ").append(System.getProperty("os.name")).append("\n");
-		sb.append("java.version = ").append(System.getProperty("java.version")).append("\n");		
+		sb.append("java.version = ").append(System.getProperty("java.version")).append("\n");
+		sb.append("rmoffice.version = ").append(RESOURCE.getString("rolemaster.version")).append("\n");
 		sb.append("\n");		
 		sb.append(t.getClass().getName()).append(" ").append(sOut.toString());
 		
