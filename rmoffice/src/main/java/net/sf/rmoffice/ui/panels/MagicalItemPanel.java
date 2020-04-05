@@ -200,7 +200,6 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 		featureTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		featureTable.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
 		featureTable.getTableHeader().setReorderingAllowed(false);
-		featureTable.setAutoCreateRowSorter(true);
 		Bindings.bind(featureTable, "enabled", enabledHolderItemSelected);
 		Bindings.bind(featureTable.getTableHeader(), "visible", enabledHolderItemSelected);
 
