@@ -37,6 +37,19 @@
 	</section>
 	
 	 -->
+	 <section>
+		<title>Version 4.3.20 (2021-)</title>	    
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>		     
+		     <listitem><para>BASE: Fix cast exception</para></listitem>
+		     <listitem><para>BASE: Remove armor bonus from priest agriculture and ancestors</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+	 
 	<section>
 		<title>Version 4.3.19 (2020-17-01)</title>	    
 	    <section>
