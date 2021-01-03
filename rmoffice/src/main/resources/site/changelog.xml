@@ -45,6 +45,7 @@
 		   <itemizedlist>		     
 		     <listitem><para>BASE: Fix cast exception</para></listitem>
 		     <listitem><para>BASE: Remove armor bonus from priest agriculture and ancestors</para></listitem>
+		     <listitem><para>LOCALE: Update german priest descriptions</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>
