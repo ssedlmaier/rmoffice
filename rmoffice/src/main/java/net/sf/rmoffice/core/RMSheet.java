@@ -2708,4 +2708,43 @@ public class RMSheet extends AbstractPropertyChangeSupport {
 	public Boolean getTalentFlawOwnPage() {
 		return talentFlawOwnPage;
 	}
+	
+	public void fixBackwardCompatibilities() {
+		// with 4.3.20 skill 540 (architecture) was removed and has to be replaced with 132
+		Integer idArchitectureOld = Integer.valueOf(540);
+		Integer idArchitectureNew = Integer.valueOf(132);
+		if (skillRanks != null) {
+			if (skillRanks.containsKey(idArchitectureOld)) {
+				Rank r = skillRanks.remove(idArchitectureOld);
+				if (r != null) {
+					r.setId(idArchitectureNew);
+				}
+				if (!skillRanks.containsKey(idArchitectureNew)) {
+					// replace with skill 132 if not exists
+					skillRanks.put(idArchitectureNew, r);
+				}
+			}
+		}
+		if (itemSkillBonus != null && itemSkillBonus.containsKey(idArchitectureOld)) {
+			String s = itemSkillBonus.remove(idArchitectureOld);
+			if (itemSkillBonus.containsKey(idArchitectureNew)) {
+				// remove old
+				itemSkillBonus.remove(idArchitectureOld);
+			} else {
+				itemSkillBonus.put(idArchitectureNew, s);
+			}
+		}
+		if (magicalitems != null) {
+			for (int i=0; i<magicalitems.size(); i++) {
+				for (int f=0; f<magicalitems.get(i).getFeatures().size(); f++) {
+					MagicalFeature feat = magicalitems.get(i).getFeatures().get(f);
+					if (MagicalItemFeatureType.SKILL.equals(feat.getType())) {
+						if (idArchitectureOld.equals(feat.getId())) {
+							feat.setInternalId(idArchitectureNew);
+						}
+					}
+				}
+			}
+		}
+	}
 }

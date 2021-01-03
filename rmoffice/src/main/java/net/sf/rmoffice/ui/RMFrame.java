@@ -656,6 +656,7 @@ public class RMFrame extends JFrame implements PropertyChangeListener {
 						in = new FileInputStream(selectedFile);
 						freader = new BufferedReader(new InputStreamReader(in, ExportImport.ENCODING));
 						sheet = ExportImport.importXml(freader);
+						sheet.fixBackwardCompatibilities();
 						sheet.setMetaData(data);
 						if (validateExclusions(sheet)) {
 							updateAdapters();
