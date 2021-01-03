@@ -493,7 +493,7 @@
 	     <para>
 	       <orderedlist>
 	         <listitem>
-	           <para> Copy from the downloaded zip the files templates/conf/skillcosts.csv and templates/conf/skills.conf to your user.dir (e.g. C:\Users\Daniel\.rmoffice / see path in About Dialog in &product;).</para>
+	           <para> Copy from the downloaded zip the files templates/conf/skillcosts.csv and templates/conf/skills.conf to your user.dir (e.g. C:\Users\Daniel\.rmoffice\conf / see path in About Dialog in &product;).</para>
 	         </listitem>
 	         <listitem>
 	            <para>Quickstart: Uncomment (remove #) last line in skillcosts.csv and skills.conf.</para>

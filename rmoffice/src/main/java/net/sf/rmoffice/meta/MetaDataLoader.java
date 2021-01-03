@@ -579,6 +579,7 @@ public class MetaDataLoader {
 			cultures.addAll(loadCultureFromReader(metaData, cr, true));
 		} else {
 			log.debug(customCultures.getAbsolutePath()+" is not a file. ignoring user cultures.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customCultures.getAbsolutePath());
 		}
 		// add all culture
 		metaData.setCultures(cultures);
@@ -731,6 +732,7 @@ public class MetaDataLoader {
 			internalLoadSkills(metaData, skills, id, reader, true);
 		} else {
 			log.debug(customSkills.getAbsolutePath()+" is not a file. ignoring user cultures.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customSkills.getAbsolutePath());
 		}
 		
 		loadSpelllists(skills);
@@ -810,6 +812,7 @@ public class MetaDataLoader {
 			loadRaceFromReader(races, cr, true);
 		} else {
 			log.debug(customRaces.getAbsolutePath()+" is not a file. ignoring user races.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customRaces.getAbsolutePath());
 		}
 	    // 
 		if (races.size() == 0) {
@@ -1036,6 +1039,7 @@ public class MetaDataLoader {
 			internalReadSkillcosts(data, skillcategories, skillgroupIds, reader, true);
 		} else {
 			log.debug(customSkillcosts.getAbsolutePath()+" is not a file. ignoring user cultures.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customSkillcosts.getAbsolutePath());
 		}
 		/* sort skill categories */
 		Collections.sort(skillcategories, new Comparator<SkillCategory>() {
