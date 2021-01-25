@@ -38,6 +38,18 @@
 	
 	 -->
 	 <section>
+		<title>Version 4.3.21 (?)</title>  
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>		     
+		     <listitem><para>BASE: Development costs for Priests skill group Special defenses fixed from 30 to 40</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section> 
+	 
+	 <section>
 		<title>Version 4.3.20 (2021-01-16)</title>  
 	    <section>
 		 <title>&bugfixes;</title>
