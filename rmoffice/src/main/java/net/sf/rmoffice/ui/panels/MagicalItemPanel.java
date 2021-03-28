@@ -106,7 +106,7 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 		createButtonsItem(gc);
 		
 		/* left col overview over all items */
-		JList itemList = new JList();
+		JList<MagicalItem> itemList = new JList<MagicalItem>();
 		Bindings.bind(itemList, "enabled", enabledHolderRMFrame);
 		itemList.setFixedCellHeight(UIConstants.TABLE_ROW_HEIGHT);
 		Bindings.bind(itemList, listModel);
@@ -200,7 +200,6 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 		featureTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		featureTable.setRowHeight(UIConstants.TABLE_ROW_HEIGHT);
 		featureTable.getTableHeader().setReorderingAllowed(false);
-		featureTable.setAutoCreateRowSorter(true);
 		Bindings.bind(featureTable, "enabled", enabledHolderItemSelected);
 		Bindings.bind(featureTable.getTableHeader(), "visible", enabledHolderItemSelected);
 
@@ -321,37 +320,25 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 				  fireTableRowsUpdated(rowIndex, rowIndex);
 				break;
 				case COL_DESCR:
-					switch (feature.getType()) {
+					if (aValue == null) {
+						feature.setId(null);
+						feature.setDescription("");
+					} else {
+						switch (feature.getType()) {
 						case STAT:
 							StatEnum stat = (StatEnum)aValue;
 							feature.setStat(stat);
-							if (stat != null) {
-								feature.setDescription(RESOURCE.getString("StatEnum."+stat.name()+".short"));
-							} else {
-								feature.setDescription("");
-							}
+							feature.setDescription(RESOURCE.getString("StatEnum."+stat.name()+".short"));
 							break;
 						case SKILL:
-							
 							ISkill skill = (ISkill)aValue;
-							if (skill != null) {
-								feature.setId( skill.getId() );
-								feature.setDescription(skill.getName());
-							} else {
-								feature.setId(null);
-								feature.setDescription("");
-							}
+							feature.setId( skill.getId() );
+							feature.setDescription(skill.getName());
 							break;
 						case RESISTANCE:
 							ResistanceEnum res = (ResistanceEnum)aValue;
-							if (res != null) {
-								feature.setResistance( res );
-								feature.setDescription(RESOURCE.getString("ResistanceEnum."+res.name()));
-							} else {
-								feature.setId( null );
-								feature.setDescription("");
-							}
-							
+							feature.setResistance( res );
+							feature.setDescription(RESOURCE.getString("ResistanceEnum."+res.name()));
 							break;
 						case DESCRIPTION:
 							feature.setDescription((String)aValue);
@@ -359,6 +346,7 @@ public class MagicalItemPanel extends JPanel implements ActionListener {
 						case DB:
 							// not editable
 							break;
+						}
 					}
 					break;
 				case COL_BONUS:

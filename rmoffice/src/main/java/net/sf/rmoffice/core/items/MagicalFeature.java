@@ -108,6 +108,10 @@ public class MagicalFeature {
 		this.id = id;
 		rmSheetAdapter.getBean().notifyItemBonusChanged();
 	}
+	
+	public void setInternalId(Integer id) {
+		this.id = id;
+	}
 
 	/**
 	 * 

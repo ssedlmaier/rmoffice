@@ -37,8 +37,36 @@
 	</section>
 	
 	 -->
+	 <section>
+		<title>Version 4.3.21 (?)</title>  
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>		     
+		     <listitem><para>BASE: Development costs for Priests skill group Special defenses fixed from 30 to 40</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section> 
+	 
+	 <section>
+		<title>Version 4.3.20 (2021-01-16)</title>  
+	    <section>
+		 <title>&bugfixes;</title>
+		 <para>
+		   <itemizedlist>		     
+		     <listitem><para>BASE: Fix cast exception</para></listitem>
+		     <listitem><para>BASE: Remove armor bonus from priest agriculture and ancestors</para></listitem>
+		     <listitem><para>DOCU: Fix custom files FAQ and improve error protocol output</para></listitem>
+		     <listitem><para>LOCALE: Update german priest descriptions</para></listitem>
+		     <listitem><para>BASE: skill 540 Architecure - removed duplicate - will be replaced by skill 132</para></listitem>
+		   </itemizedlist>
+		 </para>
+	    </section>
+	</section>  
+	 
 	<section>
-		<title>Version 4.3.19 (2019-)</title>	    
+		<title>Version 4.3.19 (2020-17-01)</title>	    
 	    <section>
 		 <title>&bugfixes;</title>
 		 <para>
@@ -49,7 +77,9 @@
 		     <listitem><para>BASE: Added talent Spatial Skill (minor) [<ulink url="https://sourceforge.net/p/rmoffice/bugs/27/">&typeBug; #27</ulink>]</para></listitem>
 		     <listitem><para>PDF: Fix pdf creation [<ulink url="https://sourceforge.net/p/rmoffice/bugs/6/">&typeBug; #6</ulink>]</para></listitem>
 		     <listitem><para>PDF: Fix smaller layout bugs. On page 1 (pdf v2) was outside the box line. On page 4 (pdf v2) the weight modification line was overlaying the box.</para></listitem>
-		     <listitem><para>BASIC: Remove warning in Java 12: Illegal Access</para></listitem>
+		     <listitem><para>BASIC: Remove some warnings in Java 12: Illegal Access</para></listitem>
+		     <listitem><para>BASIC: version check via https</para></listitem>
+		     <listitem><para>Import: Fix deserialization of custom skillcosts through talents [<ulink url="https://sourceforge.net/p/rmoffice/code/merge-requests/1/">Pull Request #1</ulink>]</para></listitem>
 		   </itemizedlist>
 		 </para>
 	    </section>

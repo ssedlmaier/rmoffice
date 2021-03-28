@@ -32,6 +32,11 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.rmoffice.RMPreferences;
 import net.sf.rmoffice.generator.Name.Style;
 import net.sf.rmoffice.meta.TrainPack.Type;
@@ -50,16 +55,12 @@ import net.sf.rmoffice.meta.enums.TalentFlawType;
 import net.sf.rmoffice.meta.talentflaw.ITalentFlawPart;
 import net.sf.rmoffice.meta.talentflaw.TalentFlawFactory;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * The meta data loader reads all configuration files and parses them.
  */
 public class MetaDataLoader {
 	private static final int MIN_USER_RACE_CULTURE_ID = 1000;
+	private static final int MIN_USER_PROF_ID = 1000;
 	private static final String CONF_SKILLCOSTS = "/conf/skillcosts.csv";
 	private static final String CONF_PROF = "/conf/prof.conf";
 	private static final String CONF_RACE = "/conf/race.conf";
@@ -579,6 +580,7 @@ public class MetaDataLoader {
 			cultures.addAll(loadCultureFromReader(metaData, cr, true));
 		} else {
 			log.debug(customCultures.getAbsolutePath()+" is not a file. ignoring user cultures.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customCultures.getAbsolutePath());
 		}
 		// add all culture
 		metaData.setCultures(cultures);
@@ -731,6 +733,7 @@ public class MetaDataLoader {
 			internalLoadSkills(metaData, skills, id, reader, true);
 		} else {
 			log.debug(customSkills.getAbsolutePath()+" is not a file. ignoring user cultures.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customSkills.getAbsolutePath());
 		}
 		
 		loadSpelllists(skills);
@@ -810,6 +813,7 @@ public class MetaDataLoader {
 			loadRaceFromReader(races, cr, true);
 		} else {
 			log.debug(customRaces.getAbsolutePath()+" is not a file. ignoring user races.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customRaces.getAbsolutePath());
 		}
 	    // 
 		if (races.size() == 0) {
@@ -909,107 +913,16 @@ public class MetaDataLoader {
 		List<Profession> profs = new ArrayList<Profession>();
 		
 		BufferedReader reader = getReader(CONF_PROF);
-		String line = null;
-		int lineNo = 0;
-		while ( (line = reader.readLine()) != null ) {
-			lineNo++;
-			if ( isValidLine(line)) {
-				line = StringUtils.trimToEmpty(line);
-				String[] split = StringUtils.splitPreserveAllTokens(line, ',');
-				if (split != null && split.length > 0) {
-					Profession p = new Profession();
-					int idx=0;
-					p.setId(Integer.valueOf(StringUtils.trim(split[idx++]) ));
-					p.setName(StringUtils.trim(split[idx++]));
-					try {
-						p.setName( RESOURCE.getString("profession."+p.getId()) );
-					} catch (MissingResourceException e) {
-						if (log.isWarnEnabled()) log.warn("No translation for profession id "+p.getId());
-					}
-					/* Stats */
-					for (int i=0; i<4; i++) {
-						if (StringUtils.trimToNull(split[idx]) != null) {
-							try {
-								p.getStats().add(StatEnum.valueOf(StringUtils.trim(split[idx])));
-							} catch (RuntimeException e) {
-								log.error("Could not decode attribute "+idx+" '"+split[idx]+"' in line "+lineNo +" "+line, e);
-								throw e;
-							}
-						}
-						idx++;
-					}
-					/* Realm not used yet*/
-					idx++; 
-					/* spell user type */
-					String spellUserType = StringUtils.trimToNull(split[idx++]);
-					if (spellUserType != null) {
-						if (p.getStats().isArcane()) {
-							spellUserType = "ARCANE" + spellUserType;
-						}
-						p.setSpellUserType(SpellUserType.valueOf(spellUserType));
-					}
-					/* Sourcebook*/
-					p.setSource( StringUtils.trimToEmpty(split[idx++]) );
-					/* Rune */
-					p.setRune( StringUtils.trimToEmpty(split[idx++]) );
-					/* the professions skill bonuses
-					 * Attention: the skill groups/skills aren't loaded,yet */
-					for (int i=idx; i < split.length; i++) {
-						/* format : [G|S]<ID>=[<Bonus>|EVERYMAN|OCCUPATIONAL|RESTRICTED]  */
-						String token = StringUtils.trimToNull(split[i]);
-						if (token != null) {
-							String[] parts = StringUtils.split(token, '=');
-							if (parts != null && parts.length == 2 && parts[0] != null && parts[0].length() > 1) {								
-								if ("ADD".equals(parts[0])) {
-									/* additional info */
-									try {
-										parts[1] = RESOURCE.getString(parts[1]);										
-									} catch (MissingResourceException e) {
-										if (log.isDebugEnabled()) log.debug(CONF_PROF+": ignoring resource key '"+parts[1]+"' in line "+lineNo);
-								   }
-									p.addAdditionInfo(parts[1]);
-								} else {
-									try {
-										int bonus = 0;
-										SkillType skillType = null;
-										try {
-											bonus = Integer.parseInt(parts[1]);
-										} catch (NumberFormatException e) {
-											/* try the SkillType */
-											skillType = SkillType.valueOf(StringUtils.trimToEmpty(parts[1]));
-										}
-										int id = Integer.parseInt(parts[0].substring(1));
-										if (parts[0].startsWith("G")) {
-											/* Group */
-											if (skillType == null) {
-												p.addSkillgroupBonus(id, bonus);
-											} else {
-												p.addSkillGroupType(id, skillType);
-											}
-										} else if (parts[0].startsWith(SKILL_CHAR)) {
-											/* Skill */
-											if (skillType == null) {
-												p.addSkillBonus(id, bonus);
-											} else {
-												p.addSkillType(id, skillType);
-											}
-										}
-									} catch (Exception e) {
-										if (log.isWarnEnabled()) log.warn("Wrong format in lineNo "+lineNo+" token '"+token+"'");
-									}
-								}
-							} else {
-								if (log.isWarnEnabled()) log.warn("Could not parse '"+split[i]+"' in lineNo "+lineNo);
-							}
-						}
-						idx++;
-					}
-					if (!RMPreferences.getInstance().isExcludedProfId(p.getId())) {
-						profs.add(p);
-					}
-				}
-			}
+		loadProfessionsFromReader(profs, reader, false);
+		File customProfs = new File(System.getProperty("user.home") + RMPreferences.RMOFFICE_DIR + CONF_PROF);
+		if (customProfs.exists() && customProfs.isFile()) {
+			BufferedReader cr = new BufferedReader( new InputStreamReader(new FileInputStream(customProfs), CHARSET) );
+			loadProfessionsFromReader(profs, cr, true);
+		} else {
+			log.debug(customProfs.getAbsolutePath()+" is not a file. ignoring user professions.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customProfs.getAbsolutePath());
 		}
+		
 		if (profs.size() == 0) {
 			throw new RuntimeException("Could not load any professions, will exit");
 		}
@@ -1020,6 +933,131 @@ public class MetaDataLoader {
 			}
 		});
 		return profs;
+	}
+
+	private void loadProfessionsFromReader(List<Profession> profs, BufferedReader reader, boolean isUserFile) throws IOException {
+		String line = null;
+		int lineNo = 0;
+		while ( (line = reader.readLine()) != null ) {
+			lineNo++;
+			if ( isValidLine(line)) {
+				line = StringUtils.trimToEmpty(line);
+				String[] split = StringUtils.splitPreserveAllTokens(line, ',');
+				if (split != null && split.length > 0) {
+					Profession p = new Profession();
+					int idx=0;
+					Integer profId = Integer.valueOf(StringUtils.trim(split[idx++]) );
+					if (isUserFile && profId.intValue() < MIN_USER_PROF_ID) {
+						String msg = "Custom profession id ["+profId+"] must be greater or equals "+MIN_USER_PROF_ID;
+						RMPreferences.getInstance().addError(msg);
+					} else {
+						p.setId(profId);
+						p.setName(StringUtils.trim(split[idx++]));
+						try {
+							p.setName( RESOURCE.getString("profession."+p.getId()) );
+						} catch (MissingResourceException e) {
+							if (log.isWarnEnabled()) log.warn("No translation for profession id "+p.getId());
+						}
+						/* Stats */
+						for (int i=0; i<4; i++) {
+							if (StringUtils.trimToNull(split[idx]) != null) {
+								try {
+									p.getStats().add(StatEnum.valueOf(StringUtils.trim(split[idx])));
+								} catch (RuntimeException e) {
+									String msg = "Could not decode attribute "+idx+" '"+split[idx]+"' in line "+lineNo +" "+line;
+									log.error(msg, e);
+									if (isUserFile) {
+										RMPreferences.getInstance().addError(msg);
+									} else {
+										throw e;
+									}
+								}
+							}
+							idx++;
+						}
+						/* Realm not used yet*/
+						idx++; 
+						/* spell user type */
+						String spellUserType = StringUtils.trimToNull(split[idx++]);
+						if (spellUserType != null) {
+							if (p.getStats().isArcane()) {
+								spellUserType = "ARCANE" + spellUserType;
+							}
+							p.setSpellUserType(SpellUserType.valueOf(spellUserType));
+						}
+						/* Sourcebook*/
+						p.setSource( StringUtils.trimToEmpty(split[idx++]) );
+						/* Rune */
+						p.setRune( StringUtils.trimToEmpty(split[idx++]) );
+						/* the professions skill bonuses
+						 * Attention: the skill groups/skills aren't loaded,yet */
+						for (int i=idx; i < split.length; i++) {
+							/* format : [G|S]<ID>=[<Bonus>|EVERYMAN|OCCUPATIONAL|RESTRICTED]  */
+							String token = StringUtils.trimToNull(split[i]);
+							if (token != null) {
+								String[] parts = StringUtils.split(token, '=');
+								if (parts != null && parts.length == 2 && parts[0] != null && parts[0].length() > 1) {								
+									if ("ADD".equals(parts[0])) {
+										/* additional info */
+										try {
+											parts[1] = RESOURCE.getString(parts[1]);										
+										} catch (MissingResourceException e) {
+											if (log.isDebugEnabled()) log.debug(CONF_PROF+": ignoring resource key '"+parts[1]+"' in line "+lineNo);
+										}
+										p.addAdditionInfo(parts[1]);
+									} else {
+										try {
+											int bonus = 0;
+											SkillType skillType = null;
+											try {
+												bonus = Integer.parseInt(parts[1]);
+											} catch (NumberFormatException e) {
+												/* try the SkillType */
+												skillType = SkillType.valueOf(StringUtils.trimToEmpty(parts[1]));
+											}
+											int id = Integer.parseInt(parts[0].substring(1));
+											if (parts[0].startsWith("G")) {
+												/* Group */
+												if (skillType == null) {
+													p.addSkillgroupBonus(id, bonus);
+												} else {
+													p.addSkillGroupType(id, skillType);
+												}
+											} else if (parts[0].startsWith(SKILL_CHAR)) {
+												/* Skill */
+												if (skillType == null) {
+													p.addSkillBonus(id, bonus);
+												} else {
+													p.addSkillType(id, skillType);
+												}
+											}
+										} catch (Exception e) {
+											String msg = "Wrong format in lineNo "+lineNo+" token '"+token+"'";
+											log.warn(msg);
+											if (isUserFile) {
+												RMPreferences.getInstance().addError(msg);
+											}
+										}
+									}
+								} else {
+									String msg = "Could not parse '"+split[i]+"' in lineNo "+lineNo;
+									log.warn(msg);
+									if (isUserFile) {
+										RMPreferences.getInstance().addError(msg);
+									}
+								}
+							}
+							idx++;
+						}
+						if (!RMPreferences.getInstance().isExcludedProfId(p.getId())) {
+							profs.add(p);
+						} else if (isUserFile) {
+							RMPreferences.getInstance().addError("Will not add custom profession with id "+p.getId()+". It is excluded.");
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private List<SkillCategory> loadSkillcosts(MetaData data) throws IOException {
@@ -1036,6 +1074,7 @@ public class MetaDataLoader {
 			internalReadSkillcosts(data, skillcategories, skillgroupIds, reader, true);
 		} else {
 			log.debug(customSkillcosts.getAbsolutePath()+" is not a file. ignoring user cultures.");
+			RMPreferences.getInstance().addError("Info: Did not find "+customSkillcosts.getAbsolutePath());
 		}
 		/* sort skill categories */
 		Collections.sort(skillcategories, new Comparator<SkillCategory>() {
