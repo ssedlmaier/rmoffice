@@ -23,11 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import net.sf.rmoffice.meta.IProgression;
-import net.sf.rmoffice.meta.ISkill;
-import net.sf.rmoffice.meta.MetaData;
-import net.sf.rmoffice.meta.SkillCategory;
-import net.sf.rmoffice.meta.Skillcost;
+import net.sf.rmoffice.meta.*;
 import net.sf.rmoffice.meta.enums.LengthUnit;
 import net.sf.rmoffice.meta.enums.ResistanceEnum;
 import net.sf.rmoffice.meta.enums.SkillType;
@@ -76,8 +72,8 @@ public class TalentFlaw extends Model {
 	private Map<Integer, SkillType> skillCatType;
 	private Map<Integer, Integer> skillBonus;
 	private Map<Integer, SkillType> skillType;
-    private IProgression progressionBody;
-    private IProgression progressionPower;
+    private Progression progressionBody;
+    private Progression progressionPower;
 	private Float weightPenalty; 
 	private Float baseMovement; 
 	private List<String> resistanceLines;
@@ -262,19 +258,19 @@ public class TalentFlaw extends Model {
 		}
 	}
 
-	public IProgression getProgressionBody() {
+	public Progression getProgressionBody() {
 		return progressionBody;
 	}
 
-	public void setProgressionBody(IProgression progressionBody) {
+	public void setProgressionBody(Progression progressionBody) {
 		this.progressionBody = progressionBody;
 	}
 
-	public IProgression getProgressionPower() {
+	public Progression getProgressionPower() {
 		return progressionPower;
 	}
 
-	public void setProgressionPower(IProgression progressionPower) {
+	public void setProgressionPower(Progression progressionPower) {
 		this.progressionPower = progressionPower;
 	}
 
